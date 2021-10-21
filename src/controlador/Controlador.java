@@ -5,13 +5,14 @@
  */
 package controlador;
 
+import ds.desktop.notify.DesktopNotify;
+import ds.desktop.notify.NotifyTheme;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.FileNotFoundException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import utilidades.ExportPDF;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -27,7 +28,6 @@ import javax.swing.table.DefaultTableModel;
 import modelos.dao.HabitacionDao;
 import modelos.dao.TipoHabitacionDao;
 import modelos.entidades.Habitacion;
-import modelos.entidades.Tipo_Habitacion;
 import utilidades.ImgTabla;
 import utilidades.ListaCircularDoble;
 import vistas.main.Regis_hab;
@@ -37,10 +37,12 @@ import vistas.main.Vista_hab;
  *
  * @author Adonay
  */
-public class Controlador implements ActionListener {
+public class Controlador implements ActionListener, MouseListener {
 
     DefaultTableModel modelo;
-
+    
+    String vistaOn = "";
+    
     private Vista_hab vista;
     private Regis_hab registrarHab;
 
@@ -61,11 +63,13 @@ public class Controlador implements ActionListener {
         if (str.equals("habitacion")) {
             vista.setControlador(this);
             vista.iniciar();
-            mostrarDatos(vista);
+            vistaOn = "vistaHabitacion";
+            mostrarDatos(vista.tbregishab);
         } else if (str.equals("VistaRegistrarhab")) {
             registrarHab = new Regis_hab(new JFrame(), true);
             registrarHab.setControlador(this);
             registrarHab.iniciar();
+            vistaOn = "nuevaHabitacion";
         }
     }
     
@@ -107,25 +111,27 @@ public class Controlador implements ActionListener {
             tabla.getColumnModel().getColumn(4).setCellRenderer(diseño);
             tabla.getColumnModel().getColumn(5).setCellRenderer(diseño);
             
-            ListaCircularDoble habitaciones = habitacionDao.selectAll();
+            if (vistaOn.equals("vistaHabitacion")) {
+                 ListaCircularDoble<Habitacion> habitaciones = habitacionDao.selectAll();
                 
-            for (Object obj : habitaciones.toArrayAsc()) {
-                Habitacion x = (Habitacion) obj;
+                for (Habitacion x : habitaciones.toArrayAsc()) {
+                    if (x.getEstado_habitacion() == 1) {
+                        ImageIcon img_delete = new ImageIcon(getClass().getResource("/img/delete.png"));
+                        JLabel lbImg_delete = new JLabel(new ImageIcon(img_delete.getImage()));
 
-                if (x.getEstado_habitacion() == 1) {
-                    ImageIcon img_delete = new ImageIcon(getClass().getResource("/img/delete.png"));
-                    JLabel lbImg_delete = new JLabel(new ImageIcon(img_delete.getImage()));
-                    
-                    modelo.addRow(new Object[]{x.getId_habitacion(), x.getNum_habitacion(), x.getDescr_habitacion(), formateador.format(x.getPrecio_habitacion()), x.getTipoH().getNombre_tipo(), x.getDispo_habitacion(), lbImg_delete});
+                        modelo.addRow(new Object[]{x.getId_habitacion(), x.getNum_habitacion(), x.getDescr_habitacion(), "$ " + formateador.format(x.getPrecio_habitacion()), x.getTipoH().getNombre_tipo(), x.getDispo_habitacion(), lbImg_delete});
+                    }
                 }
+
+                tabla.setModel(modelo);
             }
-            
-            tabla.setModel(modelo);
         } catch (SQLException ex) {
             Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
+    
+    
     @Override
     public void actionPerformed(ActionEvent btn) {
 
@@ -139,5 +145,58 @@ public class Controlador implements ActionListener {
             }
         }
         
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent me) {
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent me) {
+        if (vistaOn.equals("vistaHabitacion")) {
+            int columna = vista.tbregishab.getSelectedColumn();
+            
+            try {
+                try {
+                    if (columna == 6) {
+                        int fila = vista.tbregishab.getSelectedRow();
+                        String id = vista.tbregishab.getValueAt(fila, 0).toString();
+                        ListaCircularDoble<Habitacion> lista = habitacionDao.selectAllTo("id_habitacion", id);
+                        habitacionSelected = lista.toArrayAsc().get(0);
+                    }
+
+                    if (habitacionSelected != null) {
+
+                        if (habitacionDao.delete(habitacionSelected)) {
+                            DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                            DesktopNotify.showDesktopMessage("Producto eliminado", "El producto ha sido eliminado exitosamente.", DesktopNotify.INFORMATION, 8000);
+                            mostrarDatos(vista.tbregishab);
+                        }
+
+                        habitacionSelected = null;
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } catch (Exception e) {
+                    
+            }
+        }
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent me) {
+        
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent me) {
+        
+    }
+
+    @Override
+    public void mouseExited(MouseEvent me) {
+       
     }
 }

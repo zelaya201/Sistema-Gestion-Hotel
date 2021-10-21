@@ -33,6 +33,7 @@ public class Vista_hab extends javax.swing.JFrame {
     public void setControlador(Controlador control){
         btnagregarhab.addActionListener(control);
         btncrearReporte.addActionListener(control);
+        tbregishab.addMouseListener(control);
     }
 
     /**
@@ -115,7 +116,7 @@ public class Vista_hab extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(543, 543, 543)
-                .addComponent(jTbuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
+                .addComponent(jTbuscar, javax.swing.GroupLayout.DEFAULT_SIZE, 16, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnbuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(186, 186, 186)
@@ -151,11 +152,11 @@ public class Vista_hab extends javax.swing.JFrame {
 
             },
             new String [] {
-                "No. de Habitación", "Descripción", "Precio", "Tipo", "Disposición ", "Eliminar"
+                "Id. de Habitación", "No. de Habitación", "Descripción", "Precio", "Tipo ", "Disposición", "Eliminar"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, false, false, false, false, false, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
