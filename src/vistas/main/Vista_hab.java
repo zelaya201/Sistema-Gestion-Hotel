@@ -7,6 +7,7 @@ package vistas.main;
 
 import controlador.Controlador;
 import javax.swing.JFrame;
+import utilidades.TextPrompt;
 
 /**
  *
@@ -20,7 +21,7 @@ public class Vista_hab extends javax.swing.JFrame {
     public Vista_hab() {
         initComponents();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
-        
+        new TextPrompt("Buscar habitación por: No. de Habitación, Tipo", jTbuscar);
         btncrearReporte.setActionCommand("Reporte");
         btnagregarhab.setActionCommand("Agregar");
     }
@@ -52,7 +53,6 @@ public class Vista_hab extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tbregishab = new rojerusan.RSTableMetro();
-        jPanel3 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -74,6 +74,7 @@ public class Vista_hab extends javax.swing.JFrame {
 
         btnbuscar.setBackground(new java.awt.Color(61, 137, 248));
         btnbuscar.setText("Buscar");
+        btnbuscar.setFocusPainted(false);
         btnbuscar.setHideActionText(true);
         btnbuscar.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         btnbuscar.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.SEARCH);
@@ -86,6 +87,7 @@ public class Vista_hab extends javax.swing.JFrame {
         btnagregarhab.setBackground(new java.awt.Color(61, 137, 248));
         btnagregarhab.setText("Agregar Hab");
         btnagregarhab.setActionCommand("Agregar");
+        btnagregarhab.setFocusPainted(false);
         btnagregarhab.setHideActionText(true);
         btnagregarhab.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         btnagregarhab.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.ADD);
@@ -97,6 +99,7 @@ public class Vista_hab extends javax.swing.JFrame {
 
         btncrearReporte.setBackground(new java.awt.Color(61, 137, 248));
         btncrearReporte.setText("Crear reporte");
+        btncrearReporte.setFocusPainted(false);
         btncrearReporte.setHideActionText(true);
         btncrearReporte.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         btncrearReporte.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.FILE_DOWNLOAD);
@@ -145,16 +148,10 @@ public class Vista_hab extends javax.swing.JFrame {
         tbregishab.setForeground(new java.awt.Color(255, 255, 255));
         tbregishab.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"", "", "", "", "", "", null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+
             },
             new String [] {
-                "Id. Hab", "Numero", "Descripción", "Precio", "Tipo ", "Disposición", "Acciones"
+                "No. de Habitación", "Descripción", "Precio", "Tipo", "Disposición ", "Eliminar"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -186,6 +183,14 @@ public class Vista_hab extends javax.swing.JFrame {
         tbregishab.getTableHeader().setResizingAllowed(false);
         tbregishab.getTableHeader().setReorderingAllowed(false);
         jScrollPane2.setViewportView(tbregishab);
+        if (tbregishab.getColumnModel().getColumnCount() > 0) {
+            tbregishab.getColumnModel().getColumn(0).setResizable(false);
+            tbregishab.getColumnModel().getColumn(1).setResizable(false);
+            tbregishab.getColumnModel().getColumn(2).setResizable(false);
+            tbregishab.getColumnModel().getColumn(3).setResizable(false);
+            tbregishab.getColumnModel().getColumn(4).setResizable(false);
+            tbregishab.getColumnModel().getColumn(5).setResizable(false);
+        }
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -212,36 +217,15 @@ public class Vista_hab extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 531, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 532, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
         );
 
         pack();
@@ -312,7 +296,6 @@ public class Vista_hab extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField jTbuscar;
     public rojerusan.RSTableMetro tbregishab;

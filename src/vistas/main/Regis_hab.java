@@ -6,6 +6,7 @@
 package vistas.main;
 
 import controlador.Controlador;
+import utilidades.TextPrompt;
 
 /**
  *
@@ -20,7 +21,9 @@ public class Regis_hab extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(null);
-        
+        new TextPrompt("Ingrese el numero de habitación", jTNumerohab);
+        new TextPrompt("Ingrese el precio de la habitación", jTpreciohab);
+        new TextPrompt("Ingrese una descripción para la habitación", jTextArea1);
         btninicio.setActionCommand("");
         btnantes.setActionCommand("");
         btnfinal.setActionCommand("");
@@ -71,7 +74,7 @@ public class Regis_hab extends javax.swing.JDialog {
         jPanel1.setBackground(new java.awt.Color(245, 245, 245));
 
         jPanel2.setBackground(new java.awt.Color(245, 245, 245));
-        jPanel2.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(153, 153, 153)));
+        jPanel2.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
         jPanel2.setForeground(new java.awt.Color(0, 0, 0));
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
@@ -96,10 +99,11 @@ public class Regis_hab extends javax.swing.JDialog {
         );
 
         jPanel3.setBackground(new java.awt.Color(245, 245, 245));
-        jPanel3.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, new java.awt.Color(0, 0, 0)));
+        jPanel3.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, new java.awt.Color(204, 204, 204)));
 
         btncancelar.setBackground(new java.awt.Color(61, 137, 248));
         btncancelar.setText("Cancelar");
+        btncancelar.setFocusPainted(false);
         btncancelar.setHideActionText(true);
         btncancelar.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         btncancelar.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.BLOCK);
@@ -111,6 +115,7 @@ public class Regis_hab extends javax.swing.JDialog {
 
         btnguardar.setBackground(new java.awt.Color(61, 137, 248));
         btnguardar.setText("Guardar");
+        btnguardar.setFocusPainted(false);
         btnguardar.setHideActionText(true);
         btnguardar.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         btnguardar.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.SD_CARD);
@@ -141,7 +146,7 @@ public class Regis_hab extends javax.swing.JDialog {
                 .addContainerGap(17, Short.MAX_VALUE))
         );
 
-        jLabel2.setText("Numero Hab");
+        jLabel2.setText("Numero de Habitación:");
 
         jTNumerohab.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(204, 204, 204)), javax.swing.BorderFactory.createEmptyBorder(0, 5, 0, 0)));
         jTNumerohab.setMinimumSize(new java.awt.Dimension(6, 18));
@@ -160,7 +165,7 @@ public class Regis_hab extends javax.swing.JDialog {
             }
         });
 
-        jLabel3.setText("Precio Hab");
+        jLabel3.setText("Precio:");
 
         jTpreciohab.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(204, 204, 204)), javax.swing.BorderFactory.createEmptyBorder(0, 5, 0, 0)));
         jTpreciohab.setMinimumSize(new java.awt.Dimension(6, 18));
@@ -179,7 +184,7 @@ public class Regis_hab extends javax.swing.JDialog {
             }
         });
 
-        jLabel4.setText("Tipo Hab");
+        jLabel4.setText("Tipo:");
 
         cbgene.setForeground(new java.awt.Color(51, 51, 51));
         cbgene.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccione" }));
@@ -190,7 +195,7 @@ public class Regis_hab extends javax.swing.JDialog {
         cbgene.setColorSeleccionTXT(new java.awt.Color(58, 66, 226));
         cbgene.setConBorde(true);
 
-        jLabel5.setText("Descripción Hab");
+        jLabel5.setText("Descripción:");
 
         jScrollPane1.setBorder(null);
 
@@ -200,7 +205,8 @@ public class Regis_hab extends javax.swing.JDialog {
         jScrollPane1.setViewportView(jTextArea1);
 
         btnfinal.setBackground(new java.awt.Color(61, 137, 248));
-        btnfinal.setText("Insertar al inicio");
+        btnfinal.setText("Insertar al final");
+        btnfinal.setFocusPainted(false);
         btnfinal.setHideActionText(true);
         btnfinal.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         btnfinal.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.SETTINGS_ETHERNET);
@@ -212,6 +218,7 @@ public class Regis_hab extends javax.swing.JDialog {
 
         btnantes.setBackground(new java.awt.Color(61, 137, 248));
         btnantes.setText("Insertar Antes");
+        btnantes.setFocusPainted(false);
         btnantes.setHideActionText(true);
         btnantes.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         btnantes.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.SETTINGS_ETHERNET);
@@ -223,6 +230,7 @@ public class Regis_hab extends javax.swing.JDialog {
 
         btninicio.setBackground(new java.awt.Color(61, 137, 248));
         btninicio.setText("Insertar al inicio");
+        btninicio.setFocusPainted(false);
         btninicio.setHideActionText(true);
         btninicio.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         btninicio.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.SETTINGS_ETHERNET);
@@ -247,17 +255,17 @@ public class Regis_hab extends javax.swing.JDialog {
                         .addGap(18, 18, 18)
                         .addComponent(btnantes, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(btnfinal, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(44, 44, 44))
+                        .addComponent(btnfinal, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(52, 52, 52))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jTNumerohab, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jTpreciohab, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
-                                .addComponent(cbgene, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(cbgene, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel2))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 531, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
@@ -323,7 +331,7 @@ public class Regis_hab extends javax.swing.JDialog {
 
     private void jTNumerohabKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTNumerohabKeyTyped
         char val = evt.getKeyChar();
-        if((val<'a' || val>'z') && (val<'A' || val>'Z') && (val != ' ') && (val !='ñ')&& (val !='Ñ')&&(val<'á'|| val>'ú')&&(val<'Á'||val>'Ú')){
+        if((val<'a' || val>'z') && (val<'A' || val>'Z') && (val != ' ') && (val !='ñ')&& (val !='Ñ')&&(val<'á'|| val>'ú')&&(val<'Á'||val>'Ú') && (val < '0' || val > '9')){
             evt.consume();
         }
     }//GEN-LAST:event_jTNumerohabKeyTyped
