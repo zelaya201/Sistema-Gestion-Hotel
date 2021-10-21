@@ -35,7 +35,7 @@ public class Test {
         
         System.out.println("--------------");
         
-        listita.insertarAlFinal(obj3);
+        listita.insertarFinal(obj3);
         
         for (Object x: listita.toArrayAsc()) {
             System.out.println(x);
