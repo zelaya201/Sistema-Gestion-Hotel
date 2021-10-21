@@ -120,7 +120,9 @@ public class ListaCircularDoble <T>{
         }
     }
     
+
     public <T extends Comparable> void insertarFinal(T dato) {
+
         if (!isEmpty()) {
             NodoDoble nuevo = new NodoDoble(dato);
             NodoDoble ultimo = ultimo();
