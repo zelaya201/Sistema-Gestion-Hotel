@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import javax.swing.JFileChooser;
 import utilidades.ExportPDF;
 import java.sql.SQLException;
@@ -73,7 +74,7 @@ public class Controlador implements ActionListener, MouseListener {
         }
     }
     
-    public void eventosBotones(ActionEvent e) throws FileNotFoundException{
+    public void eventosBotones(ActionEvent e) throws FileNotFoundException, IOException{
         if (e.getActionCommand().equals("Reporte")) {
 
             String path = "";
@@ -86,7 +87,6 @@ public class Controlador implements ActionListener, MouseListener {
                 path = file.getSelectedFile().getPath();
                 
                 new ExportPDF(path);
-
             }
 
         }
@@ -141,6 +141,8 @@ public class Controlador implements ActionListener, MouseListener {
             try {
                 eventosBotones(btn);
             } catch (FileNotFoundException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
                 Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
