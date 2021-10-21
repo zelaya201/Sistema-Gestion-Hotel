@@ -18,6 +18,10 @@ public class Hotel implements Comparable<Hotel>{
     public Hotel() {
     }
 
+    public Hotel(int id_hotel) {
+        this.id_hotel = id_hotel;
+    }
+
     public Hotel(int id_hotel, String nom_hotel, String dir_hotel, String tel_hotel) {
         this.id_hotel = id_hotel;
         this.nom_hotel = nom_hotel;

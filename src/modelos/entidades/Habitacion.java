@@ -5,14 +5,18 @@
  */
 package modelos.entidades;
 
-import modelos.entidades.Hotel;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import modelos.dao.TipoHabitacionDao;
 
 /**
  *
  * @author Luis Vaquerano
  */
 public class Habitacion implements Comparable<Habitacion>{
-    private int id_habitacion;
+    private String id_habitacion;
+    private int num_habitacion;
     private String descr_habitacion;
     private double precio_habitacion;
     private int estado_habitacion;
@@ -24,8 +28,9 @@ public class Habitacion implements Comparable<Habitacion>{
     public Habitacion() {
     }
 
-    public Habitacion(int id_habitacion, String descr_habitacion, double precio_habitacion, int estado_habitacion, int dispo_habitacion, Hotel hotel, Tipo_Habitacion tipoH) {
+    public Habitacion(String id_habitacion, int num_habitacion, String descr_habitacion, double precio_habitacion, int estado_habitacion, int dispo_habitacion, Hotel hotel, Tipo_Habitacion tipoH) {
         this.id_habitacion = id_habitacion;
+        this.num_habitacion = num_habitacion;
         this.descr_habitacion = descr_habitacion;
         this.precio_habitacion = precio_habitacion;
         this.estado_habitacion = estado_habitacion;
@@ -34,14 +39,22 @@ public class Habitacion implements Comparable<Habitacion>{
         this.tipoH = tipoH;
     }
 
-    public int getId_habitacion() {
+    public String getId_habitacion() {
         return id_habitacion;
     }
 
-    public void setId_habitacion(int id_habitacion) {
+    public void setId_habitacion(String id_habitacion) {
         this.id_habitacion = id_habitacion;
     }
 
+    public int getNum_habitacion() {
+        return num_habitacion;
+    }
+
+    public void setNum_habitacion(int num_habitacion) {
+        this.num_habitacion = num_habitacion;
+    }
+    
     public String getDescr_habitacion() {
         return descr_habitacion;
     }
@@ -83,7 +96,13 @@ public class Habitacion implements Comparable<Habitacion>{
     }
 
     public Tipo_Habitacion getTipoH() {
-        return tipoH;
+        try {
+            TipoHabitacionDao tipoHabitacionDao = new TipoHabitacionDao();
+            this.tipoH = tipoHabitacionDao.selectId(this.tipoH.getId_tipo()).toArrayAsc().get(0);
+        } catch (SQLException ex) {
+            Logger.getLogger(Habitacion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return this.tipoH;
     }
 
     public void setTipoH(Tipo_Habitacion tipoH) {
@@ -92,7 +111,7 @@ public class Habitacion implements Comparable<Habitacion>{
     
     @Override
     public int compareTo(Habitacion o) {
-        if (precio_habitacion >= o.getPrecio_habitacion()){
+        if (num_habitacion >= o.getNum_habitacion()){
             return 1;
         } else {
             return -1;
