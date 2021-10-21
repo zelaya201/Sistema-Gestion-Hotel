@@ -3,10 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package utilidades;
+package clases;
 
 import java.util.ArrayList;
 
+/**
+ *
+ * @author Luis Vaquerano
+ * @param <T>
+ */
 public class ListaCircularDoble <T>{
     private NodoDoble lista;
     
@@ -22,41 +27,46 @@ public class ListaCircularDoble <T>{
         NodoDoble aux = lista;
         ArrayList<T> array = new ArrayList();
         
-        while(aux != null){
-            array.add((T)aux.getDato());
-            aux = aux.getSiguiente();
+        if (!isEmpty()) {
+            do {
+                array.add((T)aux.getDato());
+                aux = aux.getSiguiente();
+            } while (aux != lista);
         }
         
         return array;
     }
     
-    public ArrayList<T> toArrayDes(){
-        NodoDoble aux = lista;
-        
-        while (aux.getSiguiente() != null) {
-            aux = aux.getSiguiente();
-        }
+    public ArrayList<T> toArrayDesc(){
+        NodoDoble ultimo = ultimo();
         
         ArrayList<T> array = new ArrayList();
         
-        while(aux != null){
-            array.add((T)aux.getDato());
-            aux = aux.getAnterior();
+        if (!isEmpty()) {
+            do {
+                array.add((T)ultimo.getDato());
+                ultimo = ultimo.getAnterior();
+            }while(ultimo == lista);
         }
-        
+
         return array;
     }
     
     public <T extends Comparable> void insertar(T dato) {
         NodoDoble nuevo = new NodoDoble(dato);
+        
         if (isEmpty()) {
             lista = nuevo;
             nuevo.setSiguiente(lista);
-            nuevo.setAnterior(nuevo.getSiguiente());
-            
+            nuevo.setAnterior(lista);
         }else if (dato.compareTo(lista.getDato()) < 0) {
             nuevo.setSiguiente(lista);
+            
             lista.setAnterior(nuevo); // agregar
+            lista.setSiguiente(nuevo);
+            
+            nuevo.setAnterior(lista);
+            
             lista = nuevo;
         }else {
             NodoDoble ant = ubicar(dato);
@@ -71,11 +81,63 @@ public class ListaCircularDoble <T>{
         }
     }
     
+    public void insertarInicio(T dato) {        
+        if (!isEmpty()) {
+            NodoDoble nuevo = new NodoDoble(dato);
+            NodoDoble ultimo = ultimo();
+            
+            nuevo.setSiguiente(lista);
+            nuevo.setAnterior(ultimo);
+            ultimo.setSiguiente(nuevo);
+            
+            lista = nuevo;
+        }
+    }
+    
+    public <T extends Comparable> void insertarAntes(T dato, T parametro) {
+        if (!isEmpty() && buscar(parametro) != null) {
+            NodoDoble nuevo = new NodoDoble(dato);
+            NodoDoble referencia = buscar(parametro);
+            
+            if (nuevo != null) {
+                if (referencia == lista) {
+                    NodoDoble ultimo = ultimo();
+                    nuevo.setSiguiente(referencia);
+
+                    referencia.setAnterior(nuevo); // agregar
+
+                    nuevo.setAnterior(ultimo);
+                    ultimo.setSiguiente(nuevo);
+                    lista = nuevo;
+                }else {
+                    referencia.getAnterior().setSiguiente(nuevo);
+                    nuevo.setAnterior(referencia.getAnterior());
+                    
+                    nuevo.setSiguiente(referencia);
+                    referencia.setAnterior(nuevo);
+                }
+            }
+        }
+    }
+    
+    public <T extends Comparable> void insertarFinal(T dato) {
+        if (!isEmpty()) {
+            NodoDoble nuevo = new NodoDoble(dato);
+            NodoDoble ultimo = ultimo();
+            
+            nuevo.setAnterior(ultimo);
+            ultimo.setSiguiente(nuevo);
+            
+            nuevo.setSiguiente(lista);
+        }
+    }
+    
     private <T extends Comparable> NodoDoble ubicar(T dato) {
         NodoDoble aux = lista;
         NodoDoble ant = lista;
         
-        while ((aux.getSiguiente() != null) && dato.compareTo(aux.getDato()) > 0) {
+        while ((aux.getSiguiente() != lista) 
+                && dato.compareTo(aux.getDato()) > 0) {
             dato.compareTo(aux.getDato());
             ant = aux;
             aux = aux.getSiguiente();
@@ -91,11 +153,13 @@ public class ListaCircularDoble <T>{
     public <T extends Comparable> NodoDoble buscar(T dato) {
         NodoDoble aux = lista;
         
-        while(aux != null) {
-            if (dato.compareTo(aux.getDato()) == 0) {
-                return aux;
-            }
-            aux = aux.getSiguiente();
+        if (aux != null) {
+            do {
+                if (dato.compareTo(aux.getDato()) == 0) {
+                    return aux;
+                }
+                aux = aux.getSiguiente();
+            } while (aux != lista);
         }
         
         return null;
@@ -103,25 +167,50 @@ public class ListaCircularDoble <T>{
     
     public <T extends Comparable> void eliminar(T dato) {
         NodoDoble quitar = buscar(dato);
+        NodoDoble ultimo = ultimo();
         
         if (quitar != null) {
             if (quitar == lista) {
-                lista = quitar.getSiguiente();
-                
-                if (lista != null) {
-                    lista.setAnterior(null);
+                if (lista.getSiguiente() != lista) {
+                    
+                    lista = quitar.getSiguiente();
+                    
+                    if (lista != null) {
+                        lista.setAnterior(ultimo);
+                    }
+                    
+                    ultimo.setSiguiente(lista);
+                }else {
+                    lista = null;
                 }
+                
             }else {
-                NodoDoble ant = ubicar(dato);
+                if (quitar == ultimo) {
+                    NodoDoble ant = ubicar(dato);
+                    
+                    ant.setSiguiente(lista);
+                }else {
+                    NodoDoble ant = ubicar(dato);
                 
-                ant.setSiguiente(quitar.getSiguiente());
-                
-                if (quitar.getSiguiente() != null) {
-                    quitar.getSiguiente().setAnterior(ant);
+                    ant.setSiguiente(quitar.getSiguiente());
+
+                    if (quitar.getSiguiente() != null) {
+                        quitar.getSiguiente().setAnterior(ant);
+                    }
                 }
             }
             
             quitar = null;
-        }  
+        }   
+    }
+    
+    private NodoDoble ultimo() {
+        NodoDoble aux = lista;
+        
+        while((aux.getSiguiente() != lista)) {
+            aux = aux.getSiguiente();
+        }
+        
+        return aux;
     }
 }

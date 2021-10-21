@@ -3,21 +3,21 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package utilidades;
+package clases;
 
 /**
  *
- * @author Mario Zelaya
+ * @author Luis Vaquerano
+ * @param <T>
  */
-public class NodoDoble <T>{
+public class NodoDoble<T>{
     T dato;
     NodoDoble anterior;
     NodoDoble siguiente;
 
     public NodoDoble() {
-        
     }
-    
+
     public NodoDoble(T dato, NodoDoble anterior, NodoDoble siguiente) {
         this.dato = dato;
         this.anterior = anterior;
@@ -52,5 +52,7 @@ public class NodoDoble <T>{
 
     public void setSiguiente(NodoDoble siguiente) {
         this.siguiente = siguiente;
-    } 
+    }
+    
+    
 }
