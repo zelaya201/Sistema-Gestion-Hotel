@@ -82,11 +82,9 @@ public class Controlador implements ActionListener {
             tabla.getColumnModel().getColumn(5).setCellRenderer(diseño);
             
             ListaCircularDoble habitaciones = habitacionDao.selectAll();
-            ListaCircularDoble tipos = tipoHabitacionDao.selectAll();
-            
                 
-            for (Object obj1 : habitaciones.toArrayAsc()) {
-                Habitacion x = (Habitacion) obj1;
+            for (Object obj : habitaciones.toArrayAsc()) {
+                Habitacion x = (Habitacion) obj;
 
                 if (x.getEstado_habitacion() == 1) {
                     ImageIcon img_delete = new ImageIcon(getClass().getResource("/img/delete.png"));

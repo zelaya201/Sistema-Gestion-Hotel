@@ -20,7 +20,7 @@ public class Habitacion implements Comparable<Habitacion>{
     private String descr_habitacion;
     private double precio_habitacion;
     private int estado_habitacion;
-    private int dispo_habitacion;
+    private String dispo_habitacion;
     
     private Hotel hotel;
     private Tipo_Habitacion tipoH;
@@ -28,7 +28,7 @@ public class Habitacion implements Comparable<Habitacion>{
     public Habitacion() {
     }
 
-    public Habitacion(String id_habitacion, int num_habitacion, String descr_habitacion, double precio_habitacion, int estado_habitacion, int dispo_habitacion, Hotel hotel, Tipo_Habitacion tipoH) {
+    public Habitacion(String id_habitacion, int num_habitacion, String descr_habitacion, double precio_habitacion, int estado_habitacion, String dispo_habitacion, Hotel hotel, Tipo_Habitacion tipoH) {
         this.id_habitacion = id_habitacion;
         this.num_habitacion = num_habitacion;
         this.descr_habitacion = descr_habitacion;
@@ -79,11 +79,11 @@ public class Habitacion implements Comparable<Habitacion>{
         this.estado_habitacion = estado_habitacion;
     }
 
-    public int getDispo_habitacion() {
+    public String getDispo_habitacion() {
         return dispo_habitacion;
     }
 
-    public void setDispo_habitacion(int dispo_habitacion) {
+    public void setDispo_habitacion(String dispo_habitacion) {
         this.dispo_habitacion = dispo_habitacion;
     }
 

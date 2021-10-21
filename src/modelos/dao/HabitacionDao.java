@@ -62,7 +62,7 @@ public class HabitacionDao {
                 obj.setDescr_habitacion(rs.getString("descripcion_habitacion"));
                 obj.setPrecio_habitacion(rs.getDouble("precio_habitacion"));
                 obj.setEstado_habitacion(rs.getInt("estado_habitacion"));
-                obj.setDispo_habitacion(rs.getInt("disposicion_habitacion"));
+                obj.setDispo_habitacion(rs.getString("disposicion_habitacion"));
                 obj.setTipoH(new Tipo_Habitacion(rs.getInt("fk_id_tipo")));
                 obj.setHotel(new Hotel(rs.getInt("fk_id_hotel")));
 
@@ -93,7 +93,7 @@ public class HabitacionDao {
             ps.setString(2, obj.getDescr_habitacion());
             ps.setDouble(3, obj.getPrecio_habitacion());
             ps.setInt(4, obj.getEstado_habitacion());
-            ps.setInt(5, obj.getDispo_habitacion());
+            ps.setString(5, obj.getDispo_habitacion());
             ps.setInt(6, obj.getTipoH().getId_tipo());
             ps.setInt(7, obj.getHotel().getId_hotel());
             
