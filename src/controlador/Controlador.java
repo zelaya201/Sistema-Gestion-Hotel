@@ -27,8 +27,10 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import modelos.dao.HabitacionDao;
+import modelos.dao.HotelDao;
 import modelos.dao.TipoHabitacionDao;
 import modelos.entidades.Habitacion;
+import modelos.entidades.Hotel;
 import utilidades.ImgTabla;
 import utilidades.ListaCircularDoble;
 import vistas.main.Regis_hab;
@@ -46,6 +48,9 @@ public class Controlador implements ActionListener, MouseListener {
     
     private Vista_hab vista;
     private Regis_hab registrarHab;
+    
+    /* HOTEL */
+    HotelDao daoHotel = new HotelDao();
 
     /* HABITACION */
     Habitacion habitacion = new Habitacion();
@@ -74,7 +79,7 @@ public class Controlador implements ActionListener, MouseListener {
         }
     }
     
-    public void eventosBotones(ActionEvent e) throws FileNotFoundException, IOException{
+    public void eventosBotones(ActionEvent e) throws FileNotFoundException, IOException, SQLException{
         if (e.getActionCommand().equals("Reporte")) {
 
             String path = "";
@@ -85,8 +90,12 @@ public class Controlador implements ActionListener, MouseListener {
 
             if (request == JFileChooser.APPROVE_OPTION) {
                 path = file.getSelectedFile().getPath();
+                ListaCircularDoble<Habitacion> habitaciones = habitacionDao.selectAll();
+                ListaCircularDoble<Hotel> hotel = daoHotel.selectAll();
                 
-                new ExportPDF(path);
+                new ExportPDF(path, habitaciones, hotel.toArrayAsc().get(0));
+                DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                DesktopNotify.showDesktopMessage("Reporte generado", "Ruta: " + path, DesktopNotify.INFORMATION, 8000);
             }
 
         }
@@ -144,6 +153,8 @@ public class Controlador implements ActionListener, MouseListener {
                 Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
                 Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         
@@ -172,7 +183,7 @@ public class Controlador implements ActionListener, MouseListener {
 
                         if (habitacionDao.delete(habitacionSelected)) {
                             DesktopNotify.setDefaultTheme(NotifyTheme.Red);
-                            DesktopNotify.showDesktopMessage("Producto eliminado", "El producto ha sido eliminado exitosamente.", DesktopNotify.INFORMATION, 8000);
+                            DesktopNotify.showDesktopMessage("Producto eliminado", "El producto ha sido eliminado exitosamente.", DesktopNotify.INFORMATION, 10000);
                             mostrarDatos(vista.tbregishab);
                         }
 
