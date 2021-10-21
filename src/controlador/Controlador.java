@@ -9,6 +9,8 @@ import ds.desktop.notify.DesktopNotify;
 import ds.desktop.notify.NotifyTheme;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.FileNotFoundException;
@@ -18,6 +20,7 @@ import utilidades.ExportPDF;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -31,6 +34,7 @@ import modelos.dao.TipoHabitacionDao;
 import modelos.entidades.Habitacion;
 import utilidades.ImgTabla;
 import utilidades.ListaCircularDoble;
+import utilidades.ListaSimple;
 import vistas.main.Regis_hab;
 import vistas.main.Vista_hab;
 
@@ -38,7 +42,7 @@ import vistas.main.Vista_hab;
  *
  * @author Adonay
  */
-public class Controlador implements ActionListener, MouseListener {
+public class Controlador implements ActionListener, MouseListener, KeyListener {
 
     DefaultTableModel modelo;
     
@@ -89,6 +93,34 @@ public class Controlador implements ActionListener, MouseListener {
                 new ExportPDF(path);
             }
 
+        }else if (e.getActionCommand().equals("Buscar")) {
+            try {
+                if (!vista.jTbuscar.getText().isEmpty()) {
+                    int num = Integer.parseInt(vista.jTbuscar.getText());
+
+                    Habitacion b = new Habitacion();
+                    b.setNum_habitacion(num);
+
+                    ListaCircularDoble list = new ListaCircularDoble();
+
+                    list = habitacionDao.selectAll();
+
+                    ListaSimple listaDeBusqueda = new ListaSimple();
+
+                    if (list.buscar(b) != null) {
+                        Habitacion obj = (Habitacion) list.buscar(b).getDato();
+                        listaDeBusqueda.insertar(obj);
+                        mostrarBusqueda(listaDeBusqueda.toArray(), vista.tbregishab);
+                    }else {
+                        mostrarDatos(vista.tbregishab);
+                    }
+                }else {
+                    mostrarDatos(vista.tbregishab);
+                }
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
  
     }
@@ -130,6 +162,37 @@ public class Controlador implements ActionListener, MouseListener {
         }
     }
 
+    public void mostrarBusqueda(ArrayList lista, JTable tabla) {
+
+        DefaultTableCellRenderer diseño = (DefaultTableCellRenderer) tabla.getCellRenderer(0, 0); //Obtener diseño de la tabla
+        modelo = (DefaultTableModel) tabla.getModel();
+        modelo.setRowCount(0);
+        tabla.setDefaultRenderer(Object.class, new ImgTabla()); //Renderizar para poner las img
+
+        DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
+        simbolos.setDecimalSeparator('.');
+        DecimalFormat formateador = new DecimalFormat("0.00",simbolos);
+
+        tabla.getColumnModel().getColumn(0).setCellRenderer(diseño); //Mantener diseño de la tabla por columns
+        tabla.getColumnModel().getColumn(1).setCellRenderer(diseño);
+        tabla.getColumnModel().getColumn(2).setCellRenderer(diseño);
+        tabla.getColumnModel().getColumn(3).setCellRenderer(diseño);
+        tabla.getColumnModel().getColumn(4).setCellRenderer(diseño);
+        tabla.getColumnModel().getColumn(5).setCellRenderer(diseño);
+
+
+            for (Object obj: lista) {
+                Habitacion x = (Habitacion) obj;
+                if (x.getEstado_habitacion() == 1) {
+                    ImageIcon img_delete = new ImageIcon(getClass().getResource("/img/delete.png"));
+                    JLabel lbImg_delete = new JLabel(new ImageIcon(img_delete.getImage()));
+
+                    modelo.addRow(new Object[]{x.getId_habitacion(), x.getNum_habitacion(), x.getDescr_habitacion(), "$ " + formateador.format(x.getPrecio_habitacion()), x.getTipoH().getNombre_tipo(), x.getDispo_habitacion(), lbImg_delete});
+                }
+            }
+            
+            tabla.setModel(modelo);
+    }
     
     
     @Override
@@ -145,6 +208,15 @@ public class Controlador implements ActionListener, MouseListener {
             } catch (IOException ex) {
                 Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
             }
+        } 
+        
+        if(btn.getActionCommand().equals("Buscar")) {
+            try {
+                eventosBotones(btn);
+            } catch (IOException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
         }
         
     }
@@ -199,6 +271,48 @@ public class Controlador implements ActionListener, MouseListener {
 
     @Override
     public void mouseExited(MouseEvent me) {
+       
+    }
+
+    @Override
+    public void keyTyped(KeyEvent ke) {
+        
+    }
+
+    @Override
+    public void keyPressed(KeyEvent ke) {
+        if (vistaOn.equals("vistaHabitacion")) {
+            if (ke.getKeyCode() == ke.VK_ENTER && !vista.jTbuscar.getText().isEmpty()) {
+                try {
+                    int num = Integer.parseInt(vista.jTbuscar.getText());
+                    
+                    Habitacion b = new Habitacion();
+                    b.setNum_habitacion(num);
+                    
+                    ListaCircularDoble list = new ListaCircularDoble();
+                    
+                    list = habitacionDao.selectAll();
+                    
+                    ListaSimple listaDeBusqueda = new ListaSimple();
+                    
+                    if (list.buscar(b) != null) {
+                        Habitacion obj = (Habitacion) list.buscar(b).getDato();
+                        listaDeBusqueda.insertar(obj);
+                        mostrarBusqueda(listaDeBusqueda.toArray(), vista.tbregishab);
+                    }else {
+                        mostrarDatos(vista.tbregishab);
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }else {
+                mostrarDatos(vista.tbregishab);
+            }
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent ke) {
        
     }
 }

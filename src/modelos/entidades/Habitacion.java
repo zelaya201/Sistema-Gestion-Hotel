@@ -111,11 +111,14 @@ public class Habitacion implements Comparable<Habitacion>{
     
     @Override
     public int compareTo(Habitacion o) {
-        if (num_habitacion >= o.getNum_habitacion()){
-            return 1;
-        } else {
-            return -1;
-        }
+//        if (num_habitacion >= o.getNum_habitacion()){
+//            return 1;
+//        } else {
+//            return -1;
+//        }
+        Habitacion actual = this;
+        
+        return (String.valueOf(actual.getNum_habitacion()).compareToIgnoreCase(String.valueOf(o.getNum_habitacion())));
     }
     @Override
     public String toString() {

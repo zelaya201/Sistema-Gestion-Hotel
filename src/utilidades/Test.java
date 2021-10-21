@@ -14,6 +14,7 @@ public class Test {
         Libro obj1 = new Libro("978-84-481-5631-2", "Estructura de Datos en Java", "Luis Joyanes Aguilar", "MCGRAW-HILL");
         Libro obj2 = new Libro("978-958-99930-2-6", "Análisis de Algoritmos", "Sergio Augusto Cargona Torres", "ELIZCOM");
         Libro obj3 = new Libro("978-987-1609-36-9", "Java a Fondo", "Pablo Augusto Sznajdleder", "MCGRAW-HILL");
+        Libro obj4 = new Libro("912-987-1989-42-8", "Ortega ORtega", "Pablo Neruda", "MCGRAW-HILL");
         
         ListaCircularDoble listita = new ListaCircularDoble();
         
@@ -36,6 +37,14 @@ public class Test {
         System.out.println("--------------");
         
         listita.insertarFinal(obj3);
+        
+        for (Object x: listita.toArrayAsc()) {
+            System.out.println(x);
+        }
+        
+        System.out.println("--------------");
+        
+        listita.insertarInicio(obj4);
         
         for (Object x: listita.toArrayAsc()) {
             System.out.println(x);

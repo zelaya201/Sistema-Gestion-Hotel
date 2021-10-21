@@ -24,6 +24,7 @@ public class Vista_hab extends javax.swing.JFrame {
         new TextPrompt("Buscar habitación por: No. de Habitación, Tipo", jTbuscar);
         btncrearReporte.setActionCommand("Reporte");
         btnagregarhab.setActionCommand("Agregar");
+        btnbuscar.setActionCommand("Buscar");
     }
     
     public void iniciar(){
@@ -33,7 +34,9 @@ public class Vista_hab extends javax.swing.JFrame {
     public void setControlador(Controlador control){
         btnagregarhab.addActionListener(control);
         btncrearReporte.addActionListener(control);
+        btnbuscar.addActionListener(control);
         tbregishab.addMouseListener(control);
+        jTbuscar.addKeyListener(control);
     }
 
     /**
@@ -237,10 +240,10 @@ public class Vista_hab extends javax.swing.JFrame {
     }//GEN-LAST:event_jTbuscarKeyReleased
 
     private void jTbuscarKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTbuscarKeyTyped
-        char val = evt.getKeyChar();
-        if((val<'a' || val>'z') && (val<'A' || val>'Z') && (val != ' ') && (val !='ñ')&& (val !='Ñ')&&(val<'á'|| val>'ú')&&(val<'Á'||val>'Ú')){
-            evt.consume();
-        }
+//        char val = evt.getKeyChar();
+//        if((val<'a' || val>'z') && (val<'A' || val>'Z') && (val != ' ') && (val !='ñ')&& (val !='Ñ')&&(val<'á'|| val>'ú')&&(val<'Á'||val>'Ú')){
+//            evt.consume();
+//        }
     }//GEN-LAST:event_jTbuscarKeyTyped
 
     private void btnbuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnbuscarActionPerformed
@@ -298,7 +301,7 @@ public class Vista_hab extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextField jTbuscar;
+    public javax.swing.JTextField jTbuscar;
     public rojerusan.RSTableMetro tbregishab;
     // End of variables declaration//GEN-END:variables
 }
