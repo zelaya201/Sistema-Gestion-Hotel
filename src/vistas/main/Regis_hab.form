@@ -64,7 +64,7 @@
                                   <Component id="jTNumerohab" alignment="0" max="32767" attributes="0"/>
                                   <Component id="jLabel4" alignment="0" min="-2" pref="92" max="-2" attributes="0"/>
                                   <Component id="jTpreciohab" alignment="0" pref="259" max="32767" attributes="0"/>
-                                  <Component id="cbgene" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="cbTipo" alignment="0" max="32767" attributes="0"/>
                                   <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <Component id="jScrollPane1" alignment="0" min="-2" pref="531" max="-2" attributes="0"/>
@@ -91,7 +91,7 @@
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="jLabel4" min="-2" pref="27" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="cbgene" min="-2" pref="45" max="-2" attributes="0"/>
+                  <Component id="cbTipo" min="-2" pref="45" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="jLabel5" min="-2" pref="27" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
@@ -315,7 +315,7 @@
             <Property name="text" type="java.lang.String" value="Tipo:"/>
           </Properties>
         </Component>
-        <Component class="RSMaterialComponent.RSComboBox" name="cbgene">
+        <Component class="RSMaterialComponent.RSComboBox" name="cbTipo">
           <Properties>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="33" green="33" red="33" type="rgb"/>

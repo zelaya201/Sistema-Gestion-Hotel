@@ -28,6 +28,7 @@ public class Regis_hab extends javax.swing.JDialog {
         btnantes.setActionCommand("");
         btnfinal.setActionCommand("");
         btnguardar.setActionCommand("");
+        
     }
     
     public void iniciar(){
@@ -39,6 +40,7 @@ public class Regis_hab extends javax.swing.JDialog {
         btnantes.addActionListener(control);
         btnfinal.addActionListener(control);
         btnguardar.addActionListener(control);
+        cbTipo.addItemListener(control);
     }
 
     /**
@@ -61,7 +63,7 @@ public class Regis_hab extends javax.swing.JDialog {
         jLabel3 = new javax.swing.JLabel();
         jTpreciohab = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        cbgene = new RSMaterialComponent.RSComboBox();
+        cbTipo = new RSMaterialComponent.RSComboBox();
         jLabel5 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
@@ -186,14 +188,14 @@ public class Regis_hab extends javax.swing.JDialog {
 
         jLabel4.setText("Tipo:");
 
-        cbgene.setForeground(new java.awt.Color(51, 51, 51));
-        cbgene.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccione" }));
-        cbgene.setColorArrow(new java.awt.Color(58, 66, 226));
-        cbgene.setColorBorde(new java.awt.Color(204, 204, 204));
-        cbgene.setColorFondo(new java.awt.Color(255, 255, 255));
-        cbgene.setColorSeleccion(new java.awt.Color(255, 255, 255));
-        cbgene.setColorSeleccionTXT(new java.awt.Color(58, 66, 226));
-        cbgene.setConBorde(true);
+        cbTipo.setForeground(new java.awt.Color(51, 51, 51));
+        cbTipo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccione" }));
+        cbTipo.setColorArrow(new java.awt.Color(58, 66, 226));
+        cbTipo.setColorBorde(new java.awt.Color(204, 204, 204));
+        cbTipo.setColorFondo(new java.awt.Color(255, 255, 255));
+        cbTipo.setColorSeleccion(new java.awt.Color(255, 255, 255));
+        cbTipo.setColorSeleccionTXT(new java.awt.Color(58, 66, 226));
+        cbTipo.setConBorde(true);
 
         jLabel5.setText("Descripción:");
 
@@ -264,7 +266,7 @@ public class Regis_hab extends javax.swing.JDialog {
                                 .addComponent(jTNumerohab, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jTpreciohab, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
-                                .addComponent(cbgene, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(cbTipo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel2))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 531, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -285,7 +287,7 @@ public class Regis_hab extends javax.swing.JDialog {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cbgene, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cbTipo, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -409,7 +411,7 @@ public class Regis_hab extends javax.swing.JDialog {
     public newscomponents.RSButtonIcon_new btnfinal;
     public newscomponents.RSButtonIcon_new btnguardar;
     public newscomponents.RSButtonIcon_new btninicio;
-    public RSMaterialComponent.RSComboBox cbgene;
+    public RSMaterialComponent.RSComboBox cbTipo;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

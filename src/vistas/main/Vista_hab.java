@@ -21,7 +21,7 @@ public class Vista_hab extends javax.swing.JFrame {
     public Vista_hab() {
         initComponents();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
-        new TextPrompt("Buscar habitación por: No. de Habitación, Tipo", jTbuscar);
+        new TextPrompt("Buscar habitación por: No. de Habitación", jTbuscar);
         btncrearReporte.setActionCommand("Reporte");
         btnagregarhab.setActionCommand("Agregar");
         btnbuscar.setActionCommand("Buscar");

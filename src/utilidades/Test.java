@@ -25,14 +25,23 @@ public class Test {
         
         listita.insertar(obj1);
         listita.insertar(obj2);
-        listita.insertar(obj3);
         listita.insertar(obj4);
         
         for (Object x: listita.toArrayAsc()) {
             System.out.println(x);
         } 
         
-       // System.out.println("--------------");
+        listita.insertarInicio(obj3);
+        
+        Habitacion obj5 = new Habitacion("IND003",5,"TV, A/C, 1 baños, 1 camas",25,1,"DISPONIBLE",new Hotel(1), new Tipo_Habitacion(1));
+        
+        listita.insertar(obj5);
+        
+        System.out.println("--------------");
+        
+        for (Object x: listita.toArrayAsc()) {
+            System.out.println(x);
+        }
         
 //        listita.eliminar(obj3);
 //        

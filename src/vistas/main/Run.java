@@ -6,6 +6,9 @@
 package vistas.main;
 
 import controlador.Controlador;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -13,7 +16,11 @@ import controlador.Controlador;
  */
 public class Run {
     public static void main(String[] args) {
-        Vista_hab vista = new Vista_hab();
-        new Controlador(vista);
+        try {
+            Vista_hab vista = new Vista_hab();
+            new Controlador(vista);
+        } catch (SQLException ex) {
+            Logger.getLogger(Run.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

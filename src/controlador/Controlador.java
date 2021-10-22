@@ -9,6 +9,8 @@ import ds.desktop.notify.DesktopNotify;
 import ds.desktop.notify.NotifyTheme;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -30,8 +32,11 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import modelos.dao.HabitacionDao;
+import modelos.dao.HotelDao;
 import modelos.dao.TipoHabitacionDao;
 import modelos.entidades.Habitacion;
+import modelos.entidades.Hotel;
+import modelos.entidades.Tipo_Habitacion;
 import utilidades.ImgTabla;
 import utilidades.ListaCircularDoble;
 import utilidades.ListaSimple;
@@ -42,7 +47,7 @@ import vistas.main.Vista_hab;
  *
  * @author Adonay
  */
-public class Controlador implements ActionListener, MouseListener, KeyListener {
+public class Controlador implements ActionListener, MouseListener, KeyListener, ItemListener {
 
     DefaultTableModel modelo;
     
@@ -50,6 +55,9 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
     
     private Vista_hab vista;
     private Regis_hab registrarHab;
+    
+    /* HOTEL */
+    HotelDao daoHotel = new HotelDao();
 
     /* HABITACION */
     Habitacion habitacion = new Habitacion();
@@ -59,12 +67,12 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
     /* TIPO */
     TipoHabitacionDao tipoHabitacionDao = new TipoHabitacionDao();
 
-    public Controlador(Vista_hab vista) {
+    public Controlador(Vista_hab vista) throws SQLException {
         this.vista = vista;
         mostrarVista("habitacion");
     }
 
-    public void mostrarVista(String str) {
+    public void mostrarVista(String str) throws SQLException {
         if (str.equals("habitacion")) {
             vista.setControlador(this);
             vista.iniciar();
@@ -73,12 +81,13 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
         } else if (str.equals("VistaRegistrarhab")) {
             registrarHab = new Regis_hab(new JFrame(), true);
             registrarHab.setControlador(this);
+            llenarComboBox();
             registrarHab.iniciar();
             vistaOn = "nuevaHabitacion";
         }
     }
     
-    public void eventosBotones(ActionEvent e) throws FileNotFoundException, IOException{
+    public void eventosBotones(ActionEvent e) throws FileNotFoundException, IOException, SQLException{
         if (e.getActionCommand().equals("Reporte")) {
 
             String path = "";
@@ -89,8 +98,12 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
 
             if (request == JFileChooser.APPROVE_OPTION) {
                 path = file.getSelectedFile().getPath();
+                ListaCircularDoble<Habitacion> habitaciones = habitacionDao.selectAll();
+                ListaCircularDoble<Hotel> hotel = daoHotel.selectAll();
                 
-                new ExportPDF(path);
+                new ExportPDF(path, habitaciones, hotel.toArrayAsc().get(0));
+                DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                DesktopNotify.showDesktopMessage("Reporte generado", "Ruta: " + path, DesktopNotify.INFORMATION, 8000);
             }
 
         }else if (e.getActionCommand().equals("Buscar")) {
@@ -194,12 +207,29 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
             tabla.setModel(modelo);
     }
     
-    
+    public void llenarComboBox() throws SQLException{
+
+        registrarHab.cbTipo.setEnabled(true);
+        registrarHab.cbTipo.removeAllItems();
+        registrarHab.cbTipo.addItem("Seleccionar");  
+
+        ListaCircularDoble<Tipo_Habitacion> listTipo = tipoHabitacionDao.selectAll();
+
+        for(Tipo_Habitacion x : listTipo.toArrayAsc()){
+            registrarHab.cbTipo.addItem(x.getId_tipo() + ". " + x.getNombre_tipo() + " | " + x.getCantidad_tipo() + " personas");
+        }
+
+    }
+      
     @Override
     public void actionPerformed(ActionEvent btn) {
 
         if(btn.getActionCommand().equals("Agregar")){
-            mostrarVista("VistaRegistrarhab");
+            try {
+                mostrarVista("VistaRegistrarhab");
+            } catch (SQLException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }else if(btn.getActionCommand().equals("Reporte")){
             try {
                 eventosBotones(btn);
@@ -207,12 +237,20 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
                 Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
                 Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
             }
         } 
         
         if(btn.getActionCommand().equals("Buscar")) {
             try {
-                eventosBotones(btn);
+                try {
+                    eventosBotones(btn);
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                }
             } catch (IOException ex) {
                 Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -244,7 +282,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
 
                         if (habitacionDao.delete(habitacionSelected)) {
                             DesktopNotify.setDefaultTheme(NotifyTheme.Red);
-                            DesktopNotify.showDesktopMessage("Producto eliminado", "El producto ha sido eliminado exitosamente.", DesktopNotify.INFORMATION, 8000);
+                            DesktopNotify.showDesktopMessage("Producto eliminado", "El producto ha sido eliminado exitosamente.", DesktopNotify.INFORMATION, 10000);
                             mostrarDatos(vista.tbregishab);
                         }
 
@@ -314,5 +352,9 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
     @Override
     public void keyReleased(KeyEvent ke) {
        
+    }
+
+    @Override
+    public void itemStateChanged(ItemEvent ie) {
     }
 }

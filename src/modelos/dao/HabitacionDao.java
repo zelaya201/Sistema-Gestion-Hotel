@@ -66,8 +66,6 @@ public class HabitacionDao {
                 obj.setTipoH(new Tipo_Habitacion(rs.getInt("fk_id_tipo")));
                 obj.setHotel(new Hotel(rs.getInt("fk_id_hotel")));
                 
-                System.out.println(obj);
-                
                 lista.insertar(obj);
             }
              
