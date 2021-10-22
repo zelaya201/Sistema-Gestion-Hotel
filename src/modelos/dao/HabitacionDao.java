@@ -38,7 +38,7 @@ public class HabitacionDao {
     }
     
     public ListaCircularDoble<Habitacion> selectId(int id) throws SQLException{
-        String sql = "select * from habitacion where cod_habitacion=" + id;
+        String sql = "select * from habitacion where id_habitacion=" + id;
         return select(sql);
     } 
     
@@ -65,9 +65,12 @@ public class HabitacionDao {
                 obj.setDispo_habitacion(rs.getString("disposicion_habitacion"));
                 obj.setTipoH(new Tipo_Habitacion(rs.getInt("fk_id_tipo")));
                 obj.setHotel(new Hotel(rs.getInt("fk_id_hotel")));
-
+                
+                System.out.println(obj);
+                
                 lista.insertar(obj);
             }
+             
             
         }catch(Exception e) {
              Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, e);

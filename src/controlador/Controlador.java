@@ -146,7 +146,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
             if (vistaOn.equals("vistaHabitacion")) {
                  ListaCircularDoble<Habitacion> habitaciones = habitacionDao.selectAll();
                 
-                for (Habitacion x : habitaciones.toArrayAsc()) {
+                for (Habitacion x: habitaciones.toArrayAsc()) {
                     if (x.getEstado_habitacion() == 1) {
                         ImageIcon img_delete = new ImageIcon(getClass().getResource("/img/delete.png"));
                         JLabel lbImg_delete = new JLabel(new ImageIcon(img_delete.getImage()));

@@ -46,7 +46,7 @@ public class ListaCircularDoble <T>{
             do {
                 array.add((T)ultimo.getDato());
                 ultimo = ultimo.getAnterior();
-            }while(ultimo == lista);
+            }while(ultimo != lista.getAnterior());
         }
 
         return array;
@@ -60,16 +60,18 @@ public class ListaCircularDoble <T>{
             nuevo.setSiguiente(lista);
             nuevo.setAnterior(lista);
         }else if (dato.compareTo(lista.getDato()) < 0) {
+            NodoDoble ultimo = ultimo();
+            
             nuevo.setSiguiente(lista);
-            
             lista.setAnterior(nuevo); // agregar
-            lista.setSiguiente(nuevo);
-            
-            nuevo.setAnterior(lista);
-            
             lista = nuevo;
+            
+            lista.setAnterior(ultimo);
+            
+            ultimo.setSiguiente(lista);
         }else {
             NodoDoble ant = ubicar(dato);
+                        
             nuevo.setSiguiente(ant.getSiguiente());
             
             if (ant.getSiguiente() != null) {
