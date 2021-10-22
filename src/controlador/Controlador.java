@@ -9,6 +9,8 @@ import ds.desktop.notify.DesktopNotify;
 import ds.desktop.notify.NotifyTheme;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.FileNotFoundException;
@@ -18,6 +20,7 @@ import utilidades.ExportPDF;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -31,6 +34,7 @@ import modelos.dao.HotelDao;
 import modelos.dao.TipoHabitacionDao;
 import modelos.entidades.Habitacion;
 import modelos.entidades.Hotel;
+import modelos.entidades.Tipo_Habitacion;
 import utilidades.ImgTabla;
 import utilidades.ListaCircularDoble;
 import vistas.main.Regis_hab;
@@ -40,7 +44,7 @@ import vistas.main.Vista_hab;
  *
  * @author Adonay
  */
-public class Controlador implements ActionListener, MouseListener {
+public class Controlador implements ActionListener, MouseListener, ItemListener {
 
     DefaultTableModel modelo;
     
@@ -60,12 +64,12 @@ public class Controlador implements ActionListener, MouseListener {
     /* TIPO */
     TipoHabitacionDao tipoHabitacionDao = new TipoHabitacionDao();
 
-    public Controlador(Vista_hab vista) {
+    public Controlador(Vista_hab vista) throws SQLException {
         this.vista = vista;
         mostrarVista("habitacion");
     }
 
-    public void mostrarVista(String str) {
+    public void mostrarVista(String str) throws SQLException {
         if (str.equals("habitacion")) {
             vista.setControlador(this);
             vista.iniciar();
@@ -74,6 +78,7 @@ public class Controlador implements ActionListener, MouseListener {
         } else if (str.equals("VistaRegistrarhab")) {
             registrarHab = new Regis_hab(new JFrame(), true);
             registrarHab.setControlador(this);
+            llenarComboBox();
             registrarHab.iniciar();
             vistaOn = "nuevaHabitacion";
         }
@@ -139,13 +144,29 @@ public class Controlador implements ActionListener, MouseListener {
         }
     }
 
-    
+    public void llenarComboBox() throws SQLException{
+
+        registrarHab.cbTipo.setEnabled(true);
+        registrarHab.cbTipo.removeAllItems();
+        registrarHab.cbTipo.addItem("Seleccionar");  
+
+        ListaCircularDoble<Tipo_Habitacion> listTipo = tipoHabitacionDao.selectAll();
+
+        for(Tipo_Habitacion x : listTipo.toArrayAsc()){
+            registrarHab.cbTipo.addItem(x.getId_tipo() + ". " + x.getNombre_tipo() + " | " + x.getCantidad_tipo() + " personas");
+        }
+
+    }
     
     @Override
     public void actionPerformed(ActionEvent btn) {
 
         if(btn.getActionCommand().equals("Agregar")){
-            mostrarVista("VistaRegistrarhab");
+            try {
+                mostrarVista("VistaRegistrarhab");
+            } catch (SQLException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }else if(btn.getActionCommand().equals("Reporte")){
             try {
                 eventosBotones(btn);
@@ -211,5 +232,10 @@ public class Controlador implements ActionListener, MouseListener {
     @Override
     public void mouseExited(MouseEvent me) {
        
+    }
+
+    @Override
+    public void itemStateChanged(ItemEvent ie) {
+        
     }
 }

@@ -64,7 +64,11 @@ public class Tipo_Habitacion implements Comparable <Tipo_Habitacion>{
     
     @Override
     public int compareTo(Tipo_Habitacion o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (this.id_tipo >= o.getId_tipo()){
+            return 1;
+        } else {
+            return -1;
+        }
     }
     
 }
