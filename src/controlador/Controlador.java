@@ -282,7 +282,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
 
                         if (habitacionDao.delete(habitacionSelected)) {
                             DesktopNotify.setDefaultTheme(NotifyTheme.Red);
-                            DesktopNotify.showDesktopMessage("Producto eliminado", "El producto ha sido eliminado exitosamente.", DesktopNotify.INFORMATION, 10000);
+                            DesktopNotify.showDesktopMessage("Habitación eliminada", "La habitación ha sido eliminada exitosamente.", DesktopNotify.INFORMATION, 10000);
                             mostrarDatos(vista.tbregishab);
                         }
 
@@ -319,6 +319,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
 
     @Override
     public void keyPressed(KeyEvent ke) {
+        
         if (vistaOn.equals("vistaHabitacion")) {
             if (ke.getKeyCode() == ke.VK_ENTER && !vista.jTbuscar.getText().isEmpty()) {
                 try {

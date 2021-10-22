@@ -5,6 +5,8 @@
         <group>
             <file>file:/D:/Programacion/NetBeansProjects/Sistema-Gestion-Hotel/src/controlador/Controlador.java</file>
             <file>file:/D:/Programacion/NetBeansProjects/Sistema-Gestion-Hotel/src/vistas/main/Regis_hab.java</file>
+            <file>file:/D:/Programacion/NetBeansProjects/Sistema-Gestion-Hotel/src/vistas/main/Vista_hab.java</file>
+            <file>file:/D:/Programacion/NetBeansProjects/Sistema-Gestion-Hotel/src/utilidades/ExportPDF.java</file>
         </group>
     </open-files>
 </project-private>

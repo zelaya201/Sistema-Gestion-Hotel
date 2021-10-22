@@ -90,7 +90,6 @@ public class Vista_hab extends javax.swing.JFrame {
 
         btnagregarhab.setBackground(new java.awt.Color(61, 137, 248));
         btnagregarhab.setText("Agregar");
-        btnagregarhab.setActionCommand("Agregar");
         btnagregarhab.setFocusPainted(false);
         btnagregarhab.setHideActionText(true);
         btnagregarhab.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -118,8 +117,8 @@ public class Vista_hab extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(543, 543, 543)
-                .addComponent(jTbuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
+                .addContainerGap(47, Short.MAX_VALUE)
+                .addComponent(jTbuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 497, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnbuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(184, 184, 184)
@@ -240,10 +239,11 @@ public class Vista_hab extends javax.swing.JFrame {
     }//GEN-LAST:event_jTbuscarKeyReleased
 
     private void jTbuscarKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTbuscarKeyTyped
-//        char val = evt.getKeyChar();
-//        if((val<'a' || val>'z') && (val<'A' || val>'Z') && (val != ' ') && (val !='ñ')&& (val !='Ñ')&&(val<'á'|| val>'ú')&&(val<'Á'||val>'Ú')){
-//            evt.consume();
-//        }
+        char val = evt.getKeyChar();
+        
+        if(val < '0' || val > '9'){ 
+            evt.consume();
+        }
     }//GEN-LAST:event_jTbuscarKeyTyped
 
     private void btnbuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnbuscarActionPerformed

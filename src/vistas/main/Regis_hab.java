@@ -363,7 +363,7 @@ public class Regis_hab extends javax.swing.JDialog {
 
     private void jTNumerohabKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTNumerohabKeyTyped
         char val = evt.getKeyChar();
-        if((val<'a' || val>'z') && (val<'A' || val>'Z') && (val != ' ') && (val !='ñ')&& (val !='Ñ')&&(val<'á'|| val>'ú')&&(val<'Á'||val>'Ú') && (val < '0' || val > '9')){
+        if(val < '0' || val > '9'){ 
             evt.consume();
         }
     }//GEN-LAST:event_jTNumerohabKeyTyped
@@ -377,7 +377,10 @@ public class Regis_hab extends javax.swing.JDialog {
     }//GEN-LAST:event_jTpreciohabKeyReleased
 
     private void jTpreciohabKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTpreciohabKeyTyped
-        // TODO add your handling code here:
+        char val = evt.getKeyChar();
+        if((val < '0' || val > '9') && (val!='.')){ 
+            evt.consume();
+        }
     }//GEN-LAST:event_jTpreciohabKeyTyped
 
     private void btnfinalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnfinalActionPerformed
