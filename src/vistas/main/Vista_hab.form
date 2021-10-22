@@ -86,11 +86,11 @@
                       <Component id="jTbuscar" pref="1" max="32767" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Component id="btnbuscar" min="-2" pref="99" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="186" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="184" max="-2" attributes="0"/>
                       <Component id="btncrearReporte" min="-2" pref="152" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="btnagregarhab" min="-2" pref="152" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <Component id="btnagregarhab" min="-2" pref="154" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -166,7 +166,7 @@
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="f8" green="89" red="3d" type="rgb"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Agregar Hab"/>
+                <Property name="text" type="java.lang.String" value="Agregar"/>
                 <Property name="actionCommand" type="java.lang.String" value="Agregar"/>
                 <Property name="focusPainted" type="boolean" value="false"/>
                 <Property name="hideActionText" type="boolean" value="true"/>

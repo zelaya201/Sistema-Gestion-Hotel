@@ -89,7 +89,7 @@ public class Vista_hab extends javax.swing.JFrame {
         });
 
         btnagregarhab.setBackground(new java.awt.Color(61, 137, 248));
-        btnagregarhab.setText("Agregar Hab");
+        btnagregarhab.setText("Agregar");
         btnagregarhab.setActionCommand("Agregar");
         btnagregarhab.setFocusPainted(false);
         btnagregarhab.setHideActionText(true);
@@ -122,10 +122,10 @@ public class Vista_hab extends javax.swing.JFrame {
                 .addComponent(jTbuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnbuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(186, 186, 186)
+                .addGap(184, 184, 184)
                 .addComponent(btncrearReporte, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(btnagregarhab, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnagregarhab, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
