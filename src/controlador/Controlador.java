@@ -37,6 +37,7 @@ import modelos.dao.TipoHabitacionDao;
 import modelos.entidades.Habitacion;
 import modelos.entidades.Hotel;
 import modelos.entidades.Tipo_Habitacion;
+import utilidades.CodigoRecursivo;
 import utilidades.ImgTabla;
 import utilidades.ListaCircularDoble;
 import utilidades.ListaSimple;
@@ -219,6 +220,28 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             registrarHab.cbTipo.addItem(x.getId_tipo() + ". " + x.getNombre_tipo() + " | " + x.getCantidad_tipo() + " personas");
         }
 
+    }
+            public void generandoCodigo() {
+        registrarHab.cbTipo.addItemListener(
+                new ItemListener() {
+            int i = 0;
+
+            @Override
+            public void itemStateChanged(ItemEvent e) { // Numeros correlativos... IMPORTANTE
+
+                if (e.getStateChange() == 1 && !e.getItem().equals("Seleccionar")) {
+                    String ant = e.getItem().toString();
+                    if (e.getStateChange() == 1 && e.getItem().equals(ant.substring(3, 6))) {
+                        registrarHab.lbIdHab.setText(CodigoRecursivo.generarCodigo(e.getItem().toString().substring(3, 6), i++));
+                    }
+                    registrarHab.lbIdHab.setText(CodigoRecursivo.generarCodigo(e.getItem().toString().substring(3, 6), i++));
+
+                } else {
+                    registrarHab.lbIdHab.setText(null);
+                }
+            }
+        }
+        );
     }
       
     @Override

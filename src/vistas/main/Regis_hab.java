@@ -458,6 +458,6 @@ public class Regis_hab extends javax.swing.JDialog {
     private javax.swing.JTextField jTNumerohab;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTpreciohab;
-    private javax.swing.JLabel lbIdHab;
+    public javax.swing.JLabel lbIdHab;
     // End of variables declaration//GEN-END:variables
 }
