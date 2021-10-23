@@ -33,7 +33,7 @@ public class HabitacionDao {
     }
     
     public ListaCircularDoble<Habitacion> buscar(String dato) throws SQLException{
-        String sql = "select * from habitacion where id_habitacion like '" + dato + "%' or  num_habitacion like '" + dato + "%' or fk_id_tipo like '" + dato + "%'";
+        String sql = "select * from habitacion where id_habitacion like '" + dato + "%' or  num_habitacion like '" + dato + "%'";
         return select(sql);
     }
     
@@ -57,6 +57,7 @@ public class HabitacionDao {
             
             while(rs.next()) {
                 obj = new Habitacion();
+                
                 obj.setId_habitacion(rs.getString("id_habitacion"));
                 obj.setNum_habitacion(rs.getInt("num_habitacion"));
                 obj.setDescr_habitacion(rs.getString("descripcion_habitacion"));
@@ -89,14 +90,14 @@ public class HabitacionDao {
             con = conectar.getConexion();
             ps = con.prepareStatement(sql);
             
-            ps.setString(0, obj.getId_habitacion());
-            ps.setInt(1, obj.getNum_habitacion());
-            ps.setString(2, obj.getDescr_habitacion());
-            ps.setDouble(3, obj.getPrecio_habitacion());
-            ps.setInt(4, obj.getEstado_habitacion());
-            ps.setString(5, obj.getDispo_habitacion());
-            ps.setInt(6, obj.getTipoH().getId_tipo());
-            ps.setInt(7, obj.getHotel().getId_hotel());
+            ps.setString(1, obj.getId_habitacion());
+            ps.setInt(2, obj.getNum_habitacion());
+            ps.setString(3, obj.getDescr_habitacion());
+            ps.setDouble(4, obj.getPrecio_habitacion());
+            ps.setInt(5, obj.getEstado_habitacion());
+            ps.setString(6, obj.getDispo_habitacion());
+            ps.setInt(7, obj.getTipoH().getId_tipo());
+            ps.setInt(8, obj.getHotel().getId_hotel());
             
             ps.execute();
             

@@ -43,6 +43,10 @@ public class Test {
             System.out.println(x);
         }
         
+        System.out.println("--------------");
+        
+        //System.out.println(CodigoRecursivo.generarCodigo("MAT", 1));
+        
 //        listita.eliminar(obj3);
 //        
 //        for (Object x: listita.toArrayDesc()) {

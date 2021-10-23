@@ -23,11 +23,11 @@ public class Regis_hab extends javax.swing.JDialog {
         this.setLocationRelativeTo(null);
         new TextPrompt("Ingrese el número de habitación", jTNumerohab);
         new TextPrompt("Ingrese el precio", jTpreciohab);
-        new TextPrompt("Ingrese una descripción para la habitación", jTextArea1);
-        btninicio.setActionCommand("");
-        btnantes.setActionCommand("");
-        btnfinal.setActionCommand("");
-        btnguardar.setActionCommand("");
+        new TextPrompt("Ingrese una descripción para la habitación", taDescripcion);
+        btninicio.setActionCommand("InsertarInicio");
+        btnantes.setActionCommand("InsertarAntes");
+        btnfinal.setActionCommand("InsertarFinal");
+        btninsertar.setActionCommand("Insertar");
         
     }
     
@@ -39,7 +39,7 @@ public class Regis_hab extends javax.swing.JDialog {
         btninicio.addActionListener(control);
         btnantes.addActionListener(control);
         btnfinal.addActionListener(control);
-        btnguardar.addActionListener(control);
+        btninsertar.addActionListener(control);
         cbTipo.addItemListener(control);
     }
 
@@ -65,11 +65,11 @@ public class Regis_hab extends javax.swing.JDialog {
         cbTipo = new RSMaterialComponent.RSComboBox();
         jLabel5 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        taDescripcion = new javax.swing.JTextArea();
         btnfinal = new newscomponents.RSButtonIcon_new();
         btnantes = new newscomponents.RSButtonIcon_new();
         btninicio = new newscomponents.RSButtonIcon_new();
-        btnguardar = new newscomponents.RSButtonIcon_new();
+        btninsertar = new newscomponents.RSButtonIcon_new();
         jLabel6 = new javax.swing.JLabel();
         lbIdHab = new javax.swing.JLabel();
 
@@ -186,10 +186,10 @@ public class Regis_hab extends javax.swing.JDialog {
 
         jScrollPane1.setBorder(null);
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jTextArea1.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(204, 204, 204)), javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-        jScrollPane1.setViewportView(jTextArea1);
+        taDescripcion.setColumns(20);
+        taDescripcion.setRows(5);
+        taDescripcion.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(204, 204, 204)), javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+        jScrollPane1.setViewportView(taDescripcion);
 
         btnfinal.setBackground(new java.awt.Color(61, 137, 248));
         btnfinal.setText("Insertar al final");
@@ -204,7 +204,7 @@ public class Regis_hab extends javax.swing.JDialog {
         });
 
         btnantes.setBackground(new java.awt.Color(61, 137, 248));
-        btnantes.setText("Insertar Antes");
+        btnantes.setText("Insertar antes de");
         btnantes.setFocusPainted(false);
         btnantes.setHideActionText(true);
         btnantes.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -227,15 +227,15 @@ public class Regis_hab extends javax.swing.JDialog {
             }
         });
 
-        btnguardar.setBackground(new java.awt.Color(61, 137, 248));
-        btnguardar.setText("Insertar");
-        btnguardar.setFocusPainted(false);
-        btnguardar.setHideActionText(true);
-        btnguardar.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        btnguardar.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.INSERT_LINK);
-        btnguardar.addActionListener(new java.awt.event.ActionListener() {
+        btninsertar.setBackground(new java.awt.Color(61, 137, 248));
+        btninsertar.setText("Insertar");
+        btninsertar.setFocusPainted(false);
+        btninsertar.setHideActionText(true);
+        btninsertar.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        btninsertar.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.INSERT_LINK);
+        btninsertar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnguardarActionPerformed(evt);
+                btninsertarActionPerformed(evt);
             }
         });
 
@@ -282,7 +282,7 @@ public class Regis_hab extends javax.swing.JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btninicio, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
-                    .addComponent(btnguardar, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btninsertar, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(52, 52, 52)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnantes, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
@@ -320,7 +320,7 @@ public class Regis_hab extends javax.swing.JDialog {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(31, 31, 31)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnguardar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btninsertar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnantes, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(28, 28, 28)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -349,9 +349,9 @@ public class Regis_hab extends javax.swing.JDialog {
         this.dispose();
     }//GEN-LAST:event_btncancelarActionPerformed
 
-    private void btnguardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnguardarActionPerformed
+    private void btninsertarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btninsertarActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnguardarActionPerformed
+    }//GEN-LAST:event_btninsertarActionPerformed
 
     private void jTNumerohabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTNumerohabActionPerformed
         // TODO add your handling code here:
@@ -368,21 +368,6 @@ public class Regis_hab extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_jTNumerohabKeyTyped
 
-    private void jTpreciohabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTpreciohabActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTpreciohabActionPerformed
-
-    private void jTpreciohabKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTpreciohabKeyReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTpreciohabKeyReleased
-
-    private void jTpreciohabKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTpreciohabKeyTyped
-        char val = evt.getKeyChar();
-        if((val < '0' || val > '9') && (val!='.')){ 
-            evt.consume();
-        }
-    }//GEN-LAST:event_jTpreciohabKeyTyped
-
     private void btnfinalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnfinalActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnfinalActionPerformed
@@ -394,6 +379,21 @@ public class Regis_hab extends javax.swing.JDialog {
     private void btninicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btninicioActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btninicioActionPerformed
+
+    private void jTpreciohabKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTpreciohabKeyTyped
+        char val = evt.getKeyChar();
+        if((val < '0' || val > '9') && (val!='.')){
+            evt.consume();
+        }
+    }//GEN-LAST:event_jTpreciohabKeyTyped
+
+    private void jTpreciohabKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTpreciohabKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTpreciohabKeyReleased
+
+    private void jTpreciohabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTpreciohabActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTpreciohabActionPerformed
 
     /**
      * @param args the command line arguments
@@ -442,8 +442,8 @@ public class Regis_hab extends javax.swing.JDialog {
     public newscomponents.RSButtonIcon_new btnantes;
     public newscomponents.RSButtonIcon_new btncancelar;
     public newscomponents.RSButtonIcon_new btnfinal;
-    public newscomponents.RSButtonIcon_new btnguardar;
     public newscomponents.RSButtonIcon_new btninicio;
+    public newscomponents.RSButtonIcon_new btninsertar;
     public RSMaterialComponent.RSComboBox cbTipo;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -455,9 +455,9 @@ public class Regis_hab extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTNumerohab;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextField jTpreciohab;
+    public javax.swing.JTextField jTNumerohab;
+    public javax.swing.JTextField jTpreciohab;
     public javax.swing.JLabel lbIdHab;
+    public javax.swing.JTextArea taDescripcion;
     // End of variables declaration//GEN-END:variables
 }
