@@ -49,7 +49,7 @@ public class Insert_antes extends javax.swing.JDialog {
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
         btnantes.setBackground(new java.awt.Color(61, 137, 248));
-        btnantes.setText("Insertar antes de");
+        btnantes.setText("Insertar antes");
         btnantes.setFocusPainted(false);
         btnantes.setHideActionText(true);
         btnantes.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
