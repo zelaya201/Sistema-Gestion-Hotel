@@ -286,6 +286,57 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                     DesktopNotify.showDesktopMessage("Campos vacíos", "Por favor rellene todos los campos.", DesktopNotify.INFORMATION, 10000);
                 }
             }
+        }else if (e.getActionCommand().equals("InsertarAntesTrue")) {
+            if (vistaOn.equals(("nuevaHabitacion"))) {
+
+                if (!registrarHab.jTNumerohab.getText().isEmpty() && !registrarHab.jTpreciohab.getText().isEmpty()
+                        && registrarHab.cbTipo.getSelectedIndex() > 0 && !registrarHab.taDescripcion.getText().isEmpty() && insertAntes.cbHab.getSelectedIndex() > 0) {
+                    ListaCircularDoble<Habitacion> existe = habitacionDao.selectAllTo("num_habitacion", registrarHab.jTNumerohab.getText());
+                    
+                    if (existe.isEmpty()) {
+                        
+                        if (registrarHab.cbTipo.getSelectedIndex() > 0) {
+                            String v[] = registrarHab.cbTipo.getSelectedItem().toString().split(". ");                           
+                            
+                            ListaCircularDoble<Tipo_Habitacion> tipos = tipoHabitacionDao.selectId(Integer.parseInt(v[0]));
+                            tipoHabitacion = tipos.toArrayAsc().get(0);
+                        }
+                        
+                        //registrarHab.lbIdHab.getText()
+                        String h[] = insertAntes.cbHab.getSelectedItem().toString().split(". ");
+                        Habitacion hab = new Habitacion();
+                        hab.setNum_habitacion(Integer.parseInt(h[0]));
+
+                        Habitacion referencia = (Habitacion) habitaciones.buscar(hab).getDato();
+                        System.out.println(referencia.getDescr_habitacion());
+                    
+                        Habitacion obj = new Habitacion("ANT0" + this.habitaciones.toArrayAsc().size(), Integer.parseInt(registrarHab.jTNumerohab.getText()), 
+                                                        registrarHab.taDescripcion.getText(), Double.parseDouble(registrarHab.jTpreciohab.getText()), 
+                                                        1, "DISPONIBLE", new Hotel(1), new Tipo_Habitacion(tipoHabitacion.getId_tipo()));
+                        
+                        if (habitacionDao.insert(obj)) {
+                            this.habitaciones.insertarAntes(obj, referencia);
+                            llenarFichero();
+                            DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                            DesktopNotify.showDesktopMessage("Habitación registrada", "La habitación ha sido registrada correctamente.", DesktopNotify.INFORMATION, 8000);
+                        }else {
+                            DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                            DesktopNotify.showDesktopMessage("ERROR", "Ha ocurrido un error al registrar la habitación.", DesktopNotify.INFORMATION, 10000);
+                        }
+                        registrarHab.dispose();
+                        insertAntes.dispose();
+                        subModal = "";
+                        vistaOn = "";
+                    }else {
+                        DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                        DesktopNotify.showDesktopMessage("Habitación ya existe.", "La habitación ha registrar ya existe.", DesktopNotify.INFORMATION, 10000);
+                    }
+                    mostrarDatos(vista.tbregishab);
+                }else {
+                    DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                    DesktopNotify.showDesktopMessage("Campos vacíos", "Por favor rellene todos los campos.", DesktopNotify.INFORMATION, 10000);
+                }
+            }
         }
 
     }
@@ -359,7 +410,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             insertAntes.cbHab.addItem("Seleccionar habitación");
             
             for(Habitacion x : habitaciones.toArrayAsc()){
-                insertAntes.cbHab.addItem(x.getId_habitacion() + " - " + x.getTipoH().getNombre_tipo());
+                insertAntes.cbHab.addItem(x.getNum_habitacion() + ". " + x.getId_habitacion() + " - " + x.getTipoH().getNombre_tipo());
             }
         }else{
             registrarHab.cbTipo.setEnabled(true);
@@ -531,6 +582,15 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             }
         }
         
+        if (btn.getActionCommand().equals("InsertarAntesTrue")) {
+            try {
+                eventosBotones(btn);
+            } catch (IOException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     @Override
