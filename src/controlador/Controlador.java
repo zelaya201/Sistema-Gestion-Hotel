@@ -15,7 +15,12 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import javax.swing.JFileChooser;
 import utilidades.ExportPDF;
@@ -41,6 +46,7 @@ import utilidades.CodigoRecursivo;
 import utilidades.ImgTabla;
 import utilidades.ListaCircularDoble;
 import utilidades.ListaSimple;
+import vistas.main.Insert_antes;
 import vistas.main.Regis_hab;
 import vistas.main.Vista_hab;
 
@@ -51,12 +57,14 @@ import vistas.main.Vista_hab;
 public class Controlador implements ActionListener, MouseListener, KeyListener, ItemListener {
 
     DefaultTableModel modelo;
+    private ListaCircularDoble<Habitacion> habitaciones;
     
     String principalOn = "";
     String vistaOn = "";
 
     private Vista_hab vista;
     private Regis_hab registrarHab;
+    private Insert_antes insertAntes;
 
     /* HOTEL */
     HotelDao daoHotel = new HotelDao();
@@ -73,21 +81,27 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
 
     public Controlador(Vista_hab vista) throws SQLException {
         this.vista = vista;
+        habitaciones = new ListaCircularDoble();
+        llenarListaCircular();
         mostrarVista("habitacion");
     }
 
     public void mostrarVista(String str) throws SQLException {
         if (str.equals("habitacion")) {
             vista.setControlador(this);
-            vista.iniciar();
             principalOn = "vistaHabitacion";
+            vista.iniciar();
             mostrarDatos(vista.tbregishab);
         } else if (str.equals("VistaRegistrarhab")) {
             registrarHab = new Regis_hab(new JFrame(), true);
             registrarHab.setControlador(this);
             llenarComboBox();
-            registrarHab.iniciar();
             vistaOn = "nuevaHabitacion";
+            registrarHab.iniciar();
+        } else if(str.equals("selectHabitacion")){
+            insertAntes = new Insert_antes(new JFrame(), true);
+            insertAntes.setControlador(this);
+            insertAntes.iniciar();
         }
     }
 
@@ -154,12 +168,13 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                             tipoHabitacion = tipos.toArrayAsc().get(0);
                         }
                         
-                        Habitacion obj = new Habitacion(registrarHab.lbIdHab.getText(), Integer.parseInt(registrarHab.jTNumerohab.getText()), 
+                        Habitacion obj = new Habitacion(registrarHab.lbIdHab.getText() + habitaciones.toArrayAsc().size(), Integer.parseInt(registrarHab.jTNumerohab.getText()), 
                                                         registrarHab.taDescripcion.getText(), Double.parseDouble(registrarHab.jTpreciohab.getText()), 
                                                         1, "DISPONIBLE", new Hotel(1), new Tipo_Habitacion(tipoHabitacion.getId_tipo()));
                         
                         if (habitacionDao.insert(obj)) {
-                            
+                            habitaciones.insertar(obj);
+                            llenarFichero();
                             DesktopNotify.setDefaultTheme(NotifyTheme.Green);
                             DesktopNotify.showDesktopMessage("Habitación registrada", "La habitación ha sido registrada correctamente.", DesktopNotify.INFORMATION, 8000);
                         }else {
@@ -180,7 +195,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             }
         }else if (e.getActionCommand().equals("InsertarInicio")) {
             if (vistaOn.equals(("nuevaHabitacion"))) {
-                ListaCircularDoble<Habitacion> habitaciones = habitacionDao.selectAll();
+
                 if (!registrarHab.jTNumerohab.getText().isEmpty() && !registrarHab.jTpreciohab.getText().isEmpty()
                         && registrarHab.cbTipo.getSelectedIndex() > 0 && !registrarHab.taDescripcion.getText().isEmpty()) {
                     ListaCircularDoble<Habitacion> existe = habitacionDao.selectAllTo("num_habitacion", registrarHab.jTNumerohab.getText());
@@ -196,12 +211,15 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                         }
                         //registrarHab.lbIdHab.getText()
                     
-                        Habitacion obj = new Habitacion("MAT001", Integer.parseInt(registrarHab.jTNumerohab.getText()), 
+                        Habitacion obj = new Habitacion("MAT00" + this.habitaciones.toArrayAsc().size(), Integer.parseInt(registrarHab.jTNumerohab.getText()), 
                                                         registrarHab.taDescripcion.getText(), Double.parseDouble(registrarHab.jTpreciohab.getText()), 
                                                         1, "DISPONIBLE", new Hotel(1), new Tipo_Habitacion(tipoHabitacion.getId_tipo()));
                         
+                        
+                        
                         if (habitacionDao.insert(obj)) {
-                            habitaciones.insertarInicio(obj);
+                            this.habitaciones.insertarInicio(obj);
+                            llenarFichero();
                             DesktopNotify.setDefaultTheme(NotifyTheme.Green);
                             DesktopNotify.showDesktopMessage("Habitación registrada", "La habitación ha sido registrada correctamente.", DesktopNotify.INFORMATION, 8000);
                         }else {
@@ -214,7 +232,52 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                         DesktopNotify.setDefaultTheme(NotifyTheme.Red);
                         DesktopNotify.showDesktopMessage("Habitación ya existe.", "La habitación ha registrar ya existe.", DesktopNotify.INFORMATION, 10000);
                     }
-                    mostrarBusqueda(habitaciones.toArrayAsc(), vista.tbregishab);
+                    mostrarDatos(vista.tbregishab);
+                }else {
+                    DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                    DesktopNotify.showDesktopMessage("Campos vacíos", "Por favor rellene todos los campos.", DesktopNotify.INFORMATION, 10000);
+                }
+            }
+        }else if (e.getActionCommand().equals("InsertarFinal")) {
+            if (vistaOn.equals(("nuevaHabitacion"))) {
+
+                if (!registrarHab.jTNumerohab.getText().isEmpty() && !registrarHab.jTpreciohab.getText().isEmpty()
+                        && registrarHab.cbTipo.getSelectedIndex() > 0 && !registrarHab.taDescripcion.getText().isEmpty()) {
+                    ListaCircularDoble<Habitacion> existe = habitacionDao.selectAllTo("num_habitacion", registrarHab.jTNumerohab.getText());
+                    
+                    if (existe.isEmpty()) {                        
+                        if (registrarHab.cbTipo.getSelectedIndex() > 0) {
+                            String v[] = registrarHab.cbTipo.getSelectedItem().toString().split(". ");
+                            
+                            //System.out.println(v[0]);
+                            
+                            ListaCircularDoble<Tipo_Habitacion> tipos = tipoHabitacionDao.selectId(Integer.parseInt(v[0]));
+                            tipoHabitacion = tipos.toArrayAsc().get(0);
+                        }
+                        //registrarHab.lbIdHab.getText()
+                    
+                        Habitacion obj = new Habitacion("FIN00" + this.habitaciones.toArrayAsc().size(), Integer.parseInt(registrarHab.jTNumerohab.getText()), 
+                                                        registrarHab.taDescripcion.getText(), Double.parseDouble(registrarHab.jTpreciohab.getText()), 
+                                                        1, "DISPONIBLE", new Hotel(1), new Tipo_Habitacion(tipoHabitacion.getId_tipo()));
+                        
+                        
+                        
+                        if (habitacionDao.insert(obj)) {
+                            this.habitaciones.insertarFinal(obj);
+                            llenarFichero();
+                            DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                            DesktopNotify.showDesktopMessage("Habitación registrada", "La habitación ha sido registrada correctamente.", DesktopNotify.INFORMATION, 8000);
+                        }else {
+                            DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                            DesktopNotify.showDesktopMessage("ERROR", "Ha ocurrido un error al registrar la habitación.", DesktopNotify.INFORMATION, 10000);
+                        }
+                        registrarHab.dispose();
+                        vistaOn = "";
+                    }else {
+                        DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                        DesktopNotify.showDesktopMessage("Habitación ya existe.", "La habitación ha registrar ya existe.", DesktopNotify.INFORMATION, 10000);
+                    }
+                    mostrarDatos(vista.tbregishab);
                 }else {
                     DesktopNotify.setDefaultTheme(NotifyTheme.Red);
                     DesktopNotify.showDesktopMessage("Campos vacíos", "Por favor rellene todos los campos.", DesktopNotify.INFORMATION, 10000);
@@ -225,39 +288,32 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
     }
 
     public void mostrarDatos(JTable tabla) {
-        try {
-            DefaultTableCellRenderer diseño = (DefaultTableCellRenderer) tabla.getCellRenderer(0, 0); //Obtener diseño de la tabla
-            modelo = (DefaultTableModel) tabla.getModel();
-            modelo.setRowCount(0);
-            tabla.setDefaultRenderer(Object.class, new ImgTabla()); //Renderizar para poner las img
-
-            DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
-            simbolos.setDecimalSeparator('.');
-            DecimalFormat formateador = new DecimalFormat("0.00", simbolos);
-
-            tabla.getColumnModel().getColumn(0).setCellRenderer(diseño); //Mantener diseño de la tabla por columns
-            tabla.getColumnModel().getColumn(1).setCellRenderer(diseño);
-            tabla.getColumnModel().getColumn(2).setCellRenderer(diseño);
-            tabla.getColumnModel().getColumn(3).setCellRenderer(diseño);
-            tabla.getColumnModel().getColumn(4).setCellRenderer(diseño);
-            tabla.getColumnModel().getColumn(5).setCellRenderer(diseño);
-
-            if (principalOn.equals("vistaHabitacion")) {
-                ListaCircularDoble<Habitacion> habitaciones = habitacionDao.selectAll();
-
-                for (Habitacion x : habitaciones.toArrayAsc()) {
-                    if (x.getEstado_habitacion() == 1) {
-                        ImageIcon img_delete = new ImageIcon(getClass().getResource("/img/delete.png"));
-                        JLabel lbImg_delete = new JLabel(new ImageIcon(img_delete.getImage()));
-
-                        modelo.addRow(new Object[]{x.getId_habitacion(), x.getNum_habitacion(), x.getDescr_habitacion(), "$ " + formateador.format(x.getPrecio_habitacion()), x.getTipoH().getNombre_tipo(), x.getDispo_habitacion(), lbImg_delete});
-                    }
+     
+        DefaultTableCellRenderer diseño = (DefaultTableCellRenderer) tabla.getCellRenderer(0, 0); //Obtener diseño de la tabla
+        modelo = (DefaultTableModel) tabla.getModel();
+        modelo.setRowCount(0);
+        tabla.setDefaultRenderer(Object.class, new ImgTabla()); //Renderizar para poner las img
+        DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
+        simbolos.setDecimalSeparator('.');
+        DecimalFormat formateador = new DecimalFormat("0.00", simbolos);
+        tabla.getColumnModel().getColumn(0).setCellRenderer(diseño); //Mantener diseño de la tabla por columns
+        tabla.getColumnModel().getColumn(1).setCellRenderer(diseño);
+        tabla.getColumnModel().getColumn(2).setCellRenderer(diseño);
+        tabla.getColumnModel().getColumn(3).setCellRenderer(diseño);
+        tabla.getColumnModel().getColumn(4).setCellRenderer(diseño);
+        tabla.getColumnModel().getColumn(5).setCellRenderer(diseño);
+        if (principalOn.equals("vistaHabitacion")) {
+            
+            for (Habitacion x : habitaciones.toArrayAsc()) {
+                if (x.getEstado_habitacion() == 1) {
+                    ImageIcon img_delete = new ImageIcon(getClass().getResource("/img/delete.png"));
+                    JLabel lbImg_delete = new JLabel(new ImageIcon(img_delete.getImage()));
+                    
+                    modelo.addRow(new Object[]{x.getId_habitacion(), x.getNum_habitacion(), x.getDescr_habitacion(), "$ " + formateador.format(x.getPrecio_habitacion()), x.getTipoH().getNombre_tipo(), x.getDispo_habitacion(), lbImg_delete});
                 }
-
-                tabla.setModel(modelo);
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            
+            tabla.setModel(modelo);
         }
     }
 
@@ -305,6 +361,64 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
         }
 
     }
+    
+    public void llenarListaCircular() throws SQLException{
+        ListaCircularDoble<Habitacion> aux = habitacionDao.selectAll();
+        int iterador = 0;
+        String linea[] = new String[aux.toArrayAsc().size() + 1];
+        
+        try{
+            BufferedReader ficheroEntrada = new BufferedReader(
+            new FileReader(new File("ficheroHabitaciones.txt")));
+
+            while (iterador < aux.toArrayAsc().size()) {
+                linea[iterador] = ficheroEntrada.readLine();
+                iterador++;
+            }
+ 
+            ficheroEntrada.close();
+        }catch (IOException errorDeFichero){
+            System.out.println(errorDeFichero);
+        }
+        
+        iterador = 0;
+        
+        for(int i = 0; i < aux.toArrayAsc().size(); i++){
+            
+            for(Habitacion x : aux.toArrayAsc()){
+                if(habitaciones.buscar(x) == null){
+
+                    String[] partes = linea[iterador].split(",");
+
+                    if(x.getId_habitacion().equals(partes[0])){
+                                                
+                        habitaciones.insertarFinal(x);
+                        iterador++;
+                    }  
+                }
+            }
+        }
+      
+    }
+    
+    public void llenarFichero(){
+        int iterador = 0;
+        
+        try{
+            BufferedWriter ficheroSalida = new BufferedWriter(
+            new FileWriter(new File("ficheroHabitaciones.txt")));
+            
+            for(Habitacion x : habitaciones.toArrayAsc()){
+                ficheroSalida.write(x.getId_habitacion() + "," + iterador);
+                ficheroSalida.newLine();
+                iterador++;
+            }
+
+            ficheroSalida.close();
+        }catch (IOException errorDeFichero){
+            
+        }
+    }
 
     public void generandoCodigo() {
         registrarHab.cbTipo.addItemListener(
@@ -328,6 +442,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
         }
         );
     }
+   
 
     @Override
     public void actionPerformed(ActionEvent btn) {
@@ -384,7 +499,25 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                 Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
+        
+        if (btn.getActionCommand().equals("InsertarFinal")) {
+            try {
+                eventosBotones(btn);
+            } catch (IOException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        if (btn.getActionCommand().equals("InsertarAntes")) {
+            try {
+                mostrarVista("selectHabitacion");
+            } catch (SQLException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
     }
 
     @Override
@@ -407,10 +540,12 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                     }
 
                     if (habitacionSelected != null) {
-
+                        
                         if (habitacionDao.delete(habitacionSelected)) {
+                            habitaciones.eliminar(habitacionSelected);
                             DesktopNotify.setDefaultTheme(NotifyTheme.Red);
                             DesktopNotify.showDesktopMessage("Habitación eliminada", "La habitación ha sido eliminada exitosamente.", DesktopNotify.INFORMATION, 10000);
+                            llenarFichero();
                             mostrarDatos(vista.tbregishab);
                         }
 

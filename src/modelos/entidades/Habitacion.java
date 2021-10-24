@@ -119,6 +119,7 @@ public class Habitacion implements Comparable<Habitacion>{
             return 0;
         }
     }
+    
     @Override
     public String toString() {
         return id_habitacion + " --- " + num_habitacion + " --- " + descr_habitacion + " --- " +
