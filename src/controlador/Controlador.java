@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -51,7 +52,7 @@ import vistas.main.Vista_hab;
 public class Controlador implements ActionListener, MouseListener, KeyListener, ItemListener {
 
     DefaultTableModel modelo;
-    
+
     String principalOn = "";
     String vistaOn = "";
 
@@ -69,7 +70,6 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
     /* TIPO */
     TipoHabitacionDao tipoHabitacionDao = new TipoHabitacionDao();
     Tipo_Habitacion tipoHabitacion = new Tipo_Habitacion();
-    
 
     public Controlador(Vista_hab vista) throws SQLException {
         this.vista = vista;
@@ -86,8 +86,9 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             registrarHab = new Regis_hab(new JFrame(), true);
             registrarHab.setControlador(this);
             llenarComboBox();
-            registrarHab.iniciar();
+            generandoCodigo();
             vistaOn = "nuevaHabitacion";
+            registrarHab.iniciar();
         }
     }
 
@@ -138,84 +139,83 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             } catch (SQLException ex) {
                 Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }else if (e.getActionCommand().equals("Insertar")) {
+        } else if (e.getActionCommand().equals("Insertar")) {
             if (vistaOn.equals(("nuevaHabitacion"))) {
                 if (!registrarHab.jTNumerohab.getText().isEmpty() && !registrarHab.jTpreciohab.getText().isEmpty()
                         && registrarHab.cbTipo.getSelectedIndex() > 0 && !registrarHab.taDescripcion.getText().isEmpty()) {
                     ListaCircularDoble<Habitacion> existe = habitacionDao.selectAllTo("num_habitacion", registrarHab.jTNumerohab.getText());
-                    
-                    if (existe.isEmpty()) {                        
+                    ListaCircularDoble<Habitacion> existeID = habitacionDao.selectAllTo("id_habitacion", registrarHab.lbIdHab.getText());
+                    if (existe.isEmpty() && existeID.isEmpty()) {
                         if (registrarHab.cbTipo.getSelectedIndex() > 0) {
                             String v[] = registrarHab.cbTipo.getSelectedItem().toString().split(". ");
-                            
+
                             System.out.println(v[0]);
-                            
+
                             ListaCircularDoble<Tipo_Habitacion> tipos = tipoHabitacionDao.selectId(Integer.parseInt(v[0]));
                             tipoHabitacion = tipos.toArrayAsc().get(0);
                         }
-                        
-                        Habitacion obj = new Habitacion(registrarHab.lbIdHab.getText(), Integer.parseInt(registrarHab.jTNumerohab.getText()), 
-                                                        registrarHab.taDescripcion.getText(), Double.parseDouble(registrarHab.jTpreciohab.getText()), 
-                                                        1, "DISPONIBLE", new Hotel(1), new Tipo_Habitacion(tipoHabitacion.getId_tipo()));
-                        
+
+                        Habitacion obj = new Habitacion(registrarHab.lbIdHab.getText(), Integer.parseInt(registrarHab.jTNumerohab.getText()),
+                                registrarHab.taDescripcion.getText(), Double.parseDouble(registrarHab.jTpreciohab.getText()),
+                                1, "DISPONIBLE", new Hotel(1), new Tipo_Habitacion(tipoHabitacion.getId_tipo()));
+
                         if (habitacionDao.insert(obj)) {
-                            
+
                             DesktopNotify.setDefaultTheme(NotifyTheme.Green);
                             DesktopNotify.showDesktopMessage("Habitación registrada", "La habitación ha sido registrada correctamente.", DesktopNotify.INFORMATION, 8000);
-                        }else {
+                        } else {
                             DesktopNotify.setDefaultTheme(NotifyTheme.Red);
                             DesktopNotify.showDesktopMessage("ERROR", "Ha ocurrido un error al registrar la habitación.", DesktopNotify.INFORMATION, 10000);
                         }
                         registrarHab.dispose();
                         vistaOn = "";
-                    }else {
+                    } else {
                         DesktopNotify.setDefaultTheme(NotifyTheme.Red);
-                        DesktopNotify.showDesktopMessage("Habitación ya existe.", "La habitación ha registrar ya existe.", DesktopNotify.INFORMATION, 10000);
+                        DesktopNotify.showDesktopMessage("Habitación o su ID ya existe.", "La habitación o ID ha registrar ya existe.", DesktopNotify.INFORMATION, 10000);
                     }
                     mostrarDatos(vista.tbregishab);
-                }else {
+                } else {
                     DesktopNotify.setDefaultTheme(NotifyTheme.Red);
                     DesktopNotify.showDesktopMessage("Campos vacíos", "Por favor rellene todos los campos.", DesktopNotify.INFORMATION, 10000);
                 }
             }
-        }else if (e.getActionCommand().equals("InsertarInicio")) {
+        } else if (e.getActionCommand().equals("InsertarInicio")) {
             if (vistaOn.equals(("nuevaHabitacion"))) {
                 ListaCircularDoble<Habitacion> habitaciones = habitacionDao.selectAll();
                 if (!registrarHab.jTNumerohab.getText().isEmpty() && !registrarHab.jTpreciohab.getText().isEmpty()
                         && registrarHab.cbTipo.getSelectedIndex() > 0 && !registrarHab.taDescripcion.getText().isEmpty()) {
                     ListaCircularDoble<Habitacion> existe = habitacionDao.selectAllTo("num_habitacion", registrarHab.jTNumerohab.getText());
-                    
-                    if (existe.isEmpty()) {                        
+                    ListaCircularDoble<Habitacion> existeID = habitacionDao.selectAllTo("id_habitacion", registrarHab.lbIdHab.getText());
+                    if (existe.isEmpty() && existeID.isEmpty()) {
                         if (registrarHab.cbTipo.getSelectedIndex() > 0) {
                             String v[] = registrarHab.cbTipo.getSelectedItem().toString().split(". ");
-                            
+
                             //System.out.println(v[0]);
-                            
                             ListaCircularDoble<Tipo_Habitacion> tipos = tipoHabitacionDao.selectId(Integer.parseInt(v[0]));
                             tipoHabitacion = tipos.toArrayAsc().get(0);
                         }
                         //registrarHab.lbIdHab.getText()
-                    
-                        Habitacion obj = new Habitacion("MAT001", Integer.parseInt(registrarHab.jTNumerohab.getText()), 
-                                                        registrarHab.taDescripcion.getText(), Double.parseDouble(registrarHab.jTpreciohab.getText()), 
-                                                        1, "DISPONIBLE", new Hotel(1), new Tipo_Habitacion(tipoHabitacion.getId_tipo()));
-                        
+
+                        Habitacion obj = new Habitacion(this.registrarHab.lbIdHab.getText(), Integer.parseInt(registrarHab.jTNumerohab.getText()),
+                                registrarHab.taDescripcion.getText(), Double.parseDouble(registrarHab.jTpreciohab.getText()),
+                                1, "DISPONIBLE", new Hotel(1), new Tipo_Habitacion(tipoHabitacion.getId_tipo()));
+
                         if (habitacionDao.insert(obj)) {
                             habitaciones.insertarInicio(obj);
                             DesktopNotify.setDefaultTheme(NotifyTheme.Green);
-                            DesktopNotify.showDesktopMessage("Habitación registrada", "La habitación ha sido registrada correctamente.", DesktopNotify.INFORMATION, 8000);
-                        }else {
+                            DesktopNotify.showDesktopMessage("Habitación o ID ya registrada", "La habitación o ID ha sido registrada correctamente.", DesktopNotify.INFORMATION, 8000);
+                        } else {
                             DesktopNotify.setDefaultTheme(NotifyTheme.Red);
                             DesktopNotify.showDesktopMessage("ERROR", "Ha ocurrido un error al registrar la habitación.", DesktopNotify.INFORMATION, 10000);
                         }
                         registrarHab.dispose();
                         vistaOn = "";
-                    }else {
+                    } else {
                         DesktopNotify.setDefaultTheme(NotifyTheme.Red);
                         DesktopNotify.showDesktopMessage("Habitación ya existe.", "La habitación ha registrar ya existe.", DesktopNotify.INFORMATION, 10000);
                     }
                     mostrarBusqueda(habitaciones.toArrayAsc(), vista.tbregishab);
-                }else {
+                } else {
                     DesktopNotify.setDefaultTheme(NotifyTheme.Red);
                     DesktopNotify.showDesktopMessage("Campos vacíos", "Por favor rellene todos los campos.", DesktopNotify.INFORMATION, 10000);
                 }
@@ -307,20 +307,16 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
     }
 
     public void generandoCodigo() {
+        int r = this.modelo.getRowCount();
         registrarHab.cbTipo.addItemListener(
                 new ItemListener() {
-            int i = 0;
+            int i = r;
 
             @Override
-            public void itemStateChanged(ItemEvent e) { // Numeros correlativos... IMPORTANTE
+            public void itemStateChanged(ItemEvent e) {
 
-                if (e.getStateChange() == 1 && !e.getItem().equals("Seleccionar")) {
-                    String ant = e.getItem().toString();
-                    if (e.getStateChange() == 1 && e.getItem().equals(ant.substring(3, 6))) {
-                        registrarHab.lbIdHab.setText(CodigoRecursivo.generarCodigo(e.getItem().toString().substring(3, 6), i++));
-                    }
-                    registrarHab.lbIdHab.setText(CodigoRecursivo.generarCodigo(e.getItem().toString().substring(3, 6), i++));
-
+                if (e.getStateChange() == ItemEvent.SELECTED && !e.getItem().equals("Seleccionar")) {
+                    registrarHab.lbIdHab.setText(CodigoRecursivo.generarCodigo(e.getItem().toString().substring(3, 6), i));
                 } else {
                     registrarHab.lbIdHab.setText(null);
                 }
@@ -364,7 +360,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             }
 
         }
-        
+
         if (btn.getActionCommand().equals("Insertar")) {
             try {
                 eventosBotones(btn);
@@ -374,7 +370,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                 Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
         if (btn.getActionCommand().equals("InsertarInicio")) {
             try {
                 eventosBotones(btn);
