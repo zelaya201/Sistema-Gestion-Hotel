@@ -33,7 +33,6 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -99,6 +98,13 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             llenarComboBox();
             generandoCodigo();
             vistaOn = "nuevaHabitacion";
+            
+            if(habitaciones.isEmpty()){
+               registrarHab.btnantes.setEnabled(false); 
+               registrarHab.btnfinal.setEnabled(false);
+               registrarHab.btninicio.setEnabled(false);
+            }
+            
             registrarHab.iniciar();
         } else if(str.equals("selectHabitacion")){
             insertAntes = new Insert_antes(new JFrame(), true);
@@ -125,7 +131,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
 
                 new ExportPDF(path, habitaciones, hotel.toArrayAsc().get(0));
                 DesktopNotify.setDefaultTheme(NotifyTheme.Green);
-                DesktopNotify.showDesktopMessage("Reporte generado", "Ruta: " + path, DesktopNotify.INFORMATION, 8000);
+                DesktopNotify.showDesktopMessage("Reporte generado", "Ruta: " + path, DesktopNotify.INFORMATION, 10000);
             }
 
         } else if (e.getActionCommand().equals("Buscar")) {
@@ -224,7 +230,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                             this.habitaciones.insertarInicio(obj);
                             llenarFichero();
                             DesktopNotify.setDefaultTheme(NotifyTheme.Green);
-                            DesktopNotify.showDesktopMessage("Habitación o ID ya registrada", "La habitación o ID ha sido registrada correctamente.", DesktopNotify.INFORMATION, 8000);
+                            DesktopNotify.showDesktopMessage("Habitación registrada", "La habitación ha sido registrada correctamente.", DesktopNotify.INFORMATION, 8000);
                         } else {
                             DesktopNotify.setDefaultTheme(NotifyTheme.Red);
                             DesktopNotify.showDesktopMessage("ERROR", "Ha ocurrido un error al registrar la habitación.", DesktopNotify.INFORMATION, 10000);
@@ -310,7 +316,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                         Habitacion referencia = (Habitacion) habitaciones.buscar(hab).getDato();
                         System.out.println(referencia.getDescr_habitacion());
                     
-                        Habitacion obj = new Habitacion("ANT0" + this.habitaciones.toArrayAsc().size(), Integer.parseInt(registrarHab.jTNumerohab.getText()), 
+                        Habitacion obj = new Habitacion(registrarHab.lbIdHab.getText(), Integer.parseInt(registrarHab.jTNumerohab.getText()), 
                                                         registrarHab.taDescripcion.getText(), Double.parseDouble(registrarHab.jTpreciohab.getText()), 
                                                         1, "DISPONIBLE", new Hotel(1), new Tipo_Habitacion(tipoHabitacion.getId_tipo()));
                         
