@@ -133,6 +133,8 @@ public class ListaCircularDoble <T>{
             ultimo.setSiguiente(nuevo);
             
             nuevo.setSiguiente(lista);
+        }else{
+            insertar(dato);
         }
     }
     
