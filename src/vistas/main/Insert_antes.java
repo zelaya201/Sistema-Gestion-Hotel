@@ -42,7 +42,7 @@ public class Insert_antes extends javax.swing.JDialog {
 
         jPanel1 = new javax.swing.JPanel();
         btnantes = new newscomponents.RSButtonIcon_new();
-        cbTipo = new RSMaterialComponent.RSComboBox();
+        cbHab = new RSMaterialComponent.RSComboBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -60,14 +60,14 @@ public class Insert_antes extends javax.swing.JDialog {
             }
         });
 
-        cbTipo.setForeground(new java.awt.Color(51, 51, 51));
-        cbTipo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccionar habitación" }));
-        cbTipo.setColorArrow(new java.awt.Color(58, 66, 226));
-        cbTipo.setColorBorde(new java.awt.Color(204, 204, 204));
-        cbTipo.setColorFondo(new java.awt.Color(255, 255, 255));
-        cbTipo.setColorSeleccion(new java.awt.Color(255, 255, 255));
-        cbTipo.setColorSeleccionTXT(new java.awt.Color(58, 66, 226));
-        cbTipo.setConBorde(true);
+        cbHab.setForeground(new java.awt.Color(51, 51, 51));
+        cbHab.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccionar habitación" }));
+        cbHab.setColorArrow(new java.awt.Color(58, 66, 226));
+        cbHab.setColorBorde(new java.awt.Color(204, 204, 204));
+        cbHab.setColorFondo(new java.awt.Color(255, 255, 255));
+        cbHab.setColorSeleccion(new java.awt.Color(255, 255, 255));
+        cbHab.setColorSeleccionTXT(new java.awt.Color(58, 66, 226));
+        cbHab.setConBorde(true);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -79,14 +79,14 @@ public class Insert_antes extends javax.swing.JDialog {
                 .addGap(174, 174, 174))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(18, 18, 18)
-                .addComponent(cbTipo, javax.swing.GroupLayout.PREFERRED_SIZE, 480, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cbHab, javax.swing.GroupLayout.PREFERRED_SIZE, 480, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(21, 21, 21)
-                .addComponent(cbTipo, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cbHab, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnantes, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(13, Short.MAX_VALUE))
@@ -154,7 +154,7 @@ public class Insert_antes extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public newscomponents.RSButtonIcon_new btnantes;
-    public RSMaterialComponent.RSComboBox cbTipo;
+    public RSMaterialComponent.RSComboBox cbHab;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }

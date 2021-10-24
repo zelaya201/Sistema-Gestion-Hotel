@@ -61,6 +61,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
     
     String principalOn = "";
     String vistaOn = "";
+    String subModal = "";
 
     private Vista_hab vista;
     private Regis_hab registrarHab;
@@ -101,6 +102,8 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
         } else if(str.equals("selectHabitacion")){
             insertAntes = new Insert_antes(new JFrame(), true);
             insertAntes.setControlador(this);
+            subModal = "selectHabitacion";
+            llenarComboBox();
             insertAntes.iniciar();
         }
     }
@@ -168,7 +171,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                             tipoHabitacion = tipos.toArrayAsc().get(0);
                         }
                         
-                        Habitacion obj = new Habitacion(registrarHab.lbIdHab.getText() + habitaciones.toArrayAsc().size(), Integer.parseInt(registrarHab.jTNumerohab.getText()), 
+                        Habitacion obj = new Habitacion("NORM" + habitaciones.toArrayAsc().size(), Integer.parseInt(registrarHab.jTNumerohab.getText()), 
                                                         registrarHab.taDescripcion.getText(), Double.parseDouble(registrarHab.jTpreciohab.getText()), 
                                                         1, "DISPONIBLE", new Hotel(1), new Tipo_Habitacion(tipoHabitacion.getId_tipo()));
                         
@@ -211,7 +214,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                         }
                         //registrarHab.lbIdHab.getText()
                     
-                        Habitacion obj = new Habitacion("MAT00" + this.habitaciones.toArrayAsc().size(), Integer.parseInt(registrarHab.jTNumerohab.getText()), 
+                        Habitacion obj = new Habitacion("MAT0" + this.habitaciones.toArrayAsc().size(), Integer.parseInt(registrarHab.jTNumerohab.getText()), 
                                                         registrarHab.taDescripcion.getText(), Double.parseDouble(registrarHab.jTpreciohab.getText()), 
                                                         1, "DISPONIBLE", new Hotel(1), new Tipo_Habitacion(tipoHabitacion.getId_tipo()));
                         
@@ -256,7 +259,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                         }
                         //registrarHab.lbIdHab.getText()
                     
-                        Habitacion obj = new Habitacion("FIN00" + this.habitaciones.toArrayAsc().size(), Integer.parseInt(registrarHab.jTNumerohab.getText()), 
+                        Habitacion obj = new Habitacion("FIN0" + this.habitaciones.toArrayAsc().size(), Integer.parseInt(registrarHab.jTNumerohab.getText()), 
                                                         registrarHab.taDescripcion.getText(), Double.parseDouble(registrarHab.jTpreciohab.getText()), 
                                                         1, "DISPONIBLE", new Hotel(1), new Tipo_Habitacion(tipoHabitacion.getId_tipo()));
                         
@@ -349,15 +352,25 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
     }
 
     public void llenarComboBox() throws SQLException {
+        
+        if(subModal.equals("selectHabitacion")){
+            insertAntes.cbHab.setEnabled(true);
+            insertAntes.cbHab.removeAllItems();
+            insertAntes.cbHab.addItem("Seleccionar habitación");
+            
+            for(Habitacion x : habitaciones.toArrayAsc()){
+                insertAntes.cbHab.addItem(x.getId_habitacion() + " - " + x.getTipoH().getNombre_tipo());
+            }
+        }else{
+            registrarHab.cbTipo.setEnabled(true);
+            registrarHab.cbTipo.removeAllItems();
+            registrarHab.cbTipo.addItem("Seleccionar");
 
-        registrarHab.cbTipo.setEnabled(true);
-        registrarHab.cbTipo.removeAllItems();
-        registrarHab.cbTipo.addItem("Seleccionar");
+            ListaCircularDoble<Tipo_Habitacion> listTipo = tipoHabitacionDao.selectAll();
 
-        ListaCircularDoble<Tipo_Habitacion> listTipo = tipoHabitacionDao.selectAll();
-
-        for (Tipo_Habitacion x : listTipo.toArrayAsc()) {
-            registrarHab.cbTipo.addItem(x.getId_tipo() + ". " + x.getNombre_tipo() + " | " + x.getCantidad_tipo() + " personas");
+            for (Tipo_Habitacion x : listTipo.toArrayAsc()) {
+                registrarHab.cbTipo.addItem(x.getId_tipo() + ". " + x.getNombre_tipo() + " | " + x.getCantidad_tipo() + " personas");
+            }
         }
 
     }
