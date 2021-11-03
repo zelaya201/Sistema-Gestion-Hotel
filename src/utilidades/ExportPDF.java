@@ -66,7 +66,7 @@ public class ExportPDF {
         
         Paragraph saltoDeLinea = new Paragraph("");
             
-        //Cuerpor del Archivo
+        //Cuerpo del Archivo
         Table habitaciones = new Table(6).useAllAvailableWidth();
         habitaciones.setHorizontalAlignment(HorizontalAlignment.CENTER);
         habitaciones.addHeaderCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).setBackgroundColor(new DeviceRgb(221,221,221)).add(new Paragraph("Id. de Habitación").setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
@@ -91,6 +91,7 @@ public class ExportPDF {
         documento.add(habitaciones);
         documento.close();
         
+        //Creamos el archivo en la ruta especificada
         try {
             File objetofile = new File(ruta);
             Desktop.getDesktop().open(objetofile);

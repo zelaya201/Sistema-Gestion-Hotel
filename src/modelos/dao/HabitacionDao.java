@@ -38,7 +38,7 @@ public class HabitacionDao {
     }
     
     public ListaCircularDoble<Habitacion> selectId(int id) throws SQLException{
-        String sql = "select * from habitacion where id_habitacion=" + id;
+        String sql = "select * from habitacion where num_habitacion=" + id;
         return select(sql);
     } 
     
