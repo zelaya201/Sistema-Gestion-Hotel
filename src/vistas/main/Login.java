@@ -10,7 +10,7 @@ package vistas.main;
  * @author Mario Zelaya
  */
 public class Login extends javax.swing.JFrame {
-
+    String isSelected = null;
     /**
      * Creates new form LoginImg
      */
@@ -35,11 +35,11 @@ public class Login extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        rSTextFieldMaterial1 = new RSMaterialComponent.RSTextFieldMaterial();
-        rSTextFieldMaterial2 = new RSMaterialComponent.RSTextFieldMaterial();
-        rSButtonMaterialShadow1 = new RSMaterialComponent.RSButtonMaterialShadow();
-        rSLabelIcon1 = new RSMaterialComponent.RSLabelIcon();
-        jLabel1 = new javax.swing.JLabel();
+        tfUser = new RSMaterialComponent.RSTextFieldMaterial();
+        btnIngresar = new RSMaterialComponent.RSButtonMaterialShadow();
+        lbIcon = new RSMaterialComponent.RSLabelIcon();
+        lbError = new javax.swing.JLabel();
+        tfPass = new RSMaterialComponent.RSPasswordMaterial();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new java.awt.GridLayout(1, 0));
@@ -82,33 +82,43 @@ public class Login extends javax.swing.JFrame {
         jLabel6.setForeground(new java.awt.Color(87, 87, 87));
         jLabel6.setText("Contraseña");
 
-        rSTextFieldMaterial1.setForeground(new java.awt.Color(110, 110, 110));
-        rSTextFieldMaterial1.setColorMaterial(new java.awt.Color(54, 77, 91));
-        rSTextFieldMaterial1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        rSTextFieldMaterial1.setPlaceholder("Ingrese su usuario");
-        rSTextFieldMaterial1.setSelectionColor(new java.awt.Color(54, 77, 91));
+        tfUser.setForeground(new java.awt.Color(110, 110, 110));
+        tfUser.setColorMaterial(new java.awt.Color(54, 77, 91));
+        tfUser.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        tfUser.setPlaceholder("Ingrese su usuario");
+        tfUser.setSelectionColor(new java.awt.Color(54, 77, 91));
 
-        rSTextFieldMaterial2.setForeground(new java.awt.Color(110, 110, 110));
-        rSTextFieldMaterial2.setColorMaterial(new java.awt.Color(54, 77, 91));
-        rSTextFieldMaterial2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        rSTextFieldMaterial2.setPlaceholder("Ingrese su contraseña");
-        rSTextFieldMaterial2.setSelectionColor(new java.awt.Color(54, 77, 91));
-
-        rSButtonMaterialShadow1.setBackground(new java.awt.Color(241, 123, 55));
-        rSButtonMaterialShadow1.setText("Ingresar");
-        rSButtonMaterialShadow1.setBackgroundHover(new java.awt.Color(241, 110, 48));
-        rSButtonMaterialShadow1.addActionListener(new java.awt.event.ActionListener() {
+        btnIngresar.setBackground(new java.awt.Color(241, 123, 55));
+        btnIngresar.setText("Ingresar");
+        btnIngresar.setBackgroundHover(new java.awt.Color(241, 110, 48));
+        btnIngresar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rSButtonMaterialShadow1ActionPerformed(evt);
+                btnIngresarActionPerformed(evt);
             }
         });
 
-        rSLabelIcon1.setForeground(new java.awt.Color(54, 77, 91));
-        rSLabelIcon1.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.VISIBILITY);
+        lbIcon.setForeground(new java.awt.Color(54, 77, 91));
+        lbIcon.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.VISIBILITY);
+        lbIcon.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lbIconMouseClicked(evt);
+            }
+        });
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(227, 31, 31));
-        jLabel1.setText("Usuario ó contraseña incorrectos");
+        lbError.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        lbError.setForeground(new java.awt.Color(227, 31, 31));
+        lbError.setText("Usuario ó contraseña incorrectos");
+
+        tfPass.setForeground(new java.awt.Color(110, 110, 110));
+        tfPass.setColorMaterial(new java.awt.Color(54, 77, 91));
+        tfPass.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        tfPass.setPlaceholder("Ingrese su contraseña");
+        tfPass.setSelectionColor(new java.awt.Color(54, 77, 91));
+        tfPass.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfPassActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -118,27 +128,29 @@ public class Login extends javax.swing.JFrame {
                 .addGap(20, 20, 20)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lbError, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel5)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addComponent(rSTextFieldMaterial1, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(0, 1, Short.MAX_VALUE))
-                                    .addComponent(rSTextFieldMaterial2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(rSLabelIcon1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addComponent(tfUser, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE))
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(tfPass, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGap(7, 7, 7)))
+                                .addComponent(lbIcon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel6)
+                                    .addComponent(jLabel5))
+                                .addGap(0, 0, Short.MAX_VALUE)))
                         .addContainerGap())))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(rSButtonMaterialShadow1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnIngresar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(82, 82, 82))
         );
         jPanel2Layout.setVerticalGroup(
@@ -149,17 +161,17 @@ public class Login extends javax.swing.JFrame {
                 .addGap(24, 24, 24)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(rSTextFieldMaterial1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(tfUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(rSLabelIcon1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rSTextFieldMaterial2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbIcon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tfPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
+                .addComponent(lbError, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 93, Short.MAX_VALUE)
-                .addComponent(rSButtonMaterialShadow1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnIngresar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20))
         );
 
@@ -168,9 +180,23 @@ public class Login extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void rSButtonMaterialShadow1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSButtonMaterialShadow1ActionPerformed
+    private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_rSButtonMaterialShadow1ActionPerformed
+    }//GEN-LAST:event_btnIngresarActionPerformed
+
+    private void tfPassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfPassActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfPassActionPerformed
+
+    private void lbIconMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbIconMouseClicked
+        if (lbIcon.getIcons().equals(rojeru_san.efectos.ValoresEnum.ICONS.VISIBILITY)) {
+            lbIcon.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.VISIBILITY_OFF);
+            tfPass.setEchoChar((char)0);
+        }else if (lbIcon.getIcons().equals(rojeru_san.efectos.ValoresEnum.ICONS.VISIBILITY_OFF)) {
+            lbIcon.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.VISIBILITY);
+            tfPass.setEchoChar('*');
+        } 
+    }//GEN-LAST:event_lbIconMouseClicked
 
     /**
      * @param args the command line arguments
@@ -209,16 +235,16 @@ public class Login extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private RSMaterialComponent.RSButtonMaterialShadow btnIngresar;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JLabel lbError;
+    private RSMaterialComponent.RSLabelIcon lbIcon;
     private javax.swing.JLabel lbImg;
-    private RSMaterialComponent.RSButtonMaterialShadow rSButtonMaterialShadow1;
-    private RSMaterialComponent.RSLabelIcon rSLabelIcon1;
-    private RSMaterialComponent.RSTextFieldMaterial rSTextFieldMaterial1;
-    private RSMaterialComponent.RSTextFieldMaterial rSTextFieldMaterial2;
+    private RSMaterialComponent.RSPasswordMaterial tfPass;
+    private RSMaterialComponent.RSTextFieldMaterial tfUser;
     // End of variables declaration//GEN-END:variables
 }
