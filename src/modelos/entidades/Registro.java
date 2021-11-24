@@ -4,6 +4,12 @@
  */
 package modelos.entidades;
 
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import modelos.dao.HabitacionDao;
+import modelos.dao.RegistroProductoDao;
+import modelos.dao.UsuarioDao;
 import utilidades.ListaSimple;
 
 /**
@@ -127,6 +133,13 @@ public class Registro implements Comparable<Registro>{
     }
 
     public Habitacion getHabitacion() {
+        try {
+            HabitacionDao daoHabitacion = new HabitacionDao();
+            habitacion = daoHabitacion.selectAllTo("fk_num_habitacion", String.valueOf(habitacion.getNumHabitacion())).toArray().get(0);
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(Registro.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return habitacion;
     }
 
@@ -135,6 +148,8 @@ public class Registro implements Comparable<Registro>{
     }
 
     public Usuario getUsuario() {
+        UsuarioDao daoUsuario = new UsuarioDao();
+        usuario = daoUsuario.selectId(usuario.getIdUsuario()).toArray().get(0);
         return usuario;
     }
 
@@ -143,6 +158,12 @@ public class Registro implements Comparable<Registro>{
     }
 
     public ListaSimple<RegistroProducto> getRegistrosProductos() {
+        try {
+            RegistroProductoDao daoRegistro = new RegistroProductoDao();
+            registrosProductos = daoRegistro.selectAllTo("fk_id_registro", String.valueOf(this.getIdRegistro()));            
+        } catch (SQLException ex) {
+            Logger.getLogger(Habitacion.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return registrosProductos;
     }
 
@@ -152,6 +173,12 @@ public class Registro implements Comparable<Registro>{
 
     @Override
     public int compareTo(Registro t) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (this.idRegistro > t.getIdRegistro()){
+            return 1;
+        } else if (this.idRegistro < t.getIdRegistro()) {
+            return -1;
+        }else {
+            return 0;
+        }
     }
 }

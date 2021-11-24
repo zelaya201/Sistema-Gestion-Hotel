@@ -69,7 +69,7 @@ public class HotelDao {
             ps = con.prepareStatement(sql);
 
             ps.setString(1, obj.getNombre());
-            ps.setString(2, obj.getNombre());
+            ps.setString(2, obj.getDireccion());
             ps.setString(3, obj.getTelefono());
 
             ps.execute();

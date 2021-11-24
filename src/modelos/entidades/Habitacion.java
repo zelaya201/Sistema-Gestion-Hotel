@@ -4,6 +4,14 @@
  */
 package modelos.entidades;
 
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import modelos.dao.HotelDao;
+import modelos.dao.RegistroDao;
+import modelos.dao.TipoHabitacionDao;
+import utilidades.ListaSimple;
+
 /**
  *
  * @author Mario Zelaya
@@ -14,8 +22,9 @@ public class Habitacion implements Comparable<Habitacion>{
     private double precio;
     private int estado;
     private String disposicion;
-    private TipoHabitacion tipo;
+    private TipoHabitacion tipoHabitacion;
     private Hotel hotel;
+    private ListaSimple<Registro> registros;
 
     public Habitacion() {
     }
@@ -24,21 +33,21 @@ public class Habitacion implements Comparable<Habitacion>{
         this.numHabitacion = numHabitacion;
     }
 
+    public Habitacion(int numHabitacion, String descripcion, double precio, int estado, String disposicion, TipoHabitacion tipoHabitacion, Hotel hotel) {
+        this.numHabitacion = numHabitacion;
+        this.descripcion = descripcion;
+        this.precio = precio;
+        this.estado = estado;
+        this.disposicion = disposicion;
+        this.tipoHabitacion = tipoHabitacion;
+        this.hotel = hotel;
+    }
+
     public Habitacion(String descripcion, double precio, int estado, String disposicion) {
         this.descripcion = descripcion;
         this.precio = precio;
         this.estado = estado;
         this.disposicion = disposicion;
-    }
-
-    
-    public Habitacion(String descripcion, double precio, int estado, String disposicion, TipoHabitacion tipo, Hotel hotel) {
-        this.descripcion = descripcion;
-        this.precio = precio;
-        this.estado = estado;
-        this.disposicion = disposicion;
-        this.tipo = tipo;
-        this.hotel = hotel;
     }
 
     public int getNumHabitacion() {
@@ -82,23 +91,60 @@ public class Habitacion implements Comparable<Habitacion>{
     }
 
     public TipoHabitacion getTipoHabitacion() {
-        return tipo;
+        try {
+            TipoHabitacionDao daoTipo = new TipoHabitacionDao();
+            tipoHabitacion = daoTipo.selectId(tipoHabitacion.getIdTipo()).toArray().get(0);
+        } catch (SQLException ex) {
+            Logger.getLogger(Habitacion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return tipoHabitacion;
     }
 
-    public void setTipoHabitacion(TipoHabitacion tipo) {
-        this.tipo = tipo;
+    public void setTipoHabitacion(TipoHabitacion tipoHabitacion) {
+        this.tipoHabitacion = tipoHabitacion;
     }
 
     public Hotel getHotel() {
+        try {
+            HotelDao daoHotel = new HotelDao();
+            hotel = daoHotel.selectAll().toArray().get(0);
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(Habitacion.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return hotel;
     }
 
     public void setHotel(Hotel hotel) {
         this.hotel = hotel;
-    }    
+    }
+
+    public ListaSimple<Registro> getRegistros() {
+        try {
+            RegistroDao daoRegistro = new RegistroDao();
+            registros = daoRegistro.selectAllTo("fk_num_habitacion", String.valueOf(this.getNumHabitacion()));
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(Habitacion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return registros;
+    }
+
+    public void setRegistros(ListaSimple<Registro> registros) {
+        this.registros = registros;
+    }
+       
 
     @Override
     public int compareTo(Habitacion t) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (numHabitacion > t.getNumHabitacion()){
+            return 1;
+        } else if (numHabitacion < t.getNumHabitacion()) {
+            return -1;
+        }else {
+            return 0;
+        }
     }
 }

@@ -72,7 +72,8 @@ public class Cliente implements Comparable<Cliente>{
 
     @Override
     public int compareTo(Cliente t) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Cliente actual = this;
+        return (actual.getNombre().compareToIgnoreCase(t.getNombre()));
     }
     
     

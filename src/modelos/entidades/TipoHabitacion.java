@@ -4,6 +4,10 @@
  */
 package modelos.entidades;
 
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import modelos.dao.HabitacionDao;
 import utilidades.ListaSimple;
 
 /**
@@ -53,6 +57,12 @@ public class TipoHabitacion implements Comparable<TipoHabitacion>{
     }
 
     public ListaSimple<Habitacion> getHabitaciones() {
+        try {
+            HabitacionDao daoHabitacion = new HabitacionDao();
+            habitaciones = daoHabitacion.selectAllTo("fk_id_tipo", String.valueOf(this.getIdTipo()));
+        } catch (SQLException ex) {
+            Logger.getLogger(TipoHabitacion.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return habitaciones;
     }
 
@@ -62,6 +72,7 @@ public class TipoHabitacion implements Comparable<TipoHabitacion>{
 
     @Override
     public int compareTo(TipoHabitacion t) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        TipoHabitacion actual = this;
+        return (actual.getNombre().compareToIgnoreCase(t.getNombre()));
     }
 }

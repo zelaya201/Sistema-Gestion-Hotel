@@ -4,6 +4,12 @@
  */
 package modelos.entidades;
 
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import modelos.dao.ProductoDao;
+import modelos.dao.RegistroDao;
+
 /**
  *
  * @author Mario Zelaya
@@ -41,6 +47,12 @@ public class RegistroProducto implements Comparable<RegistroProducto>{
     }
 
     public Registro getRegistro() {
+        try {
+            RegistroDao daoRegistro = new RegistroDao();
+            registro = daoRegistro.selectAllTo("fk_id_registro", String.valueOf(registro.getIdRegistro())).toArray().get(0);
+        } catch (SQLException ex) {
+            Logger.getLogger(RegistroProducto.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return registro;
     }
 
@@ -49,6 +61,13 @@ public class RegistroProducto implements Comparable<RegistroProducto>{
     }
 
     public Producto getProducto() {
+        try {
+            ProductoDao daoProducto = new ProductoDao();
+            producto = daoProducto.selectAllTo("fk_cod_producto", producto.getCodigo()).toArray().get(0);
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(RegistroProducto.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return producto;
     }
 
@@ -58,6 +77,12 @@ public class RegistroProducto implements Comparable<RegistroProducto>{
 
     @Override
     public int compareTo(RegistroProducto t) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (registro.getIdRegistro() > t.getRegistro().getIdRegistro()){
+            return 1;
+        } else if (registro.getIdRegistro() < t.getRegistro().getIdRegistro()) {
+            return -1;
+        }else {
+            return 0;
+        }
     }
 }

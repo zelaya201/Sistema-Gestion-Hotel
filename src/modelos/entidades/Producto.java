@@ -4,13 +4,17 @@
  */
 package modelos.entidades;
 
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import modelos.dao.RegistroProductoDao;
 import utilidades.ListaSimple;
 
 /**
  *
  * @author Mario Zelaya
  */
-public class Producto implements Comparable{
+public class Producto implements Comparable<Producto>{
     private String codigo;
     private String descripcion;
     private double precio;
@@ -66,6 +70,12 @@ public class Producto implements Comparable{
     }
 
     public ListaSimple<RegistroProducto> getRegistrosProductos() {
+        try {
+            RegistroProductoDao daoRegistro = new RegistroProductoDao();
+            registrosProductos = daoRegistro.selectAllTo("fk_cod_producto", this.getCodigo());            
+        } catch (SQLException ex) {
+            Logger.getLogger(Habitacion.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return registrosProductos;
     }
 
@@ -74,7 +84,8 @@ public class Producto implements Comparable{
     }
 
     @Override
-    public int compareTo(Object t) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public int compareTo(Producto t) {
+        Producto actual = this;
+        return (actual.getDescripcion().compareToIgnoreCase(t.getDescripcion()));
     }
 }
