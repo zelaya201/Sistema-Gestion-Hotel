@@ -7,8 +7,6 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import modelos.conexion.Conexion;
-import modelos.entidades.Habitacion;
-import modelos.entidades.Hotel;
 import modelos.entidades.Tipo_Habitacion;
 import utilidades.ListaCircularDoble;
 

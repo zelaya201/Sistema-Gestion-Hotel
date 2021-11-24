@@ -1,8 +1,6 @@
 package vistas.modulos;
 
-import com.itextpdf.layout.borders.Border;
 import controlador.Controlador;
-import java.awt.Color;
 
 public class VistaRegistro extends javax.swing.JPanel {
 

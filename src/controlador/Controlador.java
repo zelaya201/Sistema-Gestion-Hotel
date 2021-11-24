@@ -64,13 +64,7 @@ public class Controlador implements ActionListener, MouseListener{
     }
     
     public void mostrarModulos(String mod) throws SQLException{
-        if(mod.equals("mConfig")){
-            configModal = new ModalConfig(new JFrame(), true);
-            configModal.setControlador(this);
-            principalOn = "mConfig";
-            mostrarInfoHotel();
-            configModal.iniciar();
-        }else if(mod.equals("mRecepcion")){
+        if(mod.equals("mRecepcion")){
             recepVista = new VistaRecepcion();
             recepVista.setControlador(this);
             generarHabitaciones();
@@ -86,7 +80,13 @@ public class Controlador implements ActionListener, MouseListener{
     }
     
     public void mostrarModals(String modals) throws SQLException{
-        if(modals.equals("modalConfig")){
+        if(modals.equals("mConfig")){
+            configModal = new ModalConfig(new JFrame(), true);
+            configModal.setControlador(this);
+            modalOn = "mConfig";
+            mostrarInfoHotel();
+            configModal.iniciar();
+        }else if(modals.equals("modalConfig")){
             configModal.dispose();
             configModalEdit = new ModalEditConfig(new JFrame(), true);
             configModalEdit.setControlador(this);
@@ -98,15 +98,18 @@ public class Controlador implements ActionListener, MouseListener{
     }
     
     public void accionesDeBotones(ActionEvent btn) throws SQLException{
-        if(btn.getActionCommand().equals("GuardarInfo") && principalOn == "mConfig"){
+        if(btn.getActionCommand().equals("GuardarInfo") && modalOn == "modalConfig"){
             if(!configModalEdit.tfNom.getText().isEmpty() && !configModalEdit.tfDir.getText().isEmpty() && !configModalEdit.tfTel.getText().isEmpty()){
                 if(daoHotel.update(new Hotel(1, configModalEdit.tfNom.getText(), configModalEdit.tfDir.getText(), configModalEdit.tfTel.getText()))){
                     DesktopNotify.setDefaultTheme(NotifyTheme.Green);
                     DesktopNotify.showDesktopMessage("Información de Hotel modificada", "La información del Hotel se modificó correctamente.", DesktopNotify.SUCCESS, 8000);
                     configModalEdit.dispose();
                     modalOn = "";
-                    mostrarModulos("mConfig");
+                    mostrarModals("mConfig");
                 }
+            }else{
+                DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                DesktopNotify.showDesktopMessage("Campos vacíos", "Por favor rellene todos los campos", DesktopNotify.WARNING, 8000);
             }
         }
     }
@@ -114,17 +117,16 @@ public class Controlador implements ActionListener, MouseListener{
     public void mostrarInfoHotel() throws SQLException{
         Hotel hotelInfo = daoHotel.selectAll().toArrayDesc().get(0);
         
-        if(principalOn.equals("mConfig")){
-            if(modalOn.equals("modalConfig")){
-                configModalEdit.tfNom.setText(hotelInfo.getNom_hotel());
-                configModalEdit.tfDir.setText(hotelInfo.getDir_hotel());
-                configModalEdit.tfTel.setText(hotelInfo.getTel_hotel());
-            }else{
-                configModal.lbNomHotel.setText(hotelInfo.getNom_hotel());
-                configModal.lbDirHotel.setText(hotelInfo.getDir_hotel());
-                configModal.lbTelHotel.setText(hotelInfo.getTel_hotel());
-            }
-        }        
+        if(modalOn.equals("modalConfig")){
+            configModalEdit.tfNom.setText(hotelInfo.getNom_hotel());
+            configModalEdit.tfDir.setText(hotelInfo.getDir_hotel());
+            configModalEdit.tfTel.setText(hotelInfo.getTel_hotel());
+        }else{
+            configModal.lbNomHotel.setText(hotelInfo.getNom_hotel());
+            configModal.lbDirHotel.setText(hotelInfo.getDir_hotel());
+            configModal.lbTelHotel.setText(hotelInfo.getTel_hotel());
+        }       
+        
     }
     
     public void mostrarInfoHab() throws SQLException{
@@ -237,7 +239,7 @@ public class Controlador implements ActionListener, MouseListener{
     public void actionPerformed(ActionEvent btn) {
         if(btn.getActionCommand().equals("Configuracion")){
             try {
-                mostrarModulos("mConfig");
+                mostrarModals("mConfig");
             } catch (SQLException ex) {
                 System.out.println(ex);
             }
@@ -279,6 +281,7 @@ public class Controlador implements ActionListener, MouseListener{
         if(principalOn.equals("mRecepcion")){
             recepcionSelected = new Habitacion();
             recepcionSelected.setNum_habitacion(Integer.parseInt(me.getComponent().getName()));
+            
             try {
                 mostrarModulos("mRegistro");
             } catch (SQLException ex) {
