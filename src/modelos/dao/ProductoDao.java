@@ -38,11 +38,9 @@ public class ProductoDao {
             
             while(rs.next()) {
                 objeto = new Producto();
-                
-                objeto.setCod_producto(rs.getInt("cod_producto"));
-                objeto.setDescripcion_producto(rs.getString("descripcion_producto"));
-                objeto.setPrecio_producto(rs.getDouble("precio_producto"));
-                
+                objeto.setCodigo(rs.getString("cod_producto"));
+                objeto.setDescripcion(rs.getString("descripcion_producto"));
+                objeto.setPrecio(rs.getDouble("precio_producto"));
                 lista.insertar(objeto);
             }
         } catch(Exception e) {
@@ -87,11 +85,8 @@ public class ProductoDao {
         try {
             con = conectar.getConexion();
             ps = con.prepareStatement(sql);
-            
-            ps.setInt(1, product.getCod_producto());
-            ps.setString(2, product.getDescripcion_producto());
-            ps.setDouble(3, product.getPrecio_producto());
-            
+            ps.setString(2, product.getDescripcion());
+            ps.setDouble(3, product.getPrecio());  
             ps.execute();
             return true;
         } catch(Exception e) {      
@@ -108,7 +103,7 @@ public class ProductoDao {
     }
     
     private boolean eliminar(Producto product) throws SQLException {
-        String sql = "DELETE FROM producto WHERE cod_producto ='" + product.getCod_producto() + "";
+        String sql = "DELETE FROM producto WHERE cod_producto ='" + product.getCodigo() + "";
         try {
             con = conectar.getConexion();
             ps = con.prepareStatement(sql);

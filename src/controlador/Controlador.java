@@ -34,7 +34,6 @@ import modelos.entidades.Producto;
 import modelos.entidades.Usuario;
 import utilidades.CambiaPanel;
 import utilidades.ExportPDF;
-import utilidades.ListaCircularDoble;
 import utilidades.ListaSimple;
 import vistas.main.Menu;
 import vistas.modulos.Dashboard;
@@ -83,13 +82,7 @@ public class Controlador implements ActionListener, MouseListener{
     }
     
     public void mostrarModulos(String mod) throws SQLException{
-        if(mod.equals("mConfig")){
-            configModal = new ModalConfig(new JFrame(), true);
-            configModal.setControlador(this);
-            principalOn = "mConfig";
-            mostrarInfoHotel();
-            configModal.iniciar();
-        }else if(mod.equals("mRecepcion")){
+        if(mod.equals("mRecepcion")){
             recepVista = new VistaRecepcion();
             recepVista.setControlador(this);
             generarHabitaciones();
@@ -111,7 +104,13 @@ public class Controlador implements ActionListener, MouseListener{
     }
     
     public void mostrarModals(String modals) throws SQLException{
-        if(modals.equals("modalConfig")){
+        if(modals.equals("mConfig")){
+            configModal = new ModalConfig(new JFrame(), true);
+            configModal.setControlador(this);
+            modalOn = "mConfig";
+            mostrarInfoHotel();
+            configModal.iniciar();
+        }else if(modals.equals("modalConfig")){
             configModal.dispose();
             configModalEdit = new ModalEditConfig(new JFrame(), true);
             configModalEdit.setControlador(this);
@@ -122,16 +121,20 @@ public class Controlador implements ActionListener, MouseListener{
         }
     }
     
+
     public void accionesDeBotones(ActionEvent btn) throws SQLException, IOException{
-        if(btn.getActionCommand().equals("GuardarInfo") && principalOn == "mConfig"){
+        if(btn.getActionCommand().equals("GuardarInfo") && modalOn == "modalConfig"){
             if(!configModalEdit.tfNom.getText().isEmpty() && !configModalEdit.tfDir.getText().isEmpty() && !configModalEdit.tfTel.getText().isEmpty()){
                 if(daoHotel.update(new Hotel(1, configModalEdit.tfNom.getText(), configModalEdit.tfDir.getText(), configModalEdit.tfTel.getText()))){
                     DesktopNotify.setDefaultTheme(NotifyTheme.Green);
                     DesktopNotify.showDesktopMessage("Información de Hotel modificada", "La información del Hotel se modificó correctamente.", DesktopNotify.SUCCESS, 8000);
                     configModalEdit.dispose();
                     modalOn = "";
-                    mostrarModulos("mConfig");
+                    mostrarModals("mConfig");
                 }
+            }else{
+                DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                DesktopNotify.showDesktopMessage("Campos vacíos", "Por favor rellene todos los campos", DesktopNotify.WARNING, 8000);
             }
         }
         
@@ -157,39 +160,37 @@ public class Controlador implements ActionListener, MouseListener{
     }
     
     public void mostrarInfoHotel() throws SQLException{
-        Hotel hotelInfo = daoHotel.selectAll().toArray().get(0);
-        
-        if(principalOn.equals("mConfig")){
-            if(modalOn.equals("modalConfig")){
-                configModalEdit.tfNom.setText(hotelInfo.getNom_hotel());
-                configModalEdit.tfDir.setText(hotelInfo.getDir_hotel());
-                configModalEdit.tfTel.setText(hotelInfo.getTel_hotel());
-            }else{
-                configModal.lbNomHotel.setText(hotelInfo.getNom_hotel());
-                configModal.lbDirHotel.setText(hotelInfo.getDir_hotel());
-                configModal.lbTelHotel.setText(hotelInfo.getTel_hotel());
-            }
-        }        
+        Hotel hotelInfo = daoHotel.selectAll().toArray().get(0);     
+        if(modalOn.equals("modalConfig")){
+            configModalEdit.tfNom.setText(hotelInfo.getNombre());
+            configModalEdit.tfDir.setText(hotelInfo.getDireccion());
+            configModalEdit.tfTel.setText(hotelInfo.getTelefono());
+        }else{
+            configModal.lbNomHotel.setText(hotelInfo.getNombre());
+            configModal.lbDirHotel.setText(hotelInfo.getDireccion());
+            configModal.lbTelHotel.setText(hotelInfo.getTelefono());
+        }       
+
     }
     
     public void mostrarInfoHab() throws SQLException{
-        Habitacion habi = daoHabitacion.selectId(recepcionSelected.getNum_habitacion()).toArray().get(0);
-        registroVista.lbDescrip.setText(habi.getDescr_habitacion());
-        registroVista.lbNumHab.setText(String.valueOf(habi.getNum_habitacion()));
-        
+
+        Habitacion habi = daoHabitacion.selectId(recepcionSelected.getNumHabitacion()).toArray().get(0);
+        registroVista.lbDescrip.setText(habi.getDescripcion());
+        registroVista.lbNumHab.setText(String.valueOf(habi.getNumHabitacion()));     
         registroVista.lbEstado.setForeground(Color.white);
         
-        if(habi.getDispo_habitacion().equals("DISPONIBLE")){
+        if(habi.getDisposicion().equals("DISPONIBLE")){
             registroVista.lbEstado.setBackground(new Color(0, 166, 90));
-        }else if(habi.getDispo_habitacion().equals("OCUPADA")){
+        }else if(habi.getDisposicion().equals("OCUPADA")){
             registroVista.lbEstado.setBackground(new Color(223, 56, 56));
         }else{
             registroVista.lbEstado.setBackground(new Color(61,137,248));
         }
         
-        registroVista.lbEstado.setText(habi.getDispo_habitacion());
-        registroVista.lbTipoHab.setText(habi.getTipoH().getNombre_tipo());
-        registroVista.lbPrecio.setText("$" + String.valueOf(habi.getPrecio_habitacion()));
+        registroVista.lbEstado.setText(habi.getDisposicion());
+        registroVista.lbTipoHab.setText(habi.getTipoHabitacion().getNombre());
+        registroVista.lbPrecio.setText("$" + String.valueOf(habi.getPrecio()));
         
     }
     
@@ -207,10 +208,10 @@ public class Controlador implements ActionListener, MouseListener{
             JLabel lbIcono = new JLabel();
             JScrollPane scroll = new JScrollPane();
 
-            if(x.getDispo_habitacion().equals("DISPONIBLE")){
+            if(x.getDisposicion().equals("DISPONIBLE")){
                 panel.setBackground(new java.awt.Color(0, 166, 90));
                 lbDispo.setBackground(new java.awt.Color(0, 147, 93));
-            }else if(x.getDispo_habitacion().equals("OCUPADA")){
+            }else if(x.getDisposicion().equals("OCUPADA")){
                 panel.setBackground(new java.awt.Color(223, 56, 56));
                 lbDispo.setBackground(new java.awt.Color(187, 56, 56));
             }else{
@@ -219,13 +220,13 @@ public class Controlador implements ActionListener, MouseListener{
             }
      
             panel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-            panel.setName(String.valueOf(x.getNum_habitacion()));
+            panel.setName(String.valueOf(x.getNumHabitacion()));
             panel.setLayout(new java.awt.GridBagLayout());
 
             lbNoHab.setFont(new java.awt.Font("Calibri", 1, 16));
             lbNoHab.setForeground(new java.awt.Color(255, 255, 255));
             lbNoHab.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-            lbNoHab.setText("N° DE HABITACIÓN: " + x.getNum_habitacion());
+            lbNoHab.setText("N° DE HABITACIÓN: " + x.getNumHabitacion());
             gridBagConstraints = new java.awt.GridBagConstraints();
             gridBagConstraints.gridx = 1;
             gridBagConstraints.gridy = 0;
@@ -238,7 +239,7 @@ public class Controlador implements ActionListener, MouseListener{
             lbDispo.setForeground(new java.awt.Color(255, 255, 255));
             lbDispo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
             lbDispo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/arrow.png")));
-            lbDispo.setText(x.getDispo_habitacion());
+            lbDispo.setText(x.getDisposicion());
             lbDispo.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
             lbDispo.setOpaque(true);
             gridBagConstraints = new java.awt.GridBagConstraints();
@@ -254,7 +255,7 @@ public class Controlador implements ActionListener, MouseListener{
             lbTipo.setFont(new java.awt.Font("Calibri", 1, 14));
             lbTipo.setForeground(new java.awt.Color(255, 255, 255));
             lbTipo.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-            lbTipo.setText("TIPO: " + x.getTipoH().getNombre_tipo());
+            lbTipo.setText("TIPO: " + x.getTipoHabitacion().getNombre());
             gridBagConstraints = new java.awt.GridBagConstraints();
             gridBagConstraints.gridx = 1;
             gridBagConstraints.gridy = 1;
@@ -294,11 +295,11 @@ public class Controlador implements ActionListener, MouseListener{
         
         /*ALERTAS DE DISPONIBILIDAD*/
         for(Habitacion x: habitacion.toArray()){
-            if(x.getDispo_habitacion().equals("DISPONIBLE")){
+            if(x.getDisposicion().equals("DISPONIBLE")){
                 cantDispo++;
-            }else if(x.getDispo_habitacion().equals("OCUPADA")){
+            }else if(x.getDisposicion().equals("OCUPADA")){
                 cantOcup++;
-            }else if(x.getDispo_habitacion().equals("RESERVADA")){
+            }else if(x.getDisposicion().equals("RESERVADA")){
                 cantReserv++;
             }
         }
@@ -316,8 +317,8 @@ public class Controlador implements ActionListener, MouseListener{
             ListaSimple<Habitacion> habitacion = daoHabitacion.selectAll();
             
             for(Habitacion x: habitacion.toArray()){
-                if(x.getDispo_habitacion().equals("DISPONIBLE")){
-                   modelo.addRow(new Object[]{x.getNum_habitacion(), x.getDescr_habitacion(), x.getTipoH().getNombre_tipo(),"$ "+ x.getPrecio_habitacion()});
+                if(x.getDisposicion().equals("DISPONIBLE")){
+                   modelo.addRow(new Object[]{x.getNumHabitacion(), x.getDescripcion(), x.getTipoHabitacion().getNombre(),"$ "+ x.getPrecio()});
                 }
             }
             dashVista.tablaHabAgre.setModel(modelo);
@@ -328,7 +329,7 @@ public class Controlador implements ActionListener, MouseListener{
     public void actionPerformed(ActionEvent btn) {
         if(btn.getActionCommand().equals("Configuracion")){
             try {
-                mostrarModulos("mConfig");
+                mostrarModals("mConfig");
             } catch (SQLException ex) {
                 System.out.println(ex);
             }
@@ -387,7 +388,8 @@ public class Controlador implements ActionListener, MouseListener{
         
         if(principalOn.equals("mRecepcion")){
             recepcionSelected = new Habitacion();
-            recepcionSelected.setNum_habitacion(Integer.parseInt(me.getComponent().getName()));
+            recepcionSelected.setNumHabitacion(Integer.parseInt(me.getComponent().getName()));
+            
             try {
                 mostrarModulos("mRegistro");
             } catch (SQLException ex) {

@@ -54,7 +54,7 @@ public class UsuarioDao {
     }
     
     public boolean update(Usuario obj) {
-        String sql = "update usuario set nom_usuario = ?, ape_usuario = ?, tel_usuario = ?, fnac_usuario = ?, genero_usuario = ?, nick_usuario =?, rol_usuario=?  clave_usuario =? where id_usuario=" + obj.getIdUsuario();
+        String sql = "update usuario set nom_usuario=?, ape_usuario=?, tel_usuario=?, fnac_usuario=?, genero_usuario=?, nick_usuario=?, rol_usuario=?, clave_usuario=?, estado_usuario=? where id_usuario=" + obj.getIdUsuario();
         return alterarRegistro(sql, obj);
     }
 
