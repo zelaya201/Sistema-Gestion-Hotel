@@ -8,7 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import modelos.conexion.Conexion;
 import modelos.entidades.Hotel;
-import utilidades.ListaCircularDoble;
+import utilidades.ListaSimple;
 
 public class HotelDao {
     Conexion conectar = new Conexion();
@@ -20,7 +20,7 @@ public class HotelDao {
         
     }
     
-    public ListaCircularDoble<Hotel> selectAll() throws SQLException{
+    public ListaSimple<Hotel> selectAll() throws SQLException{
         String sql = "select * from hotel";
         return select(sql);
     }
@@ -30,8 +30,8 @@ public class HotelDao {
         return alterarRegistro(sql, obj);
     }
     
-    private ListaCircularDoble<Hotel> select(String sql) throws SQLException{
-        ListaCircularDoble<Hotel> lista = new ListaCircularDoble();
+    private ListaSimple<Hotel> select(String sql) throws SQLException{
+        ListaSimple<Hotel> lista = new ListaSimple();
         Hotel obj = null;
         
         try {

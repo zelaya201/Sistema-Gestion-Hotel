@@ -10,7 +10,7 @@ import modelos.conexion.Conexion;
 import modelos.entidades.Habitacion;
 import modelos.entidades.Hotel;
 import modelos.entidades.Tipo_Habitacion;
-import utilidades.ListaCircularDoble;
+import utilidades.ListaSimple;
 
 public class HabitacionDao {
     Conexion conectar = new Conexion();
@@ -22,22 +22,22 @@ public class HabitacionDao {
         
     }
     
-    public ListaCircularDoble<Habitacion> selectAll() throws SQLException{
+    public ListaSimple<Habitacion> selectAll() throws SQLException{
         String sql = "select * from habitacion";
         return select(sql);
     }
     
-    public ListaCircularDoble<Habitacion> selectAllTo(String atributo, String condicion) throws SQLException{
+    public ListaSimple<Habitacion> selectAllTo(String atributo, String condicion) throws SQLException{
         String sql = "select * from habitacion where " + atributo + "='" + condicion + "'";
         return select(sql);
     }
     
-    public ListaCircularDoble<Habitacion> buscar(String dato) throws SQLException{
+    public ListaSimple<Habitacion> buscar(String dato) throws SQLException{
         String sql = "select * from habitacion where id_habitacion like '" + dato + "%' or  num_habitacion like '" + dato + "%'";
         return select(sql);
     }
     
-    public ListaCircularDoble<Habitacion> selectId(int id) throws SQLException{
+    public ListaSimple<Habitacion> selectId(int id) throws SQLException{
         String sql = "select * from habitacion where num_habitacion=" + id;
         return select(sql);
     } 
@@ -47,8 +47,8 @@ public class HabitacionDao {
         return alterarRegistro(sql, obj);
     }
 
-    private ListaCircularDoble<Habitacion> select(String sql) throws SQLException{
-        ListaCircularDoble<Habitacion> lista = new ListaCircularDoble();
+    private ListaSimple<Habitacion> select(String sql) throws SQLException{
+        ListaSimple<Habitacion> lista = new ListaSimple();
         Habitacion obj = null;
         try {
             con = conectar.getConexion();

@@ -37,12 +37,12 @@ import modelos.entidades.Hotel;
  */
 public class ExportPDF {
 
-    public ExportPDF(String path, ListaCircularDoble<Habitacion> ListHabitaciones, Hotel hotel) throws FileNotFoundException, IOException {
+    public ExportPDF(String path, ListaSimple<Habitacion> ListHabitaciones, Hotel hotel) throws FileNotFoundException, IOException {
         String ruta = path + "\\" + "Listado de Habitaciones " + getFecha(2) + ".pdf"; //Ruta donde se guardar el archivo
         crearPDF(ruta, ListHabitaciones, hotel);
     }
     
-    public void crearPDF(String ruta, ListaCircularDoble<Habitacion> ListHabitaciones, Hotel hotel) throws FileNotFoundException, IOException{
+    public void crearPDF(String ruta, ListaSimple<Habitacion> ListHabitaciones, Hotel hotel) throws FileNotFoundException, IOException{
         //Creación del Archivo
         PdfWriter writer = new PdfWriter(ruta);
         PdfDocument pdf = new PdfDocument(writer);
@@ -76,7 +76,7 @@ public class ExportPDF {
         habitaciones.addHeaderCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).setBackgroundColor(new DeviceRgb(221,221,221)).add(new Paragraph("Tipo").setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
         habitaciones.addHeaderCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).setBackgroundColor(new DeviceRgb(221,221,221)).add(new Paragraph("Disposición").setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
         
-        for (Habitacion x : ListHabitaciones.toArrayAsc()) {
+        for (Habitacion x : ListHabitaciones.toArray()) {
              habitaciones.addCell(new Cell().setFont(font2).add(new Paragraph(String.valueOf(x.getId_habitacion())).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
              habitaciones.addCell(new Cell().setFont(font2).add(new Paragraph(String.valueOf(x.getNum_habitacion())).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
              habitaciones.addCell(new Cell().setFont(font2).add(new Paragraph(String.valueOf(x.getDescr_habitacion())).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));

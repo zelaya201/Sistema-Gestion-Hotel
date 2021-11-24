@@ -14,20 +14,30 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.table.DefaultTableModel;
 import modelos.dao.HabitacionDao;
 import modelos.dao.HotelDao;
+import modelos.dao.ProductoDao;
+import modelos.dao.UsuarioDao;
 import modelos.entidades.Habitacion;
 import modelos.entidades.Hotel;
+import modelos.entidades.Producto;
+import modelos.entidades.Usuario;
 import utilidades.CambiaPanel;
+import utilidades.ExportPDF;
 import utilidades.ListaCircularDoble;
+import utilidades.ListaSimple;
 import vistas.main.Menu;
+import vistas.modulos.Dashboard;
 import vistas.modulos.ModalConfig;
 import vistas.modulos.ModalEditConfig;
 import vistas.modulos.VistaRecepcion;
@@ -52,10 +62,19 @@ public class Controlador implements ActionListener, MouseListener{
     private VistaRecepcion recepVista; 
     private Habitacion recepcionSelected = null;
     
+    /* PRODUCTO */
+    private ProductoDao daoProducto = new ProductoDao();
+    
+    /* PRODUCTO */
+    private UsuarioDao daoUsuario = new UsuarioDao();
+    
     /* CONFIGURACIÓN */
     private ModalConfig configModal;
     private HotelDao daoHotel = new HotelDao();
     private ModalEditConfig configModalEdit;
+    
+     /* DASHBOARD */
+    private Dashboard dashVista;
 
     public Controlador(Menu menu) {
         this.menu = menu;
@@ -82,6 +101,12 @@ public class Controlador implements ActionListener, MouseListener{
             mostrarInfoHab();
             principalOn = "mRegistro";
             new CambiaPanel(menu.body, registroVista);
+        }else if(mod.equals("mDashboard")){
+            dashVista = new Dashboard();
+            cargarDashboard();
+            principalOn = "mDashboard";
+            mostrarDatos();
+            new CambiaPanel(menu.body, dashVista);
         }
     }
     
@@ -97,7 +122,7 @@ public class Controlador implements ActionListener, MouseListener{
         }
     }
     
-    public void accionesDeBotones(ActionEvent btn) throws SQLException{
+    public void accionesDeBotones(ActionEvent btn) throws SQLException, IOException{
         if(btn.getActionCommand().equals("GuardarInfo") && principalOn == "mConfig"){
             if(!configModalEdit.tfNom.getText().isEmpty() && !configModalEdit.tfDir.getText().isEmpty() && !configModalEdit.tfTel.getText().isEmpty()){
                 if(daoHotel.update(new Hotel(1, configModalEdit.tfNom.getText(), configModalEdit.tfDir.getText(), configModalEdit.tfTel.getText()))){
@@ -109,10 +134,30 @@ public class Controlador implements ActionListener, MouseListener{
                 }
             }
         }
+        
+        if (btn.getActionCommand().equals("Reporte")) {
+
+            String path = "";
+
+            JFileChooser file = new JFileChooser();
+            file.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int request = file.showSaveDialog(menu);
+
+            if (request == JFileChooser.APPROVE_OPTION) {
+                path = file.getSelectedFile().getPath();
+                ListaSimple<Habitacion> habitaciones = daoHabitacion.selectAll();
+                ListaSimple<Hotel> hotel = daoHotel.selectAll();
+
+                new ExportPDF(path, habitaciones, hotel.toArray().get(0));
+                DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                DesktopNotify.showDesktopMessage("Reporte generado", "Ruta: " + path, DesktopNotify.INFORMATION, 10000);
+            }
+
+        }
     }
     
     public void mostrarInfoHotel() throws SQLException{
-        Hotel hotelInfo = daoHotel.selectAll().toArrayDesc().get(0);
+        Hotel hotelInfo = daoHotel.selectAll().toArray().get(0);
         
         if(principalOn.equals("mConfig")){
             if(modalOn.equals("modalConfig")){
@@ -128,7 +173,7 @@ public class Controlador implements ActionListener, MouseListener{
     }
     
     public void mostrarInfoHab() throws SQLException{
-        Habitacion habi = daoHabitacion.selectId(recepcionSelected.getNum_habitacion()).toArrayAsc().get(0);
+        Habitacion habi = daoHabitacion.selectId(recepcionSelected.getNum_habitacion()).toArray().get(0);
         registroVista.lbDescrip.setText(habi.getDescr_habitacion());
         registroVista.lbNumHab.setText(String.valueOf(habi.getNum_habitacion()));
         
@@ -150,9 +195,9 @@ public class Controlador implements ActionListener, MouseListener{
     
     public void generarHabitaciones() throws SQLException{
 
-        ListaCircularDoble<Habitacion> listaHab = this.daoHabitacion.selectAll();
+        ListaSimple<Habitacion> listaHab = this.daoHabitacion.selectAll();
         
-        for(Habitacion x : listaHab.toArrayAsc()){
+        for(Habitacion x : listaHab.toArray()){
             
             GridBagConstraints gridBagConstraints;
             JPanel panel = new javax.swing.JPanel();
@@ -232,6 +277,52 @@ public class Controlador implements ActionListener, MouseListener{
         }
 
     }
+    public void cargarDashboard() throws SQLException{
+        
+        ListaSimple<Habitacion> habitacion = daoHabitacion.selectAll();
+        ListaSimple<Producto> producto = daoProducto.selectAll();
+        ListaSimple<Usuario> usuario = daoUsuario.selectAll();
+        
+        int cantDispo = 0;
+        int cantReserv = 0;
+        int cantOcup = 0;
+                
+        /*ALERTAS TOTALES*/
+        dashVista.lbTotHab.setText(String.valueOf(habitacion.toArray().size()));
+        dashVista.lbTotProd.setText(String.valueOf(producto.toArray().size()));
+        dashVista.lbTotUsu.setText(String.valueOf(usuario.toArray().size()));
+        
+        /*ALERTAS DE DISPONIBILIDAD*/
+        for(Habitacion x: habitacion.toArray()){
+            if(x.getDispo_habitacion().equals("DISPONIBLE")){
+                cantDispo++;
+            }else if(x.getDispo_habitacion().equals("OCUPADA")){
+                cantOcup++;
+            }else if(x.getDispo_habitacion().equals("RESERVADA")){
+                cantReserv++;
+            }
+        }
+        
+        dashVista.lbHabDis.setText(String.valueOf(cantDispo));
+        dashVista.lbHabOcu.setText(String.valueOf(cantOcup));
+        dashVista.lbHabRes.setText(String.valueOf(cantReserv));
+        
+    }
+    
+    public void mostrarDatos() throws SQLException{
+        if(principalOn.equals("mDashboard")){
+            DefaultTableModel modelo = (DefaultTableModel) dashVista.tablaHabAgre.getModel();
+            modelo.setRowCount(0);
+            ListaSimple<Habitacion> habitacion = daoHabitacion.selectAll();
+            
+            for(Habitacion x: habitacion.toArray()){
+                if(x.getDispo_habitacion().equals("DISPONIBLE")){
+                   modelo.addRow(new Object[]{x.getNum_habitacion(), x.getDescr_habitacion(), x.getTipoH().getNombre_tipo(),"$ "+ x.getPrecio_habitacion()});
+                }
+            }
+            dashVista.tablaHabAgre.setModel(modelo);
+        }
+    }
 
     @Override
     public void actionPerformed(ActionEvent btn) {
@@ -263,6 +354,24 @@ public class Controlador implements ActionListener, MouseListener{
             try {
                 accionesDeBotones(btn);
             } catch (SQLException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        if(btn.getActionCommand().equals("Dashboard")){
+            try {
+                mostrarModulos("mDashboard");
+            } catch (SQLException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        if(btn.getActionCommand().equals("Reporte")){
+            try {
+                accionesDeBotones(btn);
+            } catch (SQLException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
                 Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
             }
         }

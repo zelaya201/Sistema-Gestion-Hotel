@@ -21,6 +21,7 @@ public class Menu extends javax.swing.JFrame {
         this.btnTipoHab.setActionCommand("Movimientos");
         this.btnConfig.setActionCommand("Configuracion");
         this.btnRecepcion.setActionCommand("Recepcion");
+        this.btnReportes.setActionCommand("Reporte");
     }
 
     public void setControlador(Controlador control){
@@ -29,6 +30,7 @@ public class Menu extends javax.swing.JFrame {
         this.btnTipoHab.addActionListener(control);
         this.btnConfig.addActionListener(control);
         this.btnRecepcion.addActionListener(control);
+        this.btnReportes.addActionListener(control);
     }
     
     public void iniciar(){
