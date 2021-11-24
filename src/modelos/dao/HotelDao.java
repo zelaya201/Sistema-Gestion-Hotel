@@ -8,7 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import modelos.conexion.Conexion;
 import modelos.entidades.Hotel;
-import utilidades.ListaCircularDoble;
+import utilidades.ListaSimple;
 
 public class HotelDao {
     Conexion conectar = new Conexion();
@@ -20,18 +20,18 @@ public class HotelDao {
         
     }
     
-    public ListaCircularDoble<Hotel> selectAll() throws SQLException{
+    public ListaSimple<Hotel> selectAll() throws SQLException{
         String sql = "select * from hotel";
         return select(sql);
     }
     
     public boolean update(Hotel obj) throws SQLException {
-        String sql = "update hotel set nom_hotel = ?, dir_hotel =?, tel_hotel = ? where id_hotel = " + obj.getId_hotel();
+        String sql = "update hotel set nom_hotel = ?, dir_hotel =?, tel_hotel = ? where id_hotel = " + obj.getIdHotel();
         return alterarRegistro(sql, obj);
     }
     
-    private ListaCircularDoble<Hotel> select(String sql) throws SQLException{
-        ListaCircularDoble<Hotel> lista = new ListaCircularDoble();
+    private ListaSimple<Hotel> select(String sql) throws SQLException{
+        ListaSimple<Hotel> lista = new ListaSimple();
         Hotel obj = null;
         
         try {
@@ -41,10 +41,10 @@ public class HotelDao {
             
             while(rs.next()) {
                 obj = new Hotel();
-                obj.setId_hotel(rs.getInt("id_hotel"));
-                obj.setNom_hotel(rs.getString("nom_hotel"));
-                obj.setDir_hotel(rs.getString("dir_hotel"));
-                obj.setTel_hotel(rs.getString("tel_hotel"));
+                obj.setIdHotel(rs.getInt("id_hotel"));
+                obj.setNombre(rs.getString("nom_hotel"));
+                obj.setDireccion(rs.getString("dir_hotel"));
+                obj.setTelefono(rs.getString("tel_hotel"));
                 
                 lista.insertar(obj);
             }
@@ -68,9 +68,9 @@ public class HotelDao {
             con = conectar.getConexion();
             ps = con.prepareStatement(sql);
 
-            ps.setString(1, obj.getNom_hotel());
-            ps.setString(2, obj.getDir_hotel());
-            ps.setString(3, obj.getTel_hotel());
+            ps.setString(1, obj.getNombre());
+            ps.setString(2, obj.getNombre());
+            ps.setString(3, obj.getTelefono());
 
             ps.execute();
             

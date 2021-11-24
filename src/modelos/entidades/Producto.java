@@ -1,55 +1,80 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package modelos.entidades;
 
+import utilidades.ListaSimple;
+
 /**
  *
- * @author Luis Vaquerano
+ * @author Mario Zelaya
  */
-public class Producto implements Comparable<Producto>{
-    private int cod_producto;
-    private String descripcion_producto;
-    private double precio_producto;
+public class Producto implements Comparable{
+    private String codigo;
+    private String descripcion;
+    private double precio;
+    private ListaSimple<RegistroProducto> registrosProductos;
 
     public Producto() {
     }
 
-    public Producto(int cod_producto, String descripcion_producto, double precio_producto) {
-        this.cod_producto = cod_producto;
-        this.descripcion_producto = descripcion_producto;
-        this.precio_producto = precio_producto;
+    public Producto(String codigo) {
+        this.codigo = codigo;
     }
 
-    public int getCod_producto() {
-        return cod_producto;
+    public Producto(String codigo, String descripcion, double precio, ListaSimple<RegistroProducto> registrosProductos) {
+        this.codigo = codigo;
+        this.descripcion = descripcion;
+        this.precio = precio;
+        this.registrosProductos = registrosProductos;
     }
 
-    public void setCod_producto(int cod_producto) {
-        this.cod_producto = cod_producto;
+    public Producto(String descripcion, double precio, ListaSimple<RegistroProducto> registrosProductos) {
+        this.descripcion = descripcion;
+        this.precio = precio;
+        this.registrosProductos = registrosProductos;
     }
 
-    public String getDescripcion_producto() {
-        return descripcion_producto;
+    public Producto(String descripcion, double precio) {
+        this.descripcion = descripcion;
+        this.precio = precio;
     }
 
-    public void setDescripcion_producto(String descripcion_producto) {
-        this.descripcion_producto = descripcion_producto;
+    public String getCodigo() {
+        return codigo;
     }
 
-    public double getPrecio_producto() {
-        return precio_producto;
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
     }
 
-    public void setPrecio_producto(double precio_producto) {
-        this.precio_producto = precio_producto;
-    } 
-    
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public double getPrecio() {
+        return precio;
+    }
+
+    public void setPrecio(double precio) {
+        this.precio = precio;
+    }
+
+    public ListaSimple<RegistroProducto> getRegistrosProductos() {
+        return registrosProductos;
+    }
+
+    public void setRegistrosProductos(ListaSimple<RegistroProducto> registrosProductos) {
+        this.registrosProductos = registrosProductos;
+    }
+
     @Override
-    public int compareTo(Producto o) {
+    public int compareTo(Object t) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
 }

@@ -7,8 +7,8 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import modelos.conexion.Conexion;
-import modelos.entidades.Tipo_Habitacion;
-import utilidades.ListaCircularDoble;
+import modelos.entidades.TipoHabitacion;
+import utilidades.ListaSimple;
 
 public class TipoHabitacionDao {
     Conexion conectar = new Conexion();
@@ -20,39 +20,39 @@ public class TipoHabitacionDao {
         
     }
     
-    public ListaCircularDoble<Tipo_Habitacion> selectAll() throws SQLException{
+    public ListaSimple<TipoHabitacion> selectAll() throws SQLException{
         String sql = "select * from tipo_habitacion";
         return select(sql);
     }
     
-    public ListaCircularDoble<Tipo_Habitacion> selectAllTo(String atributo, String condicion) throws SQLException{
+    public ListaSimple<TipoHabitacion> selectAllTo(String atributo, String condicion) throws SQLException{
         String sql = "select * from tipo_habitacion where " + atributo + "='" + condicion + "'";
         return select(sql);
     }
     
-    public ListaCircularDoble<Tipo_Habitacion> buscar(String dato) throws SQLException{
+    public ListaSimple<TipoHabitacion> buscar(String dato) throws SQLException{
         String sql = "select * from tipo_habitacion where nombre_tipo like '" + dato + "%'";
         return select(sql);
     }
     
-    public ListaCircularDoble<Tipo_Habitacion> selectId(int id) throws SQLException{
+    public ListaSimple<TipoHabitacion> selectId(int id) throws SQLException{
         String sql = "select * from tipo_habitacion where id_tipo='" + id + "'";
         return select(sql);
     } 
 
-    private ListaCircularDoble<Tipo_Habitacion> select(String sql) throws SQLException{
-        ListaCircularDoble<Tipo_Habitacion> lista = new ListaCircularDoble();
-        Tipo_Habitacion obj = null;
+    private ListaSimple<TipoHabitacion> select(String sql) throws SQLException{
+        ListaSimple<TipoHabitacion> lista = new ListaSimple();
+        TipoHabitacion obj = null;
         try {
             con = conectar.getConexion();
             ps = con.prepareStatement(sql);
             rs = ps.executeQuery();
             
             while(rs.next()) {
-                obj = new Tipo_Habitacion();
-                obj.setId_tipo(rs.getInt("id_tipo"));
-                obj.setNombre_tipo(rs.getString("nombre_tipo"));
-                obj.setCantidad_tipo(rs.getInt("cantidad_tipo"));
+                obj = new TipoHabitacion();
+                obj.setIdTipo(rs.getInt("id_tipo"));
+                obj.setNombre(rs.getString("nombre_tipo"));
+                obj.setCantidad(rs.getInt("cantidad_tipo"));
                 
                 lista.insertar(obj);
             }

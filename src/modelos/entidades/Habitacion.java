@@ -1,90 +1,92 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package modelos.entidades;
 
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import modelos.dao.TipoHabitacionDao;
-
 /**
  *
- * @author Luis Vaquerano
+ * @author Mario Zelaya
  */
 public class Habitacion implements Comparable<Habitacion>{
-    private String id_habitacion;
-    private int num_habitacion;
-    private String descr_habitacion;
-    private double precio_habitacion;
-    private int estado_habitacion;
-    private String dispo_habitacion;
-    
+    private int numHabitacion;
+    private String descripcion;
+    private double precio;
+    private int estado;
+    private String disposicion;
+    private TipoHabitacion tipo;
     private Hotel hotel;
-    private Tipo_Habitacion tipoH;
-    
+
     public Habitacion() {
     }
 
-    public Habitacion(String id_habitacion, int num_habitacion, String descr_habitacion, double precio_habitacion, int estado_habitacion, String dispo_habitacion, Hotel hotel, Tipo_Habitacion tipoH) {
-        this.id_habitacion = id_habitacion;
-        this.num_habitacion = num_habitacion;
-        this.descr_habitacion = descr_habitacion;
-        this.precio_habitacion = precio_habitacion;
-        this.estado_habitacion = estado_habitacion;
-        this.dispo_habitacion = dispo_habitacion;
-        this.hotel = hotel;
-        this.tipoH = tipoH;
+    public Habitacion(int numHabitacion) {
+        this.numHabitacion = numHabitacion;
     }
 
-    public String getId_habitacion() {
-        return id_habitacion;
+    public Habitacion(String descripcion, double precio, int estado, String disposicion) {
+        this.descripcion = descripcion;
+        this.precio = precio;
+        this.estado = estado;
+        this.disposicion = disposicion;
     }
 
-    public void setId_habitacion(String id_habitacion) {
-        this.id_habitacion = id_habitacion;
-    }
-
-    public int getNum_habitacion() {
-        return num_habitacion;
-    }
-
-    public void setNum_habitacion(int num_habitacion) {
-        this.num_habitacion = num_habitacion;
-    }
     
-    public String getDescr_habitacion() {
-        return descr_habitacion;
+    public Habitacion(String descripcion, double precio, int estado, String disposicion, TipoHabitacion tipo, Hotel hotel) {
+        this.descripcion = descripcion;
+        this.precio = precio;
+        this.estado = estado;
+        this.disposicion = disposicion;
+        this.tipo = tipo;
+        this.hotel = hotel;
     }
 
-    public void setDescr_habitacion(String descr_habitacion) {
-        this.descr_habitacion = descr_habitacion;
+    public int getNumHabitacion() {
+        return numHabitacion;
     }
 
-    public double getPrecio_habitacion() {
-        return precio_habitacion;
+    public void setNumHabitacion(int numHabitacion) {
+        this.numHabitacion = numHabitacion;
     }
 
-    public void setPrecio_habitacion(double precio_habitacion) {
-        this.precio_habitacion = precio_habitacion;
+    public String getDescripcion() {
+        return descripcion;
     }
 
-    public int getEstado_habitacion() {
-        return estado_habitacion;
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
-    public void setEstado_habitacion(int estado_habitacion) {
-        this.estado_habitacion = estado_habitacion;
+    public double getPrecio() {
+        return precio;
     }
 
-    public String getDispo_habitacion() {
-        return dispo_habitacion;
+    public void setPrecio(double precio) {
+        this.precio = precio;
     }
 
-    public void setDispo_habitacion(String dispo_habitacion) {
-        this.dispo_habitacion = dispo_habitacion;
+    public int getEstado() {
+        return estado;
+    }
+
+    public void setEstado(int estado) {
+        this.estado = estado;
+    }
+
+    public String getDisposicion() {
+        return disposicion;
+    }
+
+    public void setDisposicion(String disposicion) {
+        this.disposicion = disposicion;
+    }
+
+    public TipoHabitacion getTipoHabitacion() {
+        return tipo;
+    }
+
+    public void setTipoHabitacion(TipoHabitacion tipo) {
+        this.tipo = tipo;
     }
 
     public Hotel getHotel() {
@@ -93,37 +95,10 @@ public class Habitacion implements Comparable<Habitacion>{
 
     public void setHotel(Hotel hotel) {
         this.hotel = hotel;
-    }
+    }    
 
-    public Tipo_Habitacion getTipoH() {
-        try {
-            TipoHabitacionDao tipoHabitacionDao = new TipoHabitacionDao();
-            this.tipoH = tipoHabitacionDao.selectId(this.tipoH.getId_tipo()).toArrayAsc().get(0);
-        } catch (SQLException ex) {
-            Logger.getLogger(Habitacion.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return this.tipoH;
-    }
-
-    public void setTipoH(Tipo_Habitacion tipoH) {
-        this.tipoH = tipoH;
-    }
-    
     @Override
-    public int compareTo(Habitacion o) {
-        if (num_habitacion > o.getNum_habitacion()){
-            return 1;
-        } else if (num_habitacion < o.getNum_habitacion()) {
-            return -1;
-        }else {
-            return 0;
-        }
+    public int compareTo(Habitacion t) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
-    @Override
-    public String toString() {
-        return id_habitacion + " --- " + num_habitacion + " --- " + descr_habitacion + " --- " +
-                precio_habitacion + " --- " +
-                estado_habitacion + " --- " + dispo_habitacion;
-    }  
 }
