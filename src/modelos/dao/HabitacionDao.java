@@ -9,8 +9,8 @@ import java.util.logging.Logger;
 import modelos.conexion.Conexion;
 import modelos.entidades.Habitacion;
 import modelos.entidades.Hotel;
-import modelos.entidades.Tipo_Habitacion;
-import utilidades.ListaCircularDoble;
+import modelos.entidades.TipoHabitacion;
+import utilidades.ListaSimple;
 
 public class HabitacionDao {
     Conexion conectar = new Conexion();
@@ -22,22 +22,22 @@ public class HabitacionDao {
         
     }
     
-    public ListaCircularDoble<Habitacion> selectAll() throws SQLException{
+    public ListaSimple<Habitacion> selectAll() throws SQLException{
         String sql = "select * from habitacion";
         return select(sql);
     }
     
-    public ListaCircularDoble<Habitacion> selectAllTo(String atributo, String condicion) throws SQLException{
+    public ListaSimple<Habitacion> selectAllTo(String atributo, String condicion) throws SQLException{
         String sql = "select * from habitacion where " + atributo + "='" + condicion + "'";
         return select(sql);
     }
     
-    public ListaCircularDoble<Habitacion> buscar(String dato) throws SQLException{
+    public ListaSimple<Habitacion> buscar(String dato) throws SQLException{
         String sql = "select * from habitacion where id_habitacion like '" + dato + "%' or  num_habitacion like '" + dato + "%'";
         return select(sql);
     }
     
-    public ListaCircularDoble<Habitacion> selectId(int id) throws SQLException{
+    public ListaSimple<Habitacion> selectId(int id) throws SQLException{
         String sql = "select * from habitacion where num_habitacion=" + id;
         return select(sql);
     } 
@@ -47,8 +47,8 @@ public class HabitacionDao {
         return alterarRegistro(sql, obj);
     }
 
-    private ListaCircularDoble<Habitacion> select(String sql) throws SQLException{
-        ListaCircularDoble<Habitacion> lista = new ListaCircularDoble();
+    private ListaSimple<Habitacion> select(String sql) throws SQLException{
+        ListaSimple<Habitacion> lista = new ListaSimple();
         Habitacion obj = null;
         try {
             con = conectar.getConexion();
@@ -57,14 +57,13 @@ public class HabitacionDao {
             
             while(rs.next()) {
                 obj = new Habitacion();
-                
-                obj.setId_habitacion(rs.getString("id_habitacion"));
-                obj.setNum_habitacion(rs.getInt("num_habitacion"));
-                obj.setDescr_habitacion(rs.getString("descripcion_habitacion"));
-                obj.setPrecio_habitacion(rs.getDouble("precio_habitacion"));
-                obj.setEstado_habitacion(rs.getInt("estado_habitacion"));
-                obj.setDispo_habitacion(rs.getString("disposicion_habitacion"));
-                obj.setTipoH(new Tipo_Habitacion(rs.getInt("fk_id_tipo")));
+
+                obj.setNumHabitacion(rs.getInt("num_habitacion"));
+                obj.setDescripcion(rs.getString("descripcion_habitacion"));
+                obj.setPrecio(rs.getDouble("precio_habitacion"));
+                obj.setEstado(rs.getInt("estado_habitacion"));
+                obj.setDisposicion(rs.getString("disposicion_habitacion"));
+                obj.setTipoHabitacion(new TipoHabitacion(rs.getInt("fk_id_tipo")));
                 obj.setHotel(new Hotel(rs.getInt("fk_id_hotel")));
                 
                 lista.insertar(obj);
@@ -90,14 +89,13 @@ public class HabitacionDao {
             con = conectar.getConexion();
             ps = con.prepareStatement(sql);
             
-            ps.setString(1, obj.getId_habitacion());
-            ps.setInt(2, obj.getNum_habitacion());
-            ps.setString(3, obj.getDescr_habitacion());
-            ps.setDouble(4, obj.getPrecio_habitacion());
-            ps.setInt(5, obj.getEstado_habitacion());
-            ps.setString(6, obj.getDispo_habitacion());
-            ps.setInt(7, obj.getTipoH().getId_tipo());
-            ps.setInt(8, obj.getHotel().getId_hotel());
+            ps.setInt(1, obj.getNumHabitacion());
+            ps.setString(2, obj.getDescripcion());
+            ps.setDouble(3, obj.getPrecio());
+            ps.setInt(4, obj.getEstado());
+            ps.setString(5, obj.getDisposicion());
+            ps.setInt(6, obj.getTipoHabitacion().getIdTipo());
+            ps.setInt(7, obj.getHotel().getIdHotel());
             
             ps.execute();
             
@@ -116,7 +114,7 @@ public class HabitacionDao {
     }
     
     public boolean delete(Habitacion obj) throws SQLException{
-        String sql = "delete from habitacion where id_habitacion='" + obj.getId_habitacion() + "'";
+        String sql = "delete from habitacion where id_habitacion='" + obj.getNumHabitacion() + "'";
         
         try {
             con = conectar.getConexion();

@@ -18,7 +18,9 @@ public class Menu extends javax.swing.JFrame {
         this.btnTipoHab.setVisible(false);
         this.btnDash.setActionCommand("Dashboard");
         this.btnProducto.setActionCommand("Productos");
-        this.btnTipoHab.setActionCommand("Movimientos");
+            this.btnTipoHab.setActionCommand("Tipo");
+            this.btnHab.setActionCommand("Habitacion");
+            this.btnListRegistro.setActionCommand("Registro");
         this.btnConfig.setActionCommand("Configuracion");
         this.btnRecepcion.setActionCommand("Recepcion");
     }
@@ -26,7 +28,9 @@ public class Menu extends javax.swing.JFrame {
     public void setControlador(Controlador control){
         this.btnDash.addActionListener(control);
         this.btnProducto.addActionListener(control);
-        this.btnTipoHab.addActionListener(control);
+            this.btnTipoHab.addActionListener(control);    
+            this.btnHab.addActionListener(control);
+            this.btnListRegistro.addActionListener(control);
         this.btnConfig.addActionListener(control);
         this.btnRecepcion.addActionListener(control);
     }
@@ -373,6 +377,7 @@ public class Menu extends javax.swing.JFrame {
     public void resetMenu(){
         this.btnDash.setBackground(new Color(42,53,66));
         this.btnProducto.setBackground(new Color(42,53,66));
+        this.btnHab.setBackground(new Color(42,53,66));
         this.btnTipoHab.setBackground(new Color(42,53,66));
         this.btnRecepcion.setBackground(new Color(42,53,66));
     }
@@ -397,7 +402,8 @@ public class Menu extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRecepcionActionPerformed
 
     private void btnHabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHabActionPerformed
-        // TODO add your handling code here:
+        resetMenu();
+        this.btnHab.setBackground(new Color(241,123,55));
     }//GEN-LAST:event_btnHabActionPerformed
 
     private void btbHabitacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btbHabitacionActionPerformed
