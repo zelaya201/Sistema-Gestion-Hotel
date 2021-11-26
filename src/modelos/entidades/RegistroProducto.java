@@ -49,7 +49,7 @@ public class RegistroProducto implements Comparable<RegistroProducto>{
     public Registro getRegistro() {
         try {
             RegistroDao daoRegistro = new RegistroDao();
-            registro = daoRegistro.selectAllTo("fk_id_registro", String.valueOf(registro.getIdRegistro())).toArray().get(0);
+            registro = daoRegistro.selectAllTo("id_registro", String.valueOf(registro.getIdRegistro())).toArray().get(0);
         } catch (SQLException ex) {
             Logger.getLogger(RegistroProducto.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -63,7 +63,7 @@ public class RegistroProducto implements Comparable<RegistroProducto>{
     public Producto getProducto() {
         try {
             ProductoDao daoProducto = new ProductoDao();
-            producto = daoProducto.selectAllTo("fk_cod_producto", producto.getCodigo()).toArray().get(0);
+            producto = daoProducto.selectAllTo("cod_producto", producto.getCodigo()).toArray().get(0);
             
         } catch (SQLException ex) {
             Logger.getLogger(RegistroProducto.class.getName()).log(Level.SEVERE, null, ex);

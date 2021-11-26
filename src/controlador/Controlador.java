@@ -27,13 +27,16 @@ import javax.swing.table.DefaultTableModel;
 import modelos.dao.HabitacionDao;
 import modelos.dao.HotelDao;
 import modelos.dao.ProductoDao;
+import modelos.dao.RegistroDao;
 import modelos.dao.UsuarioDao;
 import modelos.entidades.Habitacion;
 import modelos.entidades.Hotel;
 import modelos.entidades.Producto;
+import modelos.entidades.Registro;
 import modelos.entidades.Usuario;
 import utilidades.CambiaPanel;
 import utilidades.ExportPDF;
+import utilidades.JFreeCharts;
 import utilidades.ListaSimple;
 import vistas.main.Menu;
 import vistas.modulos.Dashboard;
@@ -55,6 +58,9 @@ public class Controlador implements ActionListener, MouseListener{
     private HabitacionDao daoHabitacion = new HabitacionDao();
     
     /* REGISTRO HABITACIÓN */
+    private RegistroDao daoRegistro = new RegistroDao();
+    
+    /* REGISTRO HABITACIÓN */
     private VistaRegistro registroVista;
     
     /* RECEPCIÓN */
@@ -74,6 +80,7 @@ public class Controlador implements ActionListener, MouseListener{
     
      /* DASHBOARD */
     private Dashboard dashVista;
+    private JFreeCharts barChart = new JFreeCharts();
 
     public Controlador(Menu menu) {
         this.menu = menu;
@@ -138,7 +145,7 @@ public class Controlador implements ActionListener, MouseListener{
             }
         }
         
-        if (btn.getActionCommand().equals("Reporte")) {
+        if (btn.getActionCommand().equals("ReporteHab")) {
 
             String path = "";
 
@@ -151,7 +158,58 @@ public class Controlador implements ActionListener, MouseListener{
                 ListaSimple<Habitacion> habitaciones = daoHabitacion.selectAll();
                 ListaSimple<Hotel> hotel = daoHotel.selectAll();
 
-                new ExportPDF(path, habitaciones, hotel.toArray().get(0));
+                ExportPDF exporPdf = new ExportPDF();
+                exporPdf.setHotel(hotel.toArray().get(0));
+                exporPdf.setListHabitaciones(habitaciones);
+                exporPdf.setPath(path);
+                exporPdf.crearListaHabitaciones();
+                DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                DesktopNotify.showDesktopMessage("Reporte generado", "Ruta: " + path, DesktopNotify.INFORMATION, 10000);
+            }
+
+        }
+        
+        if (btn.getActionCommand().equals("ReporteReg")) {
+
+            String path = "";
+
+            JFileChooser file = new JFileChooser();
+            file.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int request = file.showSaveDialog(menu);
+
+            if (request == JFileChooser.APPROVE_OPTION) {
+                path = file.getSelectedFile().getPath();
+                ListaSimple<Registro> registro = daoRegistro.selectAllTo("fk_num_habitacion", "9");
+                ListaSimple<Hotel> hotel = daoHotel.selectAll();
+
+                ExportPDF exporPdf = new ExportPDF();
+                exporPdf.setHotel(hotel.toArray().get(0));
+                exporPdf.setListaRegistro(registro);
+                exporPdf.setPath(path);
+                exporPdf.crearDetalleHabitacion();
+                DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                DesktopNotify.showDesktopMessage("Reporte generado", "Ruta: " + path, DesktopNotify.INFORMATION, 10000);
+            }
+
+        }   
+        if (btn.getActionCommand().equals("ReportePro")) {
+
+            String path = "";
+
+            JFileChooser file = new JFileChooser();
+            file.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int request = file.showSaveDialog(menu);
+
+            if (request == JFileChooser.APPROVE_OPTION) {
+                path = file.getSelectedFile().getPath();
+                ListaSimple<Producto> producto = daoProducto.selectAll();
+                ListaSimple<Hotel> hotel = daoHotel.selectAll();
+
+                ExportPDF exporPdf = new ExportPDF();
+                exporPdf.setHotel(hotel.toArray().get(0));
+                exporPdf.setListaProducto(producto);
+                exporPdf.setPath(path);
+                exporPdf.crearListaProducto();
                 DesktopNotify.setDefaultTheme(NotifyTheme.Green);
                 DesktopNotify.showDesktopMessage("Reporte generado", "Ruta: " + path, DesktopNotify.INFORMATION, 10000);
             }
@@ -283,15 +341,24 @@ public class Controlador implements ActionListener, MouseListener{
         ListaSimple<Habitacion> habitacion = daoHabitacion.selectAll();
         ListaSimple<Producto> producto = daoProducto.selectAll();
         ListaSimple<Usuario> usuario = daoUsuario.selectAll();
+        ListaSimple<Registro> registro = daoRegistro.selectAll();
         
+        int cantRegis = 0;
         int cantDispo = 0;
         int cantReserv = 0;
         int cantOcup = 0;
+        
+        for(Registro x: registro.toArray()){
+            if(x.getEstado() == 1){
+                cantRegis++;
+            }
+        }
                 
         /*ALERTAS TOTALES*/
         dashVista.lbTotHab.setText(String.valueOf(habitacion.toArray().size()));
         dashVista.lbTotProd.setText(String.valueOf(producto.toArray().size()));
         dashVista.lbTotUsu.setText(String.valueOf(usuario.toArray().size()));
+        dashVista.lbTotFac.setText(String.valueOf(cantRegis));
         
         /*ALERTAS DE DISPONIBILIDAD*/
         for(Habitacion x: habitacion.toArray()){
@@ -308,6 +375,28 @@ public class Controlador implements ActionListener, MouseListener{
         dashVista.lbHabOcu.setText(String.valueOf(cantOcup));
         dashVista.lbHabRes.setText(String.valueOf(cantReserv));
         
+        
+        crearGrafica();
+        
+    }
+    public void crearGrafica() throws SQLException{
+        int totales[]= new int[12];
+        int total = 0;
+        ListaSimple<Registro> registro = daoRegistro.selectAll();
+        
+        for(int i=0; i<12; i++){
+            for(int j=0; j<registro.toArray().size(); j++){
+                if(registro.toArray().get(j).getEstado()==0){
+                    String fecha[]= registro.toArray().get(j).getFechaSalida().split("/");
+                    if((Integer.parseInt(fecha[1])-1)== i){
+                        total++;
+                    }
+                }
+            }
+            totales[i]=total;
+            total=0;
+        }
+        barChart.getBarChart(dashVista.pChart, totales);
     }
     
     public void mostrarDatos() throws SQLException{
@@ -322,6 +411,17 @@ public class Controlador implements ActionListener, MouseListener{
                 }
             }
             dashVista.tablaHabAgre.setModel(modelo);
+            
+            DefaultTableModel modelo2 = (DefaultTableModel) dashVista.tablaUltFact.getModel();
+            modelo2.setRowCount(0);
+            ListaSimple<Registro> registro = daoRegistro.selectAllOrder();
+            
+            for(Registro x: registro.toArray()){
+                if(x.getEstado() == 0){
+                   modelo2.addRow(new Object[]{x.getIdRegistro(), x.getCliente().getNombre()+" " +x.getCliente().getApellido(), x.getFechaSalida(),"$ "+ x.getTotal()});
+                }
+            }
+            dashVista.tablaUltFact.setModel(modelo2);
         }
     }
 
@@ -367,7 +467,25 @@ public class Controlador implements ActionListener, MouseListener{
                 Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        if(btn.getActionCommand().equals("Reporte")){
+        if(btn.getActionCommand().equals("ReporteHab")){
+            try {
+                accionesDeBotones(btn);
+            } catch (SQLException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        if(btn.getActionCommand().equals("ReporteReg")){
+            try {
+                accionesDeBotones(btn);
+            } catch (SQLException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        if(btn.getActionCommand().equals("ReportePro")){
             try {
                 accionesDeBotones(btn);
             } catch (SQLException ex) {
