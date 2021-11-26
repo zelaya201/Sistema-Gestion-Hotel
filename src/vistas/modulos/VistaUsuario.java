@@ -106,7 +106,7 @@ public class VistaUsuario extends javax.swing.JPanel {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 18;
-        gridBagConstraints.ipady = 11;
+        gridBagConstraints.ipady = 9;
         jPanel3.add(jLabel1, gridBagConstraints);
 
         add(jPanel3, java.awt.BorderLayout.PAGE_START);
@@ -171,15 +171,15 @@ public class VistaUsuario extends javax.swing.JPanel {
             tbUsuarios.getColumnModel().getColumn(1).setResizable(false);
             tbUsuarios.getColumnModel().getColumn(1).setPreferredWidth(250);
             tbUsuarios.getColumnModel().getColumn(2).setResizable(false);
-            tbUsuarios.getColumnModel().getColumn(2).setPreferredWidth(100);
+            tbUsuarios.getColumnModel().getColumn(2).setPreferredWidth(75);
             tbUsuarios.getColumnModel().getColumn(3).setResizable(false);
             tbUsuarios.getColumnModel().getColumn(3).setPreferredWidth(150);
             tbUsuarios.getColumnModel().getColumn(4).setResizable(false);
-            tbUsuarios.getColumnModel().getColumn(4).setPreferredWidth(150);
+            tbUsuarios.getColumnModel().getColumn(4).setPreferredWidth(80);
             tbUsuarios.getColumnModel().getColumn(5).setResizable(false);
-            tbUsuarios.getColumnModel().getColumn(5).setPreferredWidth(200);
+            tbUsuarios.getColumnModel().getColumn(5).setPreferredWidth(125);
             tbUsuarios.getColumnModel().getColumn(6).setResizable(false);
-            tbUsuarios.getColumnModel().getColumn(6).setPreferredWidth(300);
+            tbUsuarios.getColumnModel().getColumn(6).setPreferredWidth(150);
             tbUsuarios.getColumnModel().getColumn(7).setResizable(false);
             tbUsuarios.getColumnModel().getColumn(7).setPreferredWidth(150);
             tbUsuarios.getColumnModel().getColumn(8).setResizable(false);

@@ -5,11 +5,8 @@
  */
 package controlador;
 
-import com.itextpdf.layout.borders.Border;
 import ds.desktop.notify.DesktopNotify;
 import ds.desktop.notify.NotifyTheme;
-import java.awt.Color;
-import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -20,15 +17,12 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -41,11 +35,11 @@ import modelos.entidades.Usuario;
 import utilidades.CambiaPanel;
 import utilidades.Encriptacion;
 import utilidades.ImgTabla;
-import utilidades.ListaCircularDoble;
 import utilidades.ListaSimple;
 import utilidades.TextPrompt;
 import vistas.main.Login;
 import vistas.main.Menu;
+import vistas.modulos.ConfirmDialog;
 import vistas.modulos.ModalConfig;
 import vistas.modulos.ModalEditConfig;
 import vistas.modulos.ModalUsuario;
@@ -61,6 +55,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
     private DefaultTableModel modelo;
     private Menu menu;
     private Login login;
+    private ConfirmDialog confirmDialog;
     private String principalOn = "";
     private String modalOn = "";
     
@@ -151,6 +146,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
             usuarioSelected = null;
            
             usuarioModal.setControlador(this);
+            usuarioModal.jPanel1.remove(usuarioModal.btnBaja);
             modalOn = "usuarioModal";
             usuarioModal.iniciar();
         }else if(modals.equals("editarUsuario")){
@@ -159,7 +155,15 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                 usuarioModal.setControlador(this);
                 modalOn = "usuarioModal";
                 
+                if (usuario.getRol().equals("Administrador")) {
+                    usuarioModal.jPanel1.remove(usuarioModal.btnBaja);
+                }
+                
                 usuarioModal.header.setText("Editar Usuario");
+                
+                usuarioModal.iconPass.setVisible(false);
+                usuarioModal.jtPass.setVisible(false);
+                usuarioModal.jtPassRepet.setVisible(false);
                 
                 usuarioModal.jtNom.setText(usuarioSelected.getNombre());
                 usuarioModal.jtApe.setText(usuarioSelected.getApellido());
@@ -171,26 +175,59 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                 usuarioModal.jDate.setDate(parseDate);
                 usuarioModal.jtTel.setText(usuarioSelected.getTelefono());
                 usuarioModal.cbGenero.setSelectedItem(usuarioSelected.getGenero());
+                
                 usuarioModal.jtUser.setText(usuarioSelected.getNick());
+                
                 usuarioModal.cbRol.setSelectedItem(usuarioSelected.getRol());
+                
+                if (usuario.getRol().equals("Administrador")) {
+                    usuarioModal.cbRol.setEnabled(true);
+                }else {
+                    usuarioModal.cbRol.setEnabled(false);
+                }
+                
                 new TextPrompt("Nueva contraseña", usuarioModal.jtPass);
                 new TextPrompt("Repita la nueva contraseña", usuarioModal.jtPass);
                 
-                usuarioModal.setSize(560, 486); //Width - Height
+                usuarioModal.setSize(555, 470); //Width - Height
                 usuarioModal.iniciar();
             } catch (ParseException ex) {
                 Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
             }
         }else if(modals.equals("eliminarUsuario")){
-//            confirmDialog = new ConfirmDialog(new JFrame(), true);
-//            confirmDialog.setControlador(this);
-//            modalOn = "modalDialog";
-//
-//            confirmDialog.header.setText("Eliminar usuario");
-//            confirmDialog.textDialog.setText("<html>¿Estás seguro que quieres eliminar el usuario <b>" + usuarioSelected.getNickname() + "</b>? </html>");
-//            confirmDialog.btnEliminar.setText("Eliminar");
-//            confirmDialog.iniciar();
+            confirmDialog = new ConfirmDialog(new JFrame(), true);
+            confirmDialog.setControlador(this);
+            modalOn = "modalDialog";
+            confirmDialog.header.setText("Eliminar usuario");
+           
+            
+            confirmDialog.textDialog.setText("<html>¿Estás seguro que quieres eliminar el usuario <b>" + usuarioSelected.getNick() + "</b>?<br><b>Al eliminar un usuario se eliminara toda su información y registros.</b></html>");
+            confirmDialog.setSize(610, 260);
+            confirmDialog.btnEliminar.setText("Eliminar");
+             
+            confirmDialog.iniciar();
+        }else if (modals.equals("confirmarAcceso")) {
+            usuarioModal = new ModalUsuario(new JFrame(), true);
+            usuarioModal.setControlador(this);
+            modalOn = "usuarioModal";
 
+            usuarioModal.jPanel1.remove(usuarioModal.btnBaja);
+            usuarioModal.form.remove(usuarioModal.iconName);
+            usuarioModal.form.remove(usuarioModal.jtNom);
+            usuarioModal.form.remove(usuarioModal.jtApe);
+            usuarioModal.form.remove(usuarioModal.iconBirthday);
+            usuarioModal.form.remove(usuarioModal.jDate);
+            usuarioModal.form.remove(usuarioModal.iconTel);
+            usuarioModal.form.remove(usuarioModal.jtTel);
+            usuarioModal.form.remove(usuarioModal.cbGenero);
+            usuarioModal.form.remove(usuarioModal.iconRol);
+            usuarioModal.form.remove(usuarioModal.cbRol);
+
+            usuarioModal.header.setText("Confirmar Acceso");
+            usuarioModal.btnGuardar.setText("Confirmar");
+            
+            usuarioModal.setSize(485, 284);
+            usuarioModal.iniciar();
         }
     }
     
@@ -310,10 +347,25 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                 }
             }
         }
+        
+        if(btn.getActionCommand().equals("checkbox") && modalOn.equals("usuarioModal")) {
+            if (usuarioModal.modiPassCheck.isSelected()) {
+                usuarioModal.setSize(555, 530);
+                usuarioModal.iconPass.setVisible(true);
+                usuarioModal.jtPass.setVisible(true);
+                usuarioModal.jtPassRepet.setVisible(true);
+            }else {
+                usuarioModal.iconPass.setVisible(false);
+                usuarioModal.jtPass.setVisible(false);
+                usuarioModal.jtPassRepet.setVisible(false);
+                usuarioModal.setSize(555, 470);
+            }
+            
+        }
     }
     
-     public void eventosBotones(String btn){
-          if(principalOn.equals("mUsuarios") && modalOn.equals("usuarioModal")){
+    public void eventosBotones(String btn){
+        if(modalOn.equals("usuarioModal") || modalOn.equals("modalDialog")){
             if(btn.equals("Agregar")){
                 if(!usuarioModal.jtNom.getText().isEmpty() && !usuarioModal.jtApe.getText().isEmpty()
                         && usuarioModal.jDate.getDate() != null && !usuarioModal.jtTel.getText().isEmpty()
@@ -361,7 +413,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                                 DesktopNotify.showDesktopMessage("Contraseñas diferentes", "Las contraseñas tienen que ser iguales.", DesktopNotify.WARNING, 8000);
                             }
                         }
-                    }else{
+                    }else {
                         if(usuarioSelected != null){
                             //Modificar
                             ListaSimple<Usuario> existeUser = daoUsuario.buscar(usuarioModal.jtUser.getText());
@@ -374,7 +426,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                             if (!usuarioModal.jtNom.getText().equals(usuarioSelected.getNombre()) || !usuarioModal.jtApe.getText().equals(usuarioSelected.getApellido())
                                     || !fechaNac.equals(usuarioSelected.getfNacimiento()) || !usuarioModal.jtTel.getText().equals(usuarioSelected.getTelefono())
                                     || !usuarioModal.cbGenero.getSelectedItem().toString().equals(usuarioSelected.getGenero()) || !usuarioModal.jtUser.getText().equals(usuarioSelected.getNick())
-                                    || !usuarioModal.cbRol.getSelectedItem().toString().equals(usuarioSelected.getRol()) || !claveAux.equals(usuarioSelected.getClave())) {
+                                    || !usuarioModal.cbRol.getSelectedItem().toString().equals(usuarioSelected.getRol()) || claveAux.isEmpty()) {
                                 if(existeUser.isEmpty()){
                                     if (!usuarioModal.jtPass.getText().isEmpty() && !usuarioModal.jtPassRepet.getText().isEmpty()){
                                         usuarioSelected.setNombre(usuarioModal.jtNom.getText());
@@ -486,143 +538,198 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                                 DesktopNotify.setDefaultTheme(NotifyTheme.Red);
                                 DesktopNotify.showDesktopMessage("Usuario no modificado", "No se ha modificado ningún campo.", DesktopNotify.FAIL, 8000);
                             }
-                            
                         }else{
                             //Campos incompletos
                             DesktopNotify.setDefaultTheme(NotifyTheme.Red);
                             DesktopNotify.showDesktopMessage("Campos vacíos", "Por favor rellene todos los campos.", DesktopNotify.WARNING, 8000); //8 seg
                         }
-    
                     }
-                }else {
-                     //Campos incompletos
+                }else if (!usuarioModal.jtUser.getText().isEmpty() && !usuarioModal.jtPass.getText().isEmpty() && !usuarioModal.jtPassRepet.getText().isEmpty()) {
+                    
+                    /* CONFIRMAR ACCESO - ELIMINAR */
+                    
+                    if (usuarioModal.jtUser.getText().equals(usuario.getNick())) {
+                        String clave = Encriptacion.getStringMessageDigest(usuarioModal.jtPass.getText(), Encriptacion.SHA256);
+
+                        if (clave.equals(usuario.getClave())) {
+                                //usuarioSelected.setEstado(0);
+                                
+                                DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                                DesktopNotify.showDesktopMessage("Hola hola", "Hola hola.", DesktopNotify.INFORMATION, 8000);
+                                
+//                                if(daoUsuario.update(usuarioSelected)){
+//                                    DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+//                                    DesktopNotify.showDesktopMessage("Usuario eliminado", "El usuario ha sido eliminado exitosamente.", DesktopNotify.INFORMATION, 8000);
+//                                    mostrarDatos(usuarioVista.tbUsuarios);
+//                                    usuarioModal.dispose();
+//                                }
+
+                                if (usuarioSelected.getNick().equals(usuario.getNick())) {
+                                    usuarioSelected = null;
+                                    usuario = null; 
+                                    menu.dispose(); 
+                                    DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                                    DesktopNotify.showDesktopMessage("Sesión cerrada", "Se ha cerrado sesión con exito.", DesktopNotify.SUCCESS, 8000); //8 seg
+                                    try {
+                                        mostrarModulos("Login");
+                                    } catch (SQLException ex) {
+                                        Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                }
+                                
+                                modalOn = "";
+                                usuarioModal.dispose();
+                        }else{
+                            DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                            DesktopNotify.showDesktopMessage("Contraseña incorrecta", "Asegúrese que la contraseña sea correcta.", DesktopNotify.WARNING, 8000);
+                        }
+                    }else{
+                        DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                        DesktopNotify.showDesktopMessage("Usuario incorrecto", "Asegúrese de que el usuario digitado sea correcto.", DesktopNotify.WARNING, 8000);
+                    }
+                }else{
+                    //Campos vacios
                     DesktopNotify.setDefaultTheme(NotifyTheme.Red);
                     DesktopNotify.showDesktopMessage("Campos vacíos", "Por favor rellene todos los campos.", DesktopNotify.WARNING, 8000); //8 seg
                 }
-                mostrarDatos(usuarioVista.tbUsuarios);
+            
+                try {
+                    mostrarDatos(usuarioVista.tbUsuarios);
+                } catch(Exception e) {
+                    
+                }
             }
-        }
-     }
+        
+            if (btn.equals("Eliminar")) {
+                try {
+                    confirmDialog.dispose();
+                    mostrarModals("confirmarAcceso");
+                } catch (SQLException ex) {
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }    
+    }
     
     public void mostrarInfoHotel() throws SQLException{
-        Hotel hotelInfo = daoHotel.selectAll().toArrayDesc().get(0);
-        
-        if(principalOn.equals("mConfig")){
-            if(modalOn.equals("modalConfig")){
-                configModalEdit.tfNom.setText(hotelInfo.getNom_hotel());
-                configModalEdit.tfDir.setText(hotelInfo.getDir_hotel());
-                configModalEdit.tfTel.setText(hotelInfo.getTel_hotel());
-            }else{
-                configModal.lbNomHotel.setText(hotelInfo.getNom_hotel());
-                configModal.lbDirHotel.setText(hotelInfo.getDir_hotel());
-                configModal.lbTelHotel.setText(hotelInfo.getTel_hotel());
-            }
-        }        
+//        Hotel hotelInfo = daoHotel.selectAll().toArrayDesc().get(0);
+//        
+//        if(principalOn.equals("mConfig")){
+//            if(modalOn.equals("modalConfig")){
+//                configModalEdit.tfNom.setText(hotelInfo.getNom_hotel());
+//                configModalEdit.tfDir.setText(hotelInfo.getDir_hotel());
+//                configModalEdit.tfTel.setText(hotelInfo.getTel_hotel());
+//            }else{
+//                configModal.lbNomHotel.setText(hotelInfo.getNom_hotel());
+//                configModal.lbDirHotel.setText(hotelInfo.getDir_hotel());
+//                configModal.lbTelHotel.setText(hotelInfo.getTel_hotel());
+//            }
+//        }        
     }
     
     public void mostrarInfoHab() throws SQLException{
-        Habitacion habi = daoHabitacion.selectId(recepcionSelected.getNum_habitacion()).toArrayAsc().get(0);
-        registroVista.lbDescrip.setText(habi.getDescr_habitacion());
-        registroVista.lbNumHab.setText(String.valueOf(habi.getNum_habitacion()));
-        
-        registroVista.lbEstado.setForeground(Color.white);
-        
-        if(habi.getDispo_habitacion().equals("DISPONIBLE")){
-            registroVista.lbEstado.setBackground(new Color(0, 166, 90));
-        }else if(habi.getDispo_habitacion().equals("OCUPADA")){
-            registroVista.lbEstado.setBackground(new Color(223, 56, 56));
-        }else{
-            registroVista.lbEstado.setBackground(new Color(61,137,248));
-        }
-        
-        registroVista.lbEstado.setText(habi.getDispo_habitacion());
-        registroVista.lbTipoHab.setText(habi.getTipoH().getNombre_tipo());
-        registroVista.lbPrecio.setText("$" + String.valueOf(habi.getPrecio_habitacion()));
+//        Habitacion habi = daoHabitacion.selectId(recepcionSelected.getNum_habitacion()).toArrayAsc().get(0);
+//        registroVista.lbDescrip.setText(habi.getDescr_habitacion());
+//        registroVista.lbNumHab.setText(String.valueOf(habi.getNum_habitacion()));
+//        
+//        registroVista.lbEstado.setForeground(Color.white);
+//        
+//        if(habi.getDispo_habitacion().equals("DISPONIBLE")){
+//            registroVista.lbEstado.setBackground(new Color(0, 166, 90));
+//        }else if(habi.getDispo_habitacion().equals("OCUPADA")){
+//            registroVista.lbEstado.setBackground(new Color(223, 56, 56));
+//        }else{
+//            registroVista.lbEstado.setBackground(new Color(61,137,248));
+//        }
+//        
+//        registroVista.lbEstado.setText(habi.getDispo_habitacion());
+//        registroVista.lbTipoHab.setText(habi.getTipoH().getNombre_tipo());
+//        registroVista.lbPrecio.setText("$" + String.valueOf(habi.getPrecio_habitacion()));
         
     }
     
     public void generarHabitaciones() throws SQLException{
-
-        ListaCircularDoble<Habitacion> listaHab = this.daoHabitacion.selectAll();
-        
-        for(Habitacion x : listaHab.toArrayAsc()){
-            
-            GridBagConstraints gridBagConstraints;
-            JPanel panel = new javax.swing.JPanel();
-            JLabel lbNoHab = new JLabel();
-            JLabel lbDispo = new JLabel();
-            JLabel lbTipo = new JLabel();
-            JLabel lbIcono = new JLabel();
-            JScrollPane scroll = new JScrollPane();
-
-            if(x.getDispo_habitacion().equals("DISPONIBLE")){
-                panel.setBackground(new java.awt.Color(0, 166, 90));
-                lbDispo.setBackground(new java.awt.Color(0, 147, 93));
-            }else if(x.getDispo_habitacion().equals("OCUPADA")){
-                panel.setBackground(new java.awt.Color(223, 56, 56));
-                lbDispo.setBackground(new java.awt.Color(187, 56, 56));
-            }else{
-                panel.setBackground(new java.awt.Color(61,137,248));
-                lbDispo.setBackground(new java.awt.Color(61, 115, 213));
-            }
-     
-            panel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-            panel.setName(String.valueOf(x.getNum_habitacion()));
-            panel.setLayout(new java.awt.GridBagLayout());
-
-            lbNoHab.setFont(new java.awt.Font("Calibri", 1, 16));
-            lbNoHab.setForeground(new java.awt.Color(255, 255, 255));
-            lbNoHab.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-            lbNoHab.setText("N° DE HABITACIÓN: " + x.getNum_habitacion());
-            gridBagConstraints = new java.awt.GridBagConstraints();
-            gridBagConstraints.gridx = 1;
-            gridBagConstraints.gridy = 0;
-            gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-            gridBagConstraints.ipadx = 20;
-            gridBagConstraints.ipady = 25;
-            panel.add(lbNoHab, gridBagConstraints);
-
-            lbDispo.setFont(new java.awt.Font("Calibri", 1, 16));
-            lbDispo.setForeground(new java.awt.Color(255, 255, 255));
-            lbDispo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-            lbDispo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/arrow.png")));
-            lbDispo.setText(x.getDispo_habitacion());
-            lbDispo.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
-            lbDispo.setOpaque(true);
-            gridBagConstraints = new java.awt.GridBagConstraints();
-            gridBagConstraints.gridx = 0;
-            gridBagConstraints.gridy = 2;
-            gridBagConstraints.gridwidth = 2;
-            gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-            gridBagConstraints.ipady = 5;
-            gridBagConstraints.weightx = 1.0;
-            gridBagConstraints.insets = new java.awt.Insets(20, 0, 0, 0);
-            panel.add(lbDispo, gridBagConstraints);
-
-            lbTipo.setFont(new java.awt.Font("Calibri", 1, 14));
-            lbTipo.setForeground(new java.awt.Color(255, 255, 255));
-            lbTipo.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-            lbTipo.setText("TIPO: " + x.getTipoH().getNombre_tipo());
-            gridBagConstraints = new java.awt.GridBagConstraints();
-            gridBagConstraints.gridx = 1;
-            gridBagConstraints.gridy = 1;
-            gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-            panel.add(lbTipo, gridBagConstraints);
-
-            lbIcono.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-            lbIcono.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/bed.png")));
-            gridBagConstraints = new java.awt.GridBagConstraints();
-            gridBagConstraints.gridx = 0;
-            gridBagConstraints.gridy = 0;
-            gridBagConstraints.gridheight = 3;
-            gridBagConstraints.ipadx = 15;
-            panel.add(lbIcono, gridBagConstraints);
-            panel.addMouseListener(this);
-            
-            scroll.setViewportView(panel);
-            scroll.setBorder((javax.swing.border.Border) Border.NO_BORDER);
-            recepVista.habPanel.add(scroll);
-        }
+//
+//        ListaCircularDoble<Habitacion> listaHab = this.daoHabitacion.selectAll();
+//        
+//        for(Habitacion x : listaHab.toArrayAsc()){
+//            
+//            GridBagConstraints gridBagConstraints;
+//            JPanel panel = new javax.swing.JPanel();
+//            JLabel lbNoHab = new JLabel();
+//            JLabel lbDispo = new JLabel();
+//            JLabel lbTipo = new JLabel();
+//            JLabel lbIcono = new JLabel();
+//            JScrollPane scroll = new JScrollPane();
+//
+//            if(x.getDispo_habitacion().equals("DISPONIBLE")){
+//                panel.setBackground(new java.awt.Color(0, 166, 90));
+//                lbDispo.setBackground(new java.awt.Color(0, 147, 93));
+//            }else if(x.getDispo_habitacion().equals("OCUPADA")){
+//                panel.setBackground(new java.awt.Color(223, 56, 56));
+//                lbDispo.setBackground(new java.awt.Color(187, 56, 56));
+//            }else{
+//                panel.setBackground(new java.awt.Color(61,137,248));
+//                lbDispo.setBackground(new java.awt.Color(61, 115, 213));
+//            }
+//     
+//            panel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+//            panel.setName(String.valueOf(x.getNum_habitacion()));
+//            panel.setLayout(new java.awt.GridBagLayout());
+//
+//            lbNoHab.setFont(new java.awt.Font("Calibri", 1, 16));
+//            lbNoHab.setForeground(new java.awt.Color(255, 255, 255));
+//            lbNoHab.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+//            lbNoHab.setText("N° DE HABITACIÓN: " + x.getNum_habitacion());
+//            gridBagConstraints = new java.awt.GridBagConstraints();
+//            gridBagConstraints.gridx = 1;
+//            gridBagConstraints.gridy = 0;
+//            gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+//            gridBagConstraints.ipadx = 20;
+//            gridBagConstraints.ipady = 25;
+//            panel.add(lbNoHab, gridBagConstraints);
+//
+//            lbDispo.setFont(new java.awt.Font("Calibri", 1, 16));
+//            lbDispo.setForeground(new java.awt.Color(255, 255, 255));
+//            lbDispo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+//            lbDispo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/arrow.png")));
+//            lbDispo.setText(x.getDispo_habitacion());
+//            lbDispo.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+//            lbDispo.setOpaque(true);
+//            gridBagConstraints = new java.awt.GridBagConstraints();
+//            gridBagConstraints.gridx = 0;
+//            gridBagConstraints.gridy = 2;
+//            gridBagConstraints.gridwidth = 2;
+//            gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+//            gridBagConstraints.ipady = 5;
+//            gridBagConstraints.weightx = 1.0;
+//            gridBagConstraints.insets = new java.awt.Insets(20, 0, 0, 0);
+//            panel.add(lbDispo, gridBagConstraints);
+//
+//            lbTipo.setFont(new java.awt.Font("Calibri", 1, 14));
+//            lbTipo.setForeground(new java.awt.Color(255, 255, 255));
+//            lbTipo.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+//            lbTipo.setText("TIPO: " + x.getTipoH().getNombre_tipo());
+//            gridBagConstraints = new java.awt.GridBagConstraints();
+//            gridBagConstraints.gridx = 1;
+//            gridBagConstraints.gridy = 1;
+//            gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+//            panel.add(lbTipo, gridBagConstraints);
+//
+//            lbIcono.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+//            lbIcono.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/bed.png")));
+//            gridBagConstraints = new java.awt.GridBagConstraints();
+//            gridBagConstraints.gridx = 0;
+//            gridBagConstraints.gridy = 0;
+//            gridBagConstraints.gridheight = 3;
+//            gridBagConstraints.ipadx = 15;
+//            panel.add(lbIcono, gridBagConstraints);
+//            panel.addMouseListener(this);
+//            
+//            scroll.setViewportView(panel);
+//            scroll.setBorder((javax.swing.border.Border) Border.NO_BORDER);
+//            recepVista.habPanel.add(scroll);
+//        }
 
     }
 
@@ -662,6 +769,23 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
             }
     
             if(btn.getActionCommand().equals("GuardarInfo")){
+                try {
+                    accionesDeBotones(btn);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            
+            if(btn.getActionCommand().equals("modiUsuario")) {
+                try {
+                    usuarioSelected = usuario;
+                    mostrarModals("editarUsuario");
+                } catch (SQLException ex) {
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            
+            if(btn.getActionCommand().equals("checkbox")){
                 try {
                     accionesDeBotones(btn);
                 } catch (SQLException ex) {
@@ -720,7 +844,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
         
         if(principalOn.equals("mRecepcion")){
             recepcionSelected = new Habitacion();
-            recepcionSelected.setNum_habitacion(Integer.parseInt(me.getComponent().getName()));
+            //recepcionSelected.setNum_habitacion(Integer.parseInt(me.getComponent().getName()));
             try {
                 mostrarModulos("mRegistro");
             } catch (SQLException ex) {
@@ -728,16 +852,45 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
             }
         }
         
-        if(me.getSource().equals(usuarioVista.btnNuevo)) {
-            try {
-                mostrarModals("nuevoUsuario");
-            } catch (SQLException ex) {
-                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+        try {
+            if(me.getSource().equals(usuarioVista.btnNuevo)) {
+                try {
+                    mostrarModals("nuevoUsuario");
+                } catch (SQLException ex) {
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
+        }catch(Exception e) {
+            
         }
         
-        if (principalOn.equals("mUsuarios") && modalOn.equals("usuarioModal") && me.getSource().equals(usuarioModal.btnGuardar)) {
-            eventosBotones("Agregar");
+        try {
+            if (me.getSource().equals(usuarioModal.btnGuardar)) {
+                eventosBotones("Agregar");
+            }
+        }catch (Exception e) {
+            
+        }
+        
+        try {
+            if (me.getSource().equals(usuarioModal.btnBaja)) {
+                try {
+                    usuarioModal.dispose();
+                    mostrarModals("eliminarUsuario");
+                } catch (SQLException ex) {
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }catch (Exception e) {
+            
+        }
+        
+        try {
+            if(me.getSource().equals(confirmDialog.btnEliminar)){
+                eventosBotones("Eliminar");
+            }
+        }catch (Exception e) {
+            
         }
     }
 
