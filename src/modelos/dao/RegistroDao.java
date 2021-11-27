@@ -49,7 +49,7 @@ public class RegistroDao {
     }
     
     public ListaSimple<Registro> selectId(int id) throws SQLException{
-        String sql = "select * from regsitro where id_registro" + id;
+        String sql = "select * from regsitro where id_registro =" + id;
         return select(sql);
     }
     
@@ -79,8 +79,8 @@ public class RegistroDao {
                 
                 lista.insertar(obj);
             }
-        } catch(Exception e) {
-             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, e);
+        } catch(SQLException e) {
+             System.out.println(e);
         }finally{
             try {
                 ps.close();

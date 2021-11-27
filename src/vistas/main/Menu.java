@@ -18,9 +18,9 @@ public class Menu extends javax.swing.JFrame {
         this.btnTipoHab.setVisible(false);
         this.btnDash.setActionCommand("Dashboard");
         this.btnProducto.setActionCommand("Productos");
-            this.btnTipoHab.setActionCommand("Tipo");
-            this.btnHab.setActionCommand("Habitacion");
-            this.btnListRegistro.setActionCommand("Registro");
+        this.btnTipoHab.setActionCommand("Tipo");
+        this.btnHab.setActionCommand("Habitacion");
+        this.btnListRegistro.setActionCommand("Registro");
         this.btnConfig.setActionCommand("Configuracion");
         this.btnRecepcion.setActionCommand("Recepcion");
         this.btnUsuario.setActionCommand("Usuarios");
@@ -31,9 +31,9 @@ public class Menu extends javax.swing.JFrame {
     public void setControlador(Controlador control){
         this.btnDash.addActionListener(control);
         this.btnProducto.addActionListener(control);
-            this.btnTipoHab.addActionListener(control);    
-            this.btnHab.addActionListener(control);
-            this.btnListRegistro.addActionListener(control);
+        this.btnTipoHab.addActionListener(control);    
+        this.btnHab.addActionListener(control);
+        this.btnListRegistro.addActionListener(control);
         this.btnConfig.addActionListener(control);
         this.btnRecepcion.addActionListener(control);
         this.btnUsuario.addActionListener(control);

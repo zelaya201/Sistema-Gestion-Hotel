@@ -6,13 +6,11 @@ public class VistaHabitacion extends javax.swing.JPanel {
 
     public VistaHabitacion() {
         initComponents();
-        btnReporteTotal.setActionCommand("");
         btnNuevaHab.setActionCommand("NuevaHabitacion");
         btnReporteTotal.setActionCommand("ReporteHab");
     }
     
     public void setControlador(Controlador control){
-        this.btnReporteTotal.addActionListener(control);
         this.btnNuevaHab.addActionListener(control);
         this.btnReporteTotal.addActionListener(control);
         this.tablaHabitaciones.addMouseListener(control);

@@ -107,7 +107,6 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
 
     /* REGISTRO PRODUCTO */
     private RegistroProductoDao daoRegistroProducto = new RegistroProductoDao();
-
     DefaultTableModel md;
     
     
@@ -543,30 +542,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
             }
 
         }
-
-        if (btn.getActionCommand().equals("ReporteReg")) {
-
-            String path = "";
-
-            JFileChooser file = new JFileChooser();
-            file.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            int request = file.showSaveDialog(menu);
-
-            if (request == JFileChooser.APPROVE_OPTION) {
-                path = file.getSelectedFile().getPath();
-                ListaSimple<Registro> registro = daoRegistro.selectAllTo("fk_num_habitacion", "4");
-                ListaSimple<Hotel> hotel = daoHotel.selectAll();
-
-                ExportPDF exporPdf = new ExportPDF();
-                exporPdf.setHotel(hotel.toArray().get(0));
-                exporPdf.setListaRegistro(registro);
-                exporPdf.setPath(path);
-                exporPdf.crearDetalleHabitacion();
-                DesktopNotify.setDefaultTheme(NotifyTheme.Green);
-                DesktopNotify.showDesktopMessage("Reporte generado", "Ruta: " + path, DesktopNotify.INFORMATION, 10000);
-            }
-
-        }
+        
         if (btn.getActionCommand().equals("ReportePro")) {
 
             String path = "";
@@ -590,6 +566,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
             }
 
         }
+        
         if (btn.getActionCommand().equals("ReporteHabPro")) {
 
             String path = "";
@@ -791,6 +768,9 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
                     ImageIcon img_delete = new ImageIcon(getClass().getResource("/img/delete.png"));
                     JLabel lbImg_delete = new JLabel(new ImageIcon(img_delete.getImage()));
                     
+                    ImageIcon img_report = new ImageIcon(getClass().getResource("/img/file.png"));
+                    JLabel lbImg_report = new JLabel(new ImageIcon(img_report.getImage()));
+                    
                     md.addRow(new Object[]{
                     hab.getNumHabitacion(),
                     hab.getDescripcion(),
@@ -798,7 +778,8 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
                     hab.getTipoHabitacion().getNombre(),
                     hab.getDisposicion(),
                     lbImg_edit,
-                    lbImg_delete});
+                    lbImg_delete, 
+                    lbImg_report });
                     tabla.setRowHeight(40);
                 } catch (Exception ex) {
                     Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
@@ -812,7 +793,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
         
     }
 
-    public void eventosBotones(String btn) {
+    public void eventosBotones(String btn) throws SQLException, IOException {
         if (modalOn.equals("usuarioModal") || modalOn.equals("modalDialog")) {
             if (btn.equals("Agregar")) {
                 if (!usuarioModal.jtNom.getText().isEmpty() && !usuarioModal.jtApe.getText().isEmpty()
@@ -1051,6 +1032,37 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
                     Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+        }
+        
+        if (btn.equals("ReporteReg")) {
+
+            String path = "";
+
+            if(!habitacionSelected.getRegistros().toArray().isEmpty()){
+                
+                JFileChooser file = new JFileChooser();
+                file.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                int request = file.showSaveDialog(menu);
+
+                if (request == JFileChooser.APPROVE_OPTION) {
+                    path = file.getSelectedFile().getPath();
+                    ListaSimple<Registro> registro = daoRegistro.selectAllTo("fk_num_habitacion", String.valueOf(habitacionSelected.getNumHabitacion()));
+                    ListaSimple<Hotel> hotel = daoHotel.selectAll();
+
+                    ExportPDF exporPdf = new ExportPDF();
+                    exporPdf.setHotel(hotel.toArray().get(0));
+                    exporPdf.setListaRegistro(registro);
+                    exporPdf.setPath(path);
+                    exporPdf.crearDetalleHabitacion();
+                    DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                    DesktopNotify.showDesktopMessage("Reporte generado", "Ruta: " + path, DesktopNotify.INFORMATION, 10000);
+                }
+                
+            }else{
+                DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                DesktopNotify.showDesktopMessage("Habitación sin Registros", "Esta habitación aun no contiene un registro de huésped", DesktopNotify.INFORMATION, 10000);
+            }
+
         }
     }
 
@@ -1312,16 +1324,6 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
                 }
             }
             
-            if(btn.getActionCommand().equals("ReporteReg")){
-                try {
-                    accionesDeBotones(btn);
-                } catch (SQLException ex) {
-                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IOException ex) {
-                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            
             if(btn.getActionCommand().equals("ReportePro")){
                 try {
                     accionesDeBotones(btn);
@@ -1331,16 +1333,16 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
                     Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-
-            if(btn.getActionCommand().equals("ReporteHabPro")){
-                try {
-                    accionesDeBotones(btn);
-                } catch (SQLException ex) {
-                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IOException ex) {
-                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+//
+//            if(btn.getActionCommand().equals("ReporteHabPro")){
+//                try {
+//                    accionesDeBotones(btn);
+//                } catch (SQLException ex) {
+//                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+//                } catch (IOException ex) {
+//                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
             
             
             if(btn.getActionCommand().equals("Configuracion")){
@@ -1565,10 +1567,20 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
 
                         }
 
+                    } else if(col == 7){
+                        int fila = habitacionVista.tablaHabitaciones.getSelectedRow();
+                        int numHab = (int) habitacionVista.tablaHabitaciones.getValueAt(fila, 0);
+
+                        ListaSimple<Habitacion> habL  = daoHabitacion.selectAllTo("num_habitacion", String.valueOf(numHab));
+
+                        habitacionSelected = habL.toArray().get(0);
+                        eventosBotones("ReporteReg");
                     }
                 } catch (SQLException e) {
                     System.out.println("ERROR en el mouse clicked del tipo > " + e);
-                }
+                } catch (IOException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            }
             }
     
     }

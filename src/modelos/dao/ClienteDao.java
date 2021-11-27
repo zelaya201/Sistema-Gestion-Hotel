@@ -11,8 +11,6 @@ import modelos.conexion.Conexion;
 import modelos.entidades.Cliente;
 import utilidades.ListaSimple;
 
-
-
 public class ClienteDao {
 
     Conexion conectar = new Conexion();
@@ -69,7 +67,7 @@ public class ClienteDao {
                 obj = new Cliente();
 
                 obj.setDui(rs.getString("dui_cliente"));
-                obj.setNombre(rs.getString("nombre_completo"));
+                obj.setNombre(rs.getString("nom_cliente"));
                 obj.setApellido(rs.getString("ape_cliente"));
                 obj.setTelefono(rs.getString("tel_cliente"));
                 obj.setEmail(rs.getString("email_cliente"));
