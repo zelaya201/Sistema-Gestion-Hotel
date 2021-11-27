@@ -34,6 +34,7 @@ import modelos.entidades.ClaveAcceso;
 import modelos.entidades.Habitacion;
 import modelos.entidades.Hotel;
 import modelos.entidades.Usuario;
+import utilidades.ArbolBB;
 import utilidades.CambiaPanel;
 import utilidades.Encriptacion;
 import utilidades.ImgTabla;
@@ -69,6 +70,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
     private ClaveAccesoDao daoClave =  new ClaveAccesoDao();
     private VistaUsuario usuarioVista;
     private ModalUsuario usuarioModal;
+    private ArbolBB arbolBusqueda = new ArbolBB();
     
     /* HABITACIÓN */
     private HabitacionDao daoHabitacion = new HabitacionDao();
@@ -220,9 +222,9 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                 
                 usuarioModal.cbRol.setSelectedItem(usuarioSelected.getRol());
                 
-                if (usuario.getRol().equals("Administrador")) {
+                if (usuario.getRol().equals("Administrador") && !usuarioSelected.getNick().equals(usuario.getNick())) {
                     usuarioModal.cbRol.setEnabled(true);
-                }else {
+                }else if (usuario.getRol().equals("Administrador") || usuarioSelected.getNick().equals(usuario.getNick())){
                     usuarioModal.cbRol.setEnabled(false);
                 }
                 
