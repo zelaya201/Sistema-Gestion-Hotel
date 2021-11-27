@@ -476,10 +476,10 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
             tabla.getColumnModel().getColumn(2).setCellRenderer(diseño);
             tabla.getColumnModel().getColumn(3).setCellRenderer(diseño);
             tabla.getColumnModel().getColumn(4).setCellRenderer(diseño);
-
-            tabla.getColumnModel().getColumn(6).setCellRenderer(diseño);
+            tabla.getColumnModel().getColumn(5).setCellRenderer(diseño);
             tabla.getColumnModel().getColumn(7).setCellRenderer(diseño);
             tabla.getColumnModel().getColumn(8).setCellRenderer(diseño);
+            tabla.getColumnModel().getColumn(9).setCellRenderer(diseño);
 
             ListaSimple<Registro> registro = daoRegistro.selectAll();
             ListaRegisCola = new ColaPrioridadN(13);
@@ -504,13 +504,14 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
                 ImageIcon img_estado0 = new ImageIcon(getClass().getResource("/img/estado0.png"));
                 JLabel lbImg_estado0 = new JLabel(new ImageIcon(img_estado0.getImage()));
 
-                modelo.addRow(new Object[]{x.getIdRegistro(), 
+                modelo.addRow(new Object[]{
+                    x.getIdRegistro(), 
                     x.getHabitacion().getNumHabitacion(), 
                     x.getHabitacion().getDescripcion(), 
                     x.getCliente().getNombre() + " " + x.getCliente().getApellido(), 
                     x.getUsuario().getNombre() + " " + x.getUsuario().getApellido(), 
-                    (x.getEstado() != 0) ? lbImg_estado1 : lbImg_estado0,
                     x.getTipo(),
+                    (x.getEstado() != 0) ? lbImg_estado1 : lbImg_estado0,
                     x.getFechaEntrada(),
                     x.getFechaSalida(),
                     "$ " + formatoDecimal(x.getTotal())
@@ -526,7 +527,6 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
             tabla.setModel(modelo);
         }
     }
-
     
     public void mostrarBusqueda(ListaSimple lista, JTable tabla){
         DefaultTableCellRenderer diseño = (DefaultTableCellRenderer) tabla.getCellRenderer(0, 0); //Obtener diseño de la tabla
