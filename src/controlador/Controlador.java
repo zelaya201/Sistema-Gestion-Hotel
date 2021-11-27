@@ -27,9 +27,11 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import modelos.dao.ClienteDao;
 import modelos.dao.HabitacionDao;
 import modelos.dao.HotelDao;
 import modelos.dao.TipoHabitacionDao;
+import modelos.entidades.Cliente;
 import modelos.entidades.Habitacion;
 import modelos.entidades.Hotel;
 import modelos.entidades.TipoHabitacion;
@@ -45,6 +47,7 @@ import vistas.modulos.VistaHabitacion;
 import vistas.modulos.VistaRecepcion;
 import vistas.modulos.VistaRegistro;
 import vistas.modulos.VistaTipo;
+import vistas.modulos.modalHabitacion;
 
 /**
  *
@@ -61,8 +64,11 @@ public class Controlador implements ActionListener, MouseListener{
     private HabitacionDao daoHabitacion = new HabitacionDao();
     private TipoHabitacionDao tipoHabDao = new TipoHabitacionDao();
     private TipoHabitacion selectedTipo = null;
+    private Habitacion habitacionSelected = null;
+    
     ConfirmDialogTipo modalEliminar;
-    ListaDoble listitaD;
+    modalHabitacion modalHab;
+    
     
     /* REGISTRO HABITACIÓN */
     private VistaTipo tipoVista;
@@ -72,6 +78,7 @@ public class Controlador implements ActionListener, MouseListener{
     /* RECEPCIÓN */
     private VistaRecepcion recepVista; 
     private Habitacion recepcionSelected = null;
+    private ClienteDao daoCliente;
     
     /* CONFIGURACIÓN */
     private ModalConfig configModal;
@@ -82,17 +89,10 @@ public class Controlador implements ActionListener, MouseListener{
         this.menu = menu;
         this.menu.setControlador(this);
         this.menu.iniciar();
-        listitaD = new ListaDoble();
     }
     
     public void mostrarModulos(String mod) throws SQLException{
-        if(mod.equals("mConfig")){
-            configModal = new ModalConfig(new JFrame(), true);
-            configModal.setControlador(this);
-            principalOn = "mConfig";
-            mostrarInfoHotel();
-            configModal.iniciar();
-        }else if(mod.equals("mRecepcion")){
+        if(mod.equals("mRecepcion")){
             recepVista = new VistaRecepcion();
             recepVista.setControlador(this);
             generarHabitaciones();
@@ -102,6 +102,7 @@ public class Controlador implements ActionListener, MouseListener{
             registroVista = new VistaRegistro();
             registroVista.setControlador(this);
             mostrarInfoHab();
+            llenarComboRegistro();
             principalOn = "mRegistro";
             new CambiaPanel(menu.body, registroVista);
         }else if(mod.equals("mTipo")){
@@ -114,14 +115,20 @@ public class Controlador implements ActionListener, MouseListener{
         }else if(mod.equals("mHabitacion")){
             habitacionVista = new VistaHabitacion();
             habitacionVista.setControlador(this);
-//            metodo
+            mostrarTablaHabitaciones(habitacionVista.tablaHabitaciones);
             principalOn = "mHabitacion";
             new CambiaPanel(menu.body, habitacionVista);
         }
     }
     
     public void mostrarModals(String modals) throws SQLException{
-        if(modals.equals("modalConfig")){
+        if(modals.equals("mConfig")){
+            configModal = new ModalConfig(new JFrame(), true);
+            configModal.setControlador(this);
+            modalOn = "mConfig";
+            mostrarInfoHotel();
+            configModal.iniciar();
+        }else if(modals.equals("modalConfig")){
             configModal.dispose();
             configModalEdit = new ModalEditConfig(new JFrame(), true);
             configModalEdit.setControlador(this);
@@ -139,11 +146,38 @@ public class Controlador implements ActionListener, MouseListener{
             modalEliminar.btnEliminar.setText("Eliminar");
             modalEliminar.iniciar();
 //            tipoHabDao.eliminar(selectedTipo);
+        }else if(modals.equals("modalNewHabitacion")){
+            modalHab = new modalHabitacion(new JFrame(), true);
+            modalHab.setControlador(this);
+            modalOn = "modalNewHabitacion";
+            llenarComboBox();
+            modalHab.iniciar();
+        } else if(modals.equals("eliminarHabitacion")){
+            modalEliminar = new ConfirmDialogTipo(new JFrame(), true);
+            modalEliminar.setControlador(this);
+            modalOn = "modalEliminarHab";
+            
+            modalEliminar.header.setText("Eliminar ");
+            modalEliminar.textDialog.setText("<html>¿Eliminar la habitación número <b>" + habitacionSelected.getNumHabitacion() + "</b>? </html>");
+            modalEliminar.btnEliminar.setText("Eliminar");
+            modalEliminar.iniciar();
+        } else if(modals.equals("modalModHabitacion")){
+            modalHab = new modalHabitacion(new JFrame(), true);
+            modalHab.setControlador(this);
+            modalOn = "modalModHab";
+            
+            modalHab.btnHabitacionReg.setText("Modificar");
+            modalHab.btnHabitacionReg.setActionCommand("ModificarHabitacion");
+            modalHab.txtNumHabitacion.setEditable(false);
+            modalHab.txtNumHabitacion.setText(String.valueOf(habitacionSelected.getNumHabitacion()));
+            modalHab.txtDescripcionHab.setText(habitacionSelected.getDescripcion());
+            modalHab.txtPrecioHab.setText(String.valueOf(habitacionSelected.getPrecio()));
+            llenarComboBox();
+            modalHab.iniciar();
         }
     }
     
     public void accionesDeBotones(ActionEvent btn) throws SQLException{
-        
         if(btn.getActionCommand().equals("GuardarInfo") && modalOn == "modalConfig"){
             if(!configModalEdit.tfNom.getText().isEmpty() && !configModalEdit.tfDir.getText().isEmpty() && !configModalEdit.tfTel.getText().isEmpty()){
                 if(daoHotel.update(new Hotel(1, configModalEdit.tfNom.getText(), configModalEdit.tfDir.getText(), configModalEdit.tfTel.getText()))){
@@ -188,17 +222,88 @@ public class Controlador implements ActionListener, MouseListener{
                 }
             }
         }
+        if (principalOn.equals("mHabitacion")) {
+            if (btn.getActionCommand().equals("RegistrarHabitacion") && modalOn.equals("modalNewHabitacion")) {
+//              
+                if (!modalHab.txtNumHabitacion.getText().isEmpty() && !modalHab.txtDescripcionHab.getText().isEmpty() &&
+                        !modalHab.txtPrecioHab.getText().isEmpty() && modalHab.cbTiposHabitacion.getSelectedIndex() > 0) {
+                    if (this.daoHabitacion.validarNumeroHabitacion(modalHab.txtNumHabitacion.getText()) == true) {
+                        DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                        DesktopNotify.showDesktopMessage("Número de Habitacion Duplicado", "El número de habitación ya existe", DesktopNotify.SUCCESS, 8000);
+                        modalHab.dispose();
+//                        mostrarModulos("mHabitacion");
+                    } else {
+                        TipoHabitacion tipo = new TipoHabitacion();
+                        tipo.setIdTipo(Integer.parseInt(modalHab.cbTiposHabitacion.getSelectedItem().toString().substring(0, 1)));
+                        if (daoHabitacion.insert(new Habitacion(Integer.parseInt(modalHab.txtNumHabitacion.getText()), modalHab.txtDescripcionHab.getText(), Double.parseDouble(modalHab.txtPrecioHab.getText()), 1, "DISPONIBLE", tipo, new Hotel(1)))) {
+                            DesktopNotify.setDefaultTheme(NotifyTheme.LightBlue);
+                            DesktopNotify.showDesktopMessage("Registro de Habitación", "El registro se ha hecho exitosamente.", DesktopNotify.INFORMATION, 8000);
+                            modalHab.dispose();
+                            mostrarModulos("mHabitacion");
+                        }
+                    }
+                }
+                
+            } 
+            if (btn.getActionCommand().equals("ModificarHabitacion") && modalOn.equals("modalModHab")) {
+                
+                if (!modalHab.txtNumHabitacion.getText().isEmpty() && !modalHab.txtDescripcionHab.getText().isEmpty() &&
+                        !modalHab.txtPrecioHab.getText().isEmpty() && modalHab.cbTiposHabitacion.getSelectedIndex() > 0) {
+                    
+                    habitacionSelected.setNumHabitacion(Integer.parseInt(modalHab.txtNumHabitacion.getText()));
+                    habitacionSelected.setDescripcion(modalHab.txtDescripcionHab.getText());
+                    habitacionSelected.setPrecio(Double.parseDouble(modalHab.txtPrecioHab.getText()));
+                    
+                    TipoHabitacion tipo = new TipoHabitacion();
+                    tipo.setIdTipo(Integer.parseInt(modalHab.cbTiposHabitacion.getSelectedItem().toString().substring(0, 1)));
+                    habitacionSelected.setTipoHabitacion(tipo);
+                    habitacionSelected.setHotel(new Hotel(1));
+                    if (daoHabitacion.update(habitacionSelected)) {
+                        DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                        DesktopNotify.showDesktopMessage("Registro de Habitación", "El registro se ha modificado con e.", DesktopNotify.SUCCESS, 8000);
+                        modalHab.dispose();
+                        mostrarModulos("mHabitacion");
+                    }
+                }
+            }
+            
+        }
+    }
+    
+    public void llenarComboBox() throws SQLException{
+        if (modalOn.equals("modalNewHabitacion") || modalOn.equals("modalModHab")) {
+            modalHab.cbTiposHabitacion.removeAllItems();
+            modalHab.cbTiposHabitacion.addItem("Seleccione");
+            String dato = "";
+            
+            ListaSimple<TipoHabitacion> tipo = tipoHabDao.selectAll();
+            for (TipoHabitacion x : tipo.toArray()) {
+                dato = x.getIdTipo() + " - " + x.getNombre();
+                this.modalHab.cbTiposHabitacion.addItem(dato);
+            }
+        } 
+    }
+    public void llenarComboRegistro() throws SQLException{
+            registroVista.cbHuesped.removeAllItems();
+            registroVista.cbHuesped.addItem("Seleccione");
+            String dato = "";
+            
+            ListaSimple<Cliente> huesped = daoCliente.selectAll();
+            for (Cliente x : huesped.toArray()) {
+                dato = x.getDui() + " | " + x.getNombre();
+                this.registroVista.cbHuesped.addItem(dato);
+            }
+        
     }
     
     public void mostrarTablaTipos(JTable tabla) throws SQLException{
         md = (DefaultTableModel) tabla.getModel();
+        DefaultTableCellRenderer d = (DefaultTableCellRenderer) tabla.getCellRenderer(0, 0);
         md.setRowCount(0);
         
-        DefaultTableCellRenderer align = new DefaultTableCellRenderer();
-        align.setHorizontalAlignment(SwingConstants.CENTER);
-        tabla.getColumnModel().getColumn(0).setCellRenderer(align);
-        tabla.getColumnModel().getColumn(1).setCellRenderer(align);
-        tabla.getColumnModel().getColumn(2).setCellRenderer(align);
+        tabla.getColumnModel().getColumn(0).setCellRenderer(d);
+        tabla.getColumnModel().getColumn(1).setCellRenderer(d);
+        tabla.getColumnModel().getColumn(2).setCellRenderer(d);
         
         tabla.setDefaultRenderer(Object.class, new ImgTabla());
         
@@ -225,6 +330,48 @@ public class Controlador implements ActionListener, MouseListener{
                 md.addRow(new Object[]{"Ningun resultado encontrado"});
             }
             tabla.setModel(md);
+    }
+    
+    public void mostrarTablaHabitaciones(JTable tabla) throws SQLException{
+        md = (DefaultTableModel) tabla.getModel();
+        DefaultTableCellRenderer d = (DefaultTableCellRenderer) tabla.getCellRenderer(0, 0);
+        md.setRowCount(0);
+        
+        tabla.getColumnModel().getColumn(0).setCellRenderer(d); 
+        
+        tabla.getColumnModel().getColumn(1).setCellRenderer(d);
+        tabla.getColumnModel().getColumn(2).setCellRenderer(d);
+        tabla.getColumnModel().getColumn(3).setCellRenderer(d);
+        tabla.getColumnModel().getColumn(4).setCellRenderer(d);
+        
+        tabla.setDefaultRenderer(Object.class, new ImgTabla());
+        
+        for (Habitacion hab : daoHabitacion.selectAll().toArray()) {
+                try {
+                    ImageIcon img_edit = new ImageIcon(getClass().getResource("/img/editarTipo.png"));
+                    JLabel lbImg_edit = new JLabel(new ImageIcon(img_edit.getImage()));
+                    
+                    ImageIcon img_delete = new ImageIcon(getClass().getResource("/img/delete.png"));
+                    JLabel lbImg_delete = new JLabel(new ImageIcon(img_delete.getImage()));
+                    
+                    md.addRow(new Object[]{
+                    hab.getNumHabitacion(),
+                    hab.getDescripcion(),
+                    "$" + hab.getPrecio(),
+                    hab.getTipoHabitacion().getNombre(),
+                    hab.getDisposicion(),
+                    lbImg_edit,
+                    lbImg_delete});
+                    tabla.setRowHeight(40);
+                } catch (Exception ex) {
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (md.getRowCount() < 1) {
+                md.addRow(new Object[]{"Ningun resultado encontrado"});
+            }
+            tabla.setModel(md);
+        
     }
     
     public void mostrarInfoHotel() throws SQLException{
@@ -352,7 +499,7 @@ public class Controlador implements ActionListener, MouseListener{
     public void actionPerformed(ActionEvent btn) {
         if(btn.getActionCommand().equals("Configuracion")){
             try {
-                mostrarModulos("mConfig");
+                mostrarModals("mConfig");
             } catch (SQLException ex) {
                 System.out.println(ex);
             }
@@ -402,7 +549,7 @@ public class Controlador implements ActionListener, MouseListener{
         if (btn.getActionCommand().equals("CancelarTipo")) {
             try {
                 mostrarModulos("mTipo");
-            } catch (Exception e) {
+            } catch (SQLException e) {
             }
         }
         
@@ -412,6 +559,31 @@ public class Controlador implements ActionListener, MouseListener{
             } catch (SQLException ex) {
                 Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
+        if (btn.getActionCommand().equals("NuevaHabitacion")) {
+            try {
+                mostrarModals("modalNewHabitacion");
+            } catch (SQLException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        if (btn.getActionCommand().equals("RegistrarHabitacion")) {
+            try {
+                accionesDeBotones(btn);
+            } catch (SQLException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        if (btn.getActionCommand().equals("ModificarHabitacion")) {
+            try {
+                accionesDeBotones(btn);
+            } catch (SQLException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        if (btn.getActionCommand().equals("CancelarHabitacion")) {
+            modalHab.dispose();
         }
         
         if (btn.getActionCommand().equals("Habitacion")) {
@@ -455,6 +627,35 @@ public class Controlador implements ActionListener, MouseListener{
                 System.out.println("ERROR en el mouse clicked del tipo > " + e);
             }
         }
+        
+        if (principalOn.equals("mHabitacion") && me.getSource() == habitacionVista.tablaHabitaciones) {
+            int col = habitacionVista.tablaHabitaciones.getSelectedColumn();
+            try {
+                if (col == 6) {
+                    int fila = habitacionVista.tablaHabitaciones.getSelectedRow();
+                    int numHab = (int) habitacionVista.tablaHabitaciones.getValueAt(fila, 0);
+                    
+                    ListaSimple<Habitacion> habL  = daoHabitacion.selectAllTo("num_habitacion", String.valueOf(numHab));
+                    
+                    habitacionSelected = habL.toArray().get(0);
+                    mostrarModals("eliminarHabitacion");
+                } else if(col == 5){
+                    int fila = habitacionVista.tablaHabitaciones.getSelectedRow();
+                    int numHab = (int) habitacionVista.tablaHabitaciones.getValueAt(fila, 0);
+                    
+                    ListaSimple<Habitacion> habL  = daoHabitacion.selectAllTo("num_habitacion", String.valueOf(numHab));
+                    habitacionSelected = habL.toArray().get(0);
+                    
+                    if (!habL.isEmpty()) {
+                        mostrarModals("modalModHabitacion");
+                        
+                    }
+                    
+                }
+            } catch (SQLException e) {
+                System.out.println("ERROR en el mouse clicked del tipo > " + e);
+            }
+        }
     }
 
     @Override
@@ -474,6 +675,12 @@ public class Controlador implements ActionListener, MouseListener{
                 eventoLabel("btnEliminarTipo");
            } catch (Exception e) {
                 
+           }
+        }
+        if(modalOn.equals("modalEliminarHab") && me.getSource().equals(modalEliminar.btnEliminar)){
+            try {
+                eventoLabel("btnEliminarHabitacion");
+            } catch (Exception e) {
             }
         }
     }
@@ -490,14 +697,31 @@ public class Controlador implements ActionListener, MouseListener{
                                 mostrarModulos("mTipo");
                                 modalEliminar.dispose();
                                 }
-                            }else{
+                        }else{
                                 modalEliminar.dispose();
                                 DesktopNotify.setDefaultTheme(NotifyTheme.Red);
-                                DesktopNotify.showDesktopMessage("No puede eliminar este usuario", "No es posible eliminar el usuario logueado actualmente.", DesktopNotify.INFORMATION, 8000);
+                                DesktopNotify.showDesktopMessage("Problema con eliminar el tipo", "No es posible realizar esta acción.", DesktopNotify.INFORMATION, 8000);
                                 mostrarModulos("mTipo");
                         }
                         } catch (SQLException e) {
                     
+                    }
+                }
+            }
+        }
+        if (principalOn.equals("mHabitacion")) {
+            if (modalOn.equals("modalEliminarHab")) {
+                if (btn.equals("btnEliminarHabitacion")) {
+                    try {
+                        if (habitacionSelected != null) {
+                            if (daoHabitacion.delete(habitacionSelected)) {
+                                DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                                DesktopNotify.showDesktopMessage("Habitación vacia eliminada", "La habitación se ha eliminado exitosamente.", DesktopNotify.INFORMATION, 8000);
+                                mostrarModulos("mHabitacion");
+                                modalEliminar.dispose();
+                            }
+                        }
+                    } catch (SQLException e) {
                     }
                 }
             }

@@ -6,13 +6,15 @@ public class VistaHabitacion extends javax.swing.JPanel {
 
     public VistaHabitacion() {
         initComponents();
-        btnHabitacionReg.setActionCommand("RegistrarHabitacion");
-        btnCancelarReg.setActionCommand("CancelarHabitacion");
+          btnReporteTotal.setActionCommand("");
+          btnNuevaHab.setActionCommand("NuevaHabitacion");
     }
     
     public void setControlador(Controlador control){
-        this.btnHabitacionReg.addActionListener(control);
-        this.btnCancelarReg.addActionListener(control);
+          this.btnReporteTotal.addActionListener(control);
+          this.btnNuevaHab.addActionListener(control);
+          
+          tablaHabitaciones.addMouseListener(control);
     }
 
     /**
@@ -26,24 +28,12 @@ public class VistaHabitacion extends javax.swing.JPanel {
         java.awt.GridBagConstraints gridBagConstraints;
 
         habPanel = new javax.swing.JPanel();
-        habitaciones = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
-        txtNumHabitacion = new RSMaterialComponent.RSTextFieldOne();
-        txtDescripcionHan = new RSMaterialComponent.RSTextFieldOne();
-        txtPrecioHab = new RSMaterialComponent.RSTextFieldOne();
-        cbEstadosHab = new RSMaterialComponent.RSComboBox();
-        cbTiposHabitacion = new RSMaterialComponent.RSComboBox();
-        btnHabitacionReg = new newscomponents.RSButtonFlat_new();
-        btnCancelarReg = new newscomponents.RSButtonFlat_new();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tablaHabitacionReg = new RSMaterialComponent.RSTableMetro();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tablaHabitaciones = new rojerusan.RSTableMetro();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
+        btnReporteTotal = new newscomponents.RSButtonIcon_new();
+        btnNuevaHab = new newscomponents.RSButtonIcon_new();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setOpaque(false);
@@ -54,227 +44,57 @@ public class VistaHabitacion extends javax.swing.JPanel {
         habPanel.setAutoscrolls(true);
         habPanel.setLayout(new java.awt.BorderLayout());
 
-        habitaciones.setBackground(new java.awt.Color(255, 255, 255));
-        habitaciones.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createEmptyBorder(35, 35, 35, 35), new javax.swing.border.LineBorder(new java.awt.Color(102, 204, 255), 1, true)));
-        habitaciones.setForeground(new java.awt.Color(51, 51, 51));
-        habitaciones.setLayout(new java.awt.GridBagLayout());
+        jScrollPane2.setBackground(new java.awt.Color(255, 255, 255));
+        jScrollPane2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        jScrollPane2.setViewportBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        jScrollPane2.setOpaque(false);
 
-        jLabel1.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("REGISTRANDO HABITACIÓN");
-        jLabel1.setOpaque(true);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 4;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipady = 30;
-        gridBagConstraints.insets = new java.awt.Insets(0, 15, 10, 15);
-        habitaciones.add(jLabel1, gridBagConstraints);
-
-        jLabel4.setBackground(new java.awt.Color(61, 137, 248));
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel4.setText("PRECIO:");
-        jLabel4.setOpaque(true);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipady = 20;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 15);
-        habitaciones.add(jLabel4, gridBagConstraints);
-
-        jLabel5.setBackground(new java.awt.Color(61, 137, 248));
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText("ESTADO:");
-        jLabel5.setOpaque(true);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipady = 20;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 15);
-        habitaciones.add(jLabel5, gridBagConstraints);
-
-        jLabel7.setBackground(new java.awt.Color(61, 137, 248));
-        jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel7.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel7.setText("N° DE HABITACIÓN:");
-        jLabel7.setOpaque(true);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipady = 20;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
-        habitaciones.add(jLabel7, gridBagConstraints);
-
-        jLabel6.setBackground(new java.awt.Color(61, 137, 248));
-        jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel6.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel6.setText("DESCRIPCIÓN:");
-        jLabel6.setOpaque(true);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipady = 20;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
-        habitaciones.add(jLabel6, gridBagConstraints);
-
-        jLabel8.setBackground(new java.awt.Color(61, 137, 248));
-        jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel8.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel8.setText("TIPO DE HABITACIÓN:");
-        jLabel8.setOpaque(true);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipady = 20;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 10);
-        habitaciones.add(jLabel8, gridBagConstraints);
-
-        txtNumHabitacion.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtNumHabitacion.setBorderColor(new java.awt.Color(255, 255, 255));
-        txtNumHabitacion.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        txtNumHabitacion.setPhColor(new java.awt.Color(0, 0, 0));
-        txtNumHabitacion.setPlaceholder("-");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 5, 10);
-        habitaciones.add(txtNumHabitacion, gridBagConstraints);
-
-        txtDescripcionHan.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtDescripcionHan.setBorderColor(new java.awt.Color(255, 255, 255));
-        txtDescripcionHan.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        txtDescripcionHan.setPhColor(new java.awt.Color(0, 0, 0));
-        txtDescripcionHan.setPlaceholder("-");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
-        habitaciones.add(txtDescripcionHan, gridBagConstraints);
-
-        txtPrecioHab.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtPrecioHab.setBorderColor(new java.awt.Color(255, 255, 255));
-        txtPrecioHab.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        txtPrecioHab.setPhColor(new java.awt.Color(0, 0, 0));
-        txtPrecioHab.setPlaceholder("$");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 15);
-        habitaciones.add(txtPrecioHab, gridBagConstraints);
-
-        cbEstadosHab.setForeground(new java.awt.Color(0, 0, 0));
-        cbEstadosHab.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "DISPONIBLE", "OCUPADA", "RESERVADA", "MANTENIMIENTO" }));
-        cbEstadosHab.setColorArrow(new java.awt.Color(61, 137, 248));
-        cbEstadosHab.setColorBorde(new java.awt.Color(255, 255, 255));
-        cbEstadosHab.setColorFondo(new java.awt.Color(255, 255, 255));
-        cbEstadosHab.setColorSeleccion(new java.awt.Color(61, 137, 248));
-        cbEstadosHab.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 15);
-        habitaciones.add(cbEstadosHab, gridBagConstraints);
-
-        cbTiposHabitacion.setForeground(new java.awt.Color(0, 0, 0));
-        cbTiposHabitacion.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccione" }));
-        cbTiposHabitacion.setColorArrow(new java.awt.Color(61, 137, 248));
-        cbTiposHabitacion.setColorBorde(new java.awt.Color(255, 255, 255));
-        cbTiposHabitacion.setColorFondo(new java.awt.Color(255, 255, 255));
-        cbTiposHabitacion.setColorSeleccion(new java.awt.Color(61, 137, 248));
-        cbTiposHabitacion.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 15);
-        habitaciones.add(cbTiposHabitacion, gridBagConstraints);
-
-        btnHabitacionReg.setBackground(new java.awt.Color(61, 137, 248));
-        btnHabitacionReg.setText("Registrar");
-        btnHabitacionReg.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 5;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(9, 0, 5, 5);
-        habitaciones.add(btnHabitacionReg, gridBagConstraints);
-
-        btnCancelarReg.setBackground(new java.awt.Color(204, 0, 0));
-        btnCancelarReg.setText("Cancelar");
-        btnCancelarReg.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 5;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(9, 5, 5, 0);
-        habitaciones.add(btnCancelarReg, gridBagConstraints);
-
-        habPanel.add(habitaciones, java.awt.BorderLayout.PAGE_START);
-
-        tablaHabitacionReg.setModel(new javax.swing.table.DefaultTableModel(
+        tablaHabitaciones.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(249, 249, 249)));
+        tablaHabitaciones.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+
             },
             new String [] {
-                "N° Habitación", "Descripción", "Precio", "Tipo", "Disposición", "Editar", "Eliminar"
+                "N° Habitación", "Descripción", "Precio", "Tipo Habitación", "Estado", "Editar", "Eliminar", "Reporte"
             }
-        ));
-        tablaHabitacionReg.setBackgoundHead(new java.awt.Color(61, 137, 248));
-        tablaHabitacionReg.setBackgoundHover(new java.awt.Color(61, 137, 248));
-        tablaHabitacionReg.setColorPrimaryText(new java.awt.Color(0, 0, 0));
-        tablaHabitacionReg.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
-        tablaHabitacionReg.setFontHead(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        tablaHabitacionReg.setFontRowHover(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
-        tablaHabitacionReg.setFontRowSelect(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
-        tablaHabitacionReg.getTableHeader().setResizingAllowed(false);
-        jScrollPane1.setViewportView(tablaHabitacionReg);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false
+            };
 
-        habPanel.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tablaHabitaciones.setAltoHead(30);
+        tablaHabitaciones.setColorBackgoundHead(new java.awt.Color(249, 249, 249));
+        tablaHabitaciones.setColorBordeFilas(new java.awt.Color(255, 255, 255));
+        tablaHabitaciones.setColorBordeHead(new java.awt.Color(255, 255, 255));
+        tablaHabitaciones.setColorFilasBackgound2(new java.awt.Color(249, 249, 249));
+        tablaHabitaciones.setColorFilasForeground1(new java.awt.Color(51, 51, 51));
+        tablaHabitaciones.setColorFilasForeground2(new java.awt.Color(51, 51, 51));
+        tablaHabitaciones.setColorForegroundHead(new java.awt.Color(0, 0, 0));
+        tablaHabitaciones.setColorSelForeground(new java.awt.Color(51, 51, 51));
+        tablaHabitaciones.setFont(new java.awt.Font("Calibri Light", 0, 14)); // NOI18N
+        tablaHabitaciones.setFuenteFilas(new java.awt.Font("Calibri Light", 0, 14)); // NOI18N
+        tablaHabitaciones.setFuenteFilasSelect(new java.awt.Font("Calibri Light", 0, 14)); // NOI18N
+        tablaHabitaciones.setFuenteHead(new java.awt.Font("Calibri", 1, 14)); // NOI18N
+        tablaHabitaciones.setGridColor(new java.awt.Color(255, 255, 255));
+        tablaHabitaciones.setGrosorBordeFilas(0);
+        tablaHabitaciones.setGrosorBordeHead(0);
+        tablaHabitaciones.setMultipleSeleccion(false);
+        tablaHabitaciones.setRowHeight(40);
+        tablaHabitaciones.getTableHeader().setResizingAllowed(false);
+        tablaHabitaciones.getTableHeader().setReorderingAllowed(false);
+        jScrollPane2.setViewportView(tablaHabitaciones);
+        if (tablaHabitaciones.getColumnModel().getColumnCount() > 0) {
+            tablaHabitaciones.getColumnModel().getColumn(0).setPreferredWidth(20);
+            tablaHabitaciones.getColumnModel().getColumn(5).setPreferredWidth(10);
+            tablaHabitaciones.getColumnModel().getColumn(6).setPreferredWidth(10);
+            tablaHabitaciones.getColumnModel().getColumn(7).setPreferredWidth(10);
+        }
+
+        habPanel.add(jScrollPane2, java.awt.BorderLayout.CENTER);
 
         add(habPanel, java.awt.BorderLayout.CENTER);
 
@@ -293,29 +113,69 @@ public class VistaHabitacion extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(15, 0, 15, 0);
         jPanel3.add(jLabel3, gridBagConstraints);
 
+        btnReporteTotal.setBackground(new java.awt.Color(61, 137, 248));
+        btnReporteTotal.setText("Generar Reporte");
+        btnReporteTotal.setFocusPainted(false);
+        btnReporteTotal.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnReporteTotal.setHideActionText(true);
+        btnReporteTotal.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        btnReporteTotal.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.ARCHIVE);
+        btnReporteTotal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReporteTotalActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = -50;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        jPanel3.add(btnReporteTotal, gridBagConstraints);
+
+        btnNuevaHab.setBackground(new java.awt.Color(61, 137, 248));
+        btnNuevaHab.setText("Nueva Habitación");
+        btnNuevaHab.setFocusPainted(false);
+        btnNuevaHab.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnNuevaHab.setHideActionText(true);
+        btnNuevaHab.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        btnNuevaHab.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.ADD);
+        btnNuevaHab.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNuevaHabActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = -50;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        jPanel3.add(btnNuevaHab, gridBagConstraints);
+
         add(jPanel3, java.awt.BorderLayout.PAGE_START);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnReporteTotalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReporteTotalActionPerformed
+
+    }//GEN-LAST:event_btnReporteTotalActionPerformed
+
+    private void btnNuevaHabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevaHabActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnNuevaHabActionPerformed
        
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    public newscomponents.RSButtonFlat_new btnCancelarReg;
-    public newscomponents.RSButtonFlat_new btnHabitacionReg;
-    public RSMaterialComponent.RSComboBox cbEstadosHab;
-    public RSMaterialComponent.RSComboBox cbTiposHabitacion;
+    public newscomponents.RSButtonIcon_new btnNuevaHab;
+    public newscomponents.RSButtonIcon_new btnReporteTotal;
     public javax.swing.JPanel habPanel;
-    private javax.swing.JPanel habitaciones;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane1;
-    private RSMaterialComponent.RSTableMetro tablaHabitacionReg;
-    private RSMaterialComponent.RSTextFieldOne txtDescripcionHan;
-    private RSMaterialComponent.RSTextFieldOne txtNumHabitacion;
-    private RSMaterialComponent.RSTextFieldOne txtPrecioHab;
+    private javax.swing.JScrollPane jScrollPane2;
+    public rojerusan.RSTableMetro tablaHabitaciones;
     // End of variables declaration//GEN-END:variables
 }

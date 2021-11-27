@@ -59,7 +59,6 @@ public class Menu extends javax.swing.JFrame {
         btnRecepcion = new newscomponents.RSButtonIcon_new();
         btnHab = new newscomponents.RSButtonIcon_new();
         btbHabitacion = new newscomponents.RSButtonIcon_new();
-        btnReportes = new newscomponents.RSButtonIcon_new();
         btnUsuario = new newscomponents.RSButtonIcon_new();
         btnListRegistro = new newscomponents.RSButtonIcon_new();
         header = new javax.swing.JPanel();
@@ -246,28 +245,6 @@ public class Menu extends javax.swing.JFrame {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         modulos.add(btbHabitacion, gridBagConstraints);
 
-        btnReportes.setBackground(new java.awt.Color(42, 53, 66));
-        btnReportes.setText("Reportes");
-        btnReportes.setActionCommand("Kardex");
-        btnReportes.setBackgroundHover(new java.awt.Color(61, 137, 248));
-        btnReportes.setFocusPainted(false);
-        btnReportes.setFont(new java.awt.Font("Bahnschrift", 0, 16)); // NOI18N
-        btnReportes.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
-        btnReportes.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnReportes.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.ASSIGNMENT);
-        btnReportes.setSizeIcon(25.0F);
-        btnReportes.setVerifyInputWhenFocusTarget(false);
-        btnReportes.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnReportesActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 9;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        modulos.add(btnReportes, gridBagConstraints);
-
         btnUsuario.setBackground(new java.awt.Color(42, 53, 66));
         btnUsuario.setText("Usuarios");
         btnUsuario.setActionCommand("Kardex");
@@ -353,6 +330,7 @@ public class Menu extends javax.swing.JFrame {
         body.setBackground(new java.awt.Color(236, 240, 245));
         body.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
         body.setForeground(new java.awt.Color(204, 204, 204));
+        body.setAutoscrolls(true);
         body.setLayout(new javax.swing.BoxLayout(body, javax.swing.BoxLayout.LINE_AXIS));
         getContentPane().add(body, java.awt.BorderLayout.CENTER);
 
@@ -421,10 +399,6 @@ public class Menu extends javax.swing.JFrame {
         
     }//GEN-LAST:event_btbHabitacionActionPerformed
 
-    private void btnReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportesActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnReportesActionPerformed
-
     private void btnUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsuarioActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnUsuarioActionPerformed
@@ -481,7 +455,6 @@ public class Menu extends javax.swing.JFrame {
     private RSMaterialComponent.RSButtonIconOne btnMenu;
     public newscomponents.RSButtonIcon_new btnProducto;
     public newscomponents.RSButtonIcon_new btnRecepcion;
-    public newscomponents.RSButtonIcon_new btnReportes;
     private newscomponents.RSButtonIcon_new btnTipoHab;
     public newscomponents.RSButtonIcon_new btnUsuario;
     private javax.swing.JPanel header;

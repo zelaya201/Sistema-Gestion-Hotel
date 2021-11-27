@@ -35,11 +35,11 @@ public class VistaTipo extends javax.swing.JPanel {
         tfNombreTipo = new RSMaterialComponent.RSTextFieldMaterial();
         jLabel4 = new javax.swing.JLabel();
         tfCantidadTipo = new RSMaterialComponent.RSTextFieldMaterial();
-        btnGuardarTipo = new newscomponents.RSButtonIcon_new();
         btnCancelarTipo = new newscomponents.RSButtonIcon_new();
+        btnGuardarTipo = new newscomponents.RSButtonIcon_new();
         tablaTipos = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        tablaTiposHab = new RSMaterialComponent.RSTableMetro();
+        tablaTiposHab = new rojerusan.RSTableMetro();
         descripcion = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
 
@@ -122,10 +122,27 @@ public class VistaTipo extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 20);
         registroTipo.add(tfCantidadTipo, gridBagConstraints);
 
+        btnCancelarTipo.setBackground(new java.awt.Color(255, 102, 102));
+        btnCancelarTipo.setText("Cancelar");
+        btnCancelarTipo.setBackgroundHover(new java.awt.Color(61, 137, 248));
+        btnCancelarTipo.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnCancelarTipo.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.CANCEL);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.ipady = 10;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 5, 15, 0);
+        registroTipo.add(btnCancelarTipo, gridBagConstraints);
+
         btnGuardarTipo.setBackground(new java.awt.Color(61, 137, 248));
-        btnGuardarTipo.setText("Guardar");
+        btnGuardarTipo.setText("Registrar");
+        btnGuardarTipo.setFocusPainted(false);
         btnGuardarTipo.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        btnGuardarTipo.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.SAVE);
+        btnGuardarTipo.setHideActionText(true);
+        btnGuardarTipo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        btnGuardarTipo.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.ADD);
         btnGuardarTipo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnGuardarTipoActionPerformed(evt);
@@ -140,24 +157,16 @@ public class VistaTipo extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 15, 5);
         registroTipo.add(btnGuardarTipo, gridBagConstraints);
 
-        btnCancelarTipo.setBackground(new java.awt.Color(204, 0, 0));
-        btnCancelarTipo.setText("Cancelar");
-        btnCancelarTipo.setBackgroundHover(new java.awt.Color(61, 137, 248));
-        btnCancelarTipo.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        btnCancelarTipo.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.CANCEL);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.ipady = 10;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 5, 15, 0);
-        registroTipo.add(btnCancelarTipo, gridBagConstraints);
-
         habPanel.add(registroTipo, java.awt.BorderLayout.PAGE_START);
 
         tablaTipos.setBackground(new java.awt.Color(255, 255, 255));
 
+        jScrollPane2.setBackground(new java.awt.Color(255, 255, 255));
+        jScrollPane2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        jScrollPane2.setViewportBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        jScrollPane2.setOpaque(false);
+
+        tablaTiposHab.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(249, 249, 249)));
         tablaTiposHab.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -174,26 +183,35 @@ public class VistaTipo extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        tablaTiposHab.setBackgoundHead(new java.awt.Color(61, 137, 248));
-        tablaTiposHab.setBackgoundHover(new java.awt.Color(204, 255, 255));
-        tablaTiposHab.setColorPrimaryText(new java.awt.Color(61, 137, 248));
-        tablaTiposHab.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        tablaTiposHab.setFontHead(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        tablaTiposHab.setFontRowHover(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        tablaTiposHab.setFontRowSelect(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        tablaTiposHab.setName(""); // NOI18N
-        tablaTiposHab.setSelectionBackground(new java.awt.Color(61, 137, 248));
+        tablaTiposHab.setAltoHead(30);
+        tablaTiposHab.setColorBackgoundHead(new java.awt.Color(249, 249, 249));
+        tablaTiposHab.setColorBordeFilas(new java.awt.Color(255, 255, 255));
+        tablaTiposHab.setColorBordeHead(new java.awt.Color(255, 255, 255));
+        tablaTiposHab.setColorFilasBackgound2(new java.awt.Color(249, 249, 249));
+        tablaTiposHab.setColorFilasForeground1(new java.awt.Color(51, 51, 51));
+        tablaTiposHab.setColorFilasForeground2(new java.awt.Color(51, 51, 51));
+        tablaTiposHab.setColorForegroundHead(new java.awt.Color(0, 0, 0));
+        tablaTiposHab.setColorSelForeground(new java.awt.Color(51, 51, 51));
+        tablaTiposHab.setFont(new java.awt.Font("Calibri Light", 0, 14)); // NOI18N
+        tablaTiposHab.setFuenteFilas(new java.awt.Font("Calibri Light", 0, 14)); // NOI18N
+        tablaTiposHab.setFuenteFilasSelect(new java.awt.Font("Calibri Light", 0, 14)); // NOI18N
+        tablaTiposHab.setFuenteHead(new java.awt.Font("Calibri", 1, 14)); // NOI18N
+        tablaTiposHab.setGridColor(new java.awt.Color(255, 255, 255));
+        tablaTiposHab.setGrosorBordeFilas(0);
+        tablaTiposHab.setGrosorBordeHead(0);
+        tablaTiposHab.setMultipleSeleccion(false);
+        tablaTiposHab.setRowHeight(40);
+        tablaTiposHab.getTableHeader().setResizingAllowed(false);
+        tablaTiposHab.getTableHeader().setReorderingAllowed(false);
         jScrollPane2.setViewportView(tablaTiposHab);
         if (tablaTiposHab.getColumnModel().getColumnCount() > 0) {
             tablaTiposHab.getColumnModel().getColumn(0).setResizable(false);
             tablaTiposHab.getColumnModel().getColumn(1).setResizable(false);
             tablaTiposHab.getColumnModel().getColumn(2).setResizable(false);
-            tablaTiposHab.getColumnModel().getColumn(3).setMinWidth(100);
-            tablaTiposHab.getColumnModel().getColumn(3).setPreferredWidth(200);
-            tablaTiposHab.getColumnModel().getColumn(3).setMaxWidth(250);
-            tablaTiposHab.getColumnModel().getColumn(4).setMinWidth(100);
-            tablaTiposHab.getColumnModel().getColumn(4).setPreferredWidth(200);
-            tablaTiposHab.getColumnModel().getColumn(4).setMaxWidth(250);
+            tablaTiposHab.getColumnModel().getColumn(3).setResizable(false);
+            tablaTiposHab.getColumnModel().getColumn(3).setPreferredWidth(70);
+            tablaTiposHab.getColumnModel().getColumn(4).setResizable(false);
+            tablaTiposHab.getColumnModel().getColumn(4).setPreferredWidth(70);
         }
 
         javax.swing.GroupLayout tablaTiposLayout = new javax.swing.GroupLayout(tablaTipos);
@@ -204,7 +222,7 @@ public class VistaTipo extends javax.swing.JPanel {
         );
         tablaTiposLayout.setVerticalGroup(
             tablaTiposLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 396, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 547, Short.MAX_VALUE)
         );
 
         habPanel.add(tablaTipos, java.awt.BorderLayout.CENTER);
@@ -230,7 +248,7 @@ public class VistaTipo extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGuardarTipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarTipoActionPerformed
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_btnGuardarTipoActionPerformed
        
 
@@ -246,7 +264,7 @@ public class VistaTipo extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPanel registroTipo;
     private javax.swing.JPanel tablaTipos;
-    public RSMaterialComponent.RSTableMetro tablaTiposHab;
+    public rojerusan.RSTableMetro tablaTiposHab;
     public RSMaterialComponent.RSTextFieldMaterial tfCantidadTipo;
     public RSMaterialComponent.RSTextFieldMaterial tfNombreTipo;
     // End of variables declaration//GEN-END:variables

@@ -169,14 +169,14 @@ public class TipoHabitacionDao {
             ps.execute();
             return true;
         } catch (SQLException e) {
-            System.err.println("Error en eliminar tipo de habitacion");
+            System.err.println("Error en eliminar tipo de habitacion" + e);
             return false;
         }finally {
             try {
                 ps.close();
                 Conexion.closeConexion(con);
             } catch (SQLException e) {
-                System.err.println("Error en eliminar tipo de habitacion");
+                System.err.println(e);
             }
         }
         
