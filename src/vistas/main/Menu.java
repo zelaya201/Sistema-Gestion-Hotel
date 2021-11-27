@@ -18,25 +18,27 @@ public class Menu extends javax.swing.JFrame {
         this.btnTipoHab.setVisible(false);
         this.btnDash.setActionCommand("Dashboard");
     //    this.btnProducto.setActionCommand("Productos");
-        this.btnTipoHab.setActionCommand("Movimientos");
+    //    this.btnTipoHab.setActionCommand("Movimientos");
         this.btnConfig.setActionCommand("Configuracion");
         this.btnRecepcion.setActionCommand("Recepcion");
-      //  this.btnReportes.setActionCommand("Reporte");
+    //    this.btnReportes.setActionCommand("Reporte");
         this.btnHab.setActionCommand("ReporteHab");
         this.btnListRegistro.setActionCommand("ReporteReg");
         this.btnProducto.setActionCommand("ReportePro");
+        this.btnTipoHab.setActionCommand("ReporteHabPro");
     }
 
     public void setControlador(Controlador control){
         this.btnDash.addActionListener(control);
       //  this.btnProducto.addActionListener(control);
-        this.btnTipoHab.addActionListener(control);
+      //  this.btnTipoHab.addActionListener(control);
         this.btnConfig.addActionListener(control);
         this.btnRecepcion.addActionListener(control);
        // this.btnReportes.addActionListener(control);
         this.btnHab.addActionListener(control);
         this.btnListRegistro.addActionListener(control);
         this.btnProducto.addActionListener(control);
+        this.btnTipoHab.addActionListener(control);
     }
     
     public void iniciar(){

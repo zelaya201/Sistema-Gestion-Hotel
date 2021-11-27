@@ -28,11 +28,13 @@ import modelos.dao.HabitacionDao;
 import modelos.dao.HotelDao;
 import modelos.dao.ProductoDao;
 import modelos.dao.RegistroDao;
+import modelos.dao.RegistroProductoDao;
 import modelos.dao.UsuarioDao;
 import modelos.entidades.Habitacion;
 import modelos.entidades.Hotel;
 import modelos.entidades.Producto;
 import modelos.entidades.Registro;
+import modelos.entidades.RegistroProducto;
 import modelos.entidades.Usuario;
 import utilidades.CambiaPanel;
 import utilidades.ExportPDF;
@@ -59,6 +61,9 @@ public class Controlador implements ActionListener, MouseListener{
     
     /* REGISTRO HABITACIÓN */
     private RegistroDao daoRegistro = new RegistroDao();
+    
+    /* REGISTRO PRODUCTO */
+    private RegistroProductoDao daoRegistroProducto = new RegistroProductoDao();
     
     /* REGISTRO HABITACIÓN */
     private VistaRegistro registroVista;
@@ -210,6 +215,29 @@ public class Controlador implements ActionListener, MouseListener{
                 exporPdf.setListaProducto(producto);
                 exporPdf.setPath(path);
                 exporPdf.crearListaProducto();
+                DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                DesktopNotify.showDesktopMessage("Reporte generado", "Ruta: " + path, DesktopNotify.INFORMATION, 10000);
+            }
+
+        }
+        if (btn.getActionCommand().equals("ReporteHabPro")) {
+
+            String path = "";
+
+            JFileChooser file = new JFileChooser();
+            file.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int request = file.showSaveDialog(menu);
+
+            if (request == JFileChooser.APPROVE_OPTION) {
+                path = file.getSelectedFile().getPath();
+                ListaSimple<RegistroProducto> registroProducto = daoRegistroProducto.selectAllTo("fk_id_registro", "3");
+                ListaSimple<Hotel> hotel = daoHotel.selectAll();
+
+                ExportPDF exporPdf = new ExportPDF();
+                exporPdf.setHotel(hotel.toArray().get(0));
+                exporPdf.setListaRegistroProducto(registroProducto);
+                exporPdf.setPath(path);
+                exporPdf.crearDetalleProducto();
                 DesktopNotify.setDefaultTheme(NotifyTheme.Green);
                 DesktopNotify.showDesktopMessage("Reporte generado", "Ruta: " + path, DesktopNotify.INFORMATION, 10000);
             }
@@ -486,6 +514,15 @@ public class Controlador implements ActionListener, MouseListener{
             }
         }
         if(btn.getActionCommand().equals("ReportePro")){
+            try {
+                accionesDeBotones(btn);
+            } catch (SQLException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        if(btn.getActionCommand().equals("ReporteHabPro")){
             try {
                 accionesDeBotones(btn);
             } catch (SQLException ex) {
