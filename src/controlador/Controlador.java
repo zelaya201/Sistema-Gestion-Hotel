@@ -80,6 +80,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
     private ConfirmDialog confirmDialog;
     private String principalOn = "";
     private String modalOn = "";
+    private String modalConfig = "";
 
     /* CONTROL DE USUARIOS */
     private Usuario usuario = new Usuario();
@@ -122,7 +123,6 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
     public Controlador(Menu menu) throws SQLException {
         this.menu = menu;
         this.menu.setControlador(this);
-        mostrarModulos("mDashboard");
         this.menu.iniciar();
     }
 
@@ -145,7 +145,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
         } else if (mod.equals("mConfig")) {
             configModal = new ModalConfig(new JFrame(), true);
             configModal.setControlador(this);
-            principalOn = "mConfig";
+            modalConfig = "mConfig";
             mostrarInfoHotel();
             configModal.iniciar();
         } else if (mod.equals("mRecepcion")) {
@@ -177,20 +177,20 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
     }
 
     public void mostrarModals(String modals) throws SQLException {
-        if (modals.equals("mConfig")) {
+        if(modals.equals("mConfig")){
             configModal = new ModalConfig(new JFrame(), true);
             configModal.setControlador(this);
-            modalOn = "mConfig";
+            modalConfig = "mConfig";
             mostrarInfoHotel();
             configModal.iniciar();
-        } else if (modals.equals("modalConfig")) {
-            configModal.dispose();
+            modalConfig = "";
+        }else if(modals.equals("modalConfig")){
             configModalEdit = new ModalEditConfig(new JFrame(), true);
             configModalEdit.setControlador(this);
-            modalOn = "modalConfig";
+            modalConfig = "modalConfig";
             mostrarInfoHotel();
             configModalEdit.iniciar();
-            modalOn = "";
+            modalConfig = "";
         }
 
         /* CONTROL DE USUARIOS */
@@ -218,6 +218,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
             usuarioModal.btnGuardar.setText("Confirmar");
 
             usuarioModal.setSize(434, 234);
+            
             usuarioModal.iniciar();
         } else if (modals.equals("nuevoUsuario")) {
             usuarioModal = new ModalUsuario(new JFrame(), true);
@@ -365,7 +366,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
         }
     }
 
-    public void verificarCredenciales(ActionEvent btn) {
+    public void verificarCredenciales(ActionEvent btn) throws SQLException {
         if (principalOn.equals("Login")) {
             if (!login.tfUser.getText().isEmpty() && !login.tfPass.getText().isEmpty()) {
                 /* APLICAR ARBOLES DE BUSQUEDA */
@@ -400,7 +401,8 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
 
 //                            principalOn = "Menu";
                         }
-
+                        
+                        mostrarModulos("mDashboard");
                         menu.iniciar();
 
                         DesktopNotify.setDefaultTheme(NotifyTheme.LightBlue);
@@ -425,13 +427,13 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
     }
 
     public void accionesDeBotones(ActionEvent btn) throws SQLException, IOException {
-        if (btn.getActionCommand().equals("GuardarInfo") && modalOn == "modalConfig") {
+        if (btn.getActionCommand().equals("GuardarInfo") && modalConfig == "modalConfig") {
             if (!configModalEdit.tfNom.getText().isEmpty() && !configModalEdit.tfDir.getText().isEmpty() && !configModalEdit.tfTel.getText().isEmpty()) {
                 if (daoHotel.update(new Hotel(1, configModalEdit.tfNom.getText(), configModalEdit.tfDir.getText(), configModalEdit.tfTel.getText()))) {
                     DesktopNotify.setDefaultTheme(NotifyTheme.Green);
                     DesktopNotify.showDesktopMessage("Información de Hotel modificada", "La información del Hotel se modificó correctamente.", DesktopNotify.SUCCESS, 8000);
                     configModalEdit.dispose();
-                    modalOn = "";
+                    modalConfig = "";
                     mostrarModals("mConfig");
                 }
             } else {
@@ -792,20 +794,18 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
         }
     }
 
-    public void mostrarInfoHotel() throws SQLException {
-        Hotel hotelInfo = daoHotel.selectAll().toArray().get(0);
+    public void mostrarInfoHotel() throws SQLException{
+        Hotel hotelInfo = daoHotel.selectAll().toArray().get(0);     
+        if(modalConfig.equals("modalConfig")){
+            configModalEdit.tfNom.setText(hotelInfo.getNombre());
+            configModalEdit.tfDir.setText(hotelInfo.getDireccion());
+            configModalEdit.tfTel.setText(hotelInfo.getTelefono());
+        }else if(modalConfig.equals("mConfig")){
+            configModal.lbNomHotel.setText(hotelInfo.getNombre());
+            configModal.lbDirHotel.setText(hotelInfo.getDireccion());
+            configModal.lbTelHotel.setText(hotelInfo.getTelefono());
+        }       
 
-        if (principalOn.equals("mConfig")) {
-            if (modalOn.equals("modalConfig")) {
-                configModalEdit.tfNom.setText(hotelInfo.getNombre());
-                configModalEdit.tfDir.setText(hotelInfo.getDireccion());
-                configModalEdit.tfTel.setText(hotelInfo.getTelefono());
-            } else {
-                configModal.lbNomHotel.setText(hotelInfo.getNombre());
-                configModal.lbDirHotel.setText(hotelInfo.getDireccion());
-                configModal.lbTelHotel.setText(hotelInfo.getTelefono());
-            }
-        }
     }
 
     public void mostrarInfoHab() throws SQLException {
@@ -1008,7 +1008,9 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
             
             if(btn.getActionCommand().equals("ModificarInfo")){
                 try {
+                    configModal.dispose();
                     mostrarModals("modalConfig");
+                    System.out.println("Hola");
                 } catch (SQLException ex) {
                     Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -1096,24 +1098,6 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
                     Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-
-            if(btn.getActionCommand().equals("ModificarInfo")){
-                try {
-                    mostrarModals("modalConfig");
-                } catch (SQLException ex) {
-                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-    
-            if(btn.getActionCommand().equals("GuardarInfo")){
-                try {
-                    accionesDeBotones(btn);
-                } catch (SQLException ex) {
-                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IOException ex) {
-                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
             
             if(btn.getActionCommand().equals("modiUsuario")) {
                 try {
@@ -1146,9 +1130,14 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
                     Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+            
         }else {
             if(btn.getActionCommand().equals("Ingresar")) {
-                verificarCredenciales(btn);
+                try {
+                    verificarCredenciales(btn);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
     }
