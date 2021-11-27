@@ -16,6 +16,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -435,7 +437,7 @@ public class Controlador implements ActionListener, MouseListener{
             
             for(Habitacion x: habitacion.toArray()){
                 if(x.getDisposicion().equals("DISPONIBLE")){
-                   modelo.addRow(new Object[]{x.getNumHabitacion(), x.getDescripcion(), x.getTipoHabitacion().getNombre(),"$ "+ x.getPrecio()});
+                   modelo.addRow(new Object[]{x.getNumHabitacion(), x.getDescripcion(), x.getTipoHabitacion().getNombre(),"$ "+ formatoDecimal(x.getPrecio())});
                 }
             }
             dashVista.tablaHabAgre.setModel(modelo);
@@ -446,7 +448,7 @@ public class Controlador implements ActionListener, MouseListener{
             
             for(Registro x: registro.toArray()){
                 if(x.getEstado() == 0){
-                   modelo2.addRow(new Object[]{x.getIdRegistro(), x.getCliente().getNombre()+" " +x.getCliente().getApellido(), x.getFechaSalida(),"$ "+ x.getTotal()});
+                   modelo2.addRow(new Object[]{x.getIdRegistro(), x.getCliente().getNombre()+" " +x.getCliente().getApellido(), x.getFechaSalida(),"$ "+ formatoDecimal(x.getTotal())});
                 }
             }
             dashVista.tablaUltFact.setModel(modelo2);
@@ -551,6 +553,14 @@ public class Controlador implements ActionListener, MouseListener{
                 Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+    
+    public String formatoDecimal(Double precio){
+        DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
+        simbolos.setDecimalSeparator('.');
+        DecimalFormat formateador = new DecimalFormat("0.00",simbolos);
+        
+        return formateador.format(precio);
     }
 
     @Override
