@@ -17,28 +17,24 @@ public class Menu extends javax.swing.JFrame {
         this.btnHab.setVisible(false);
         this.btnTipoHab.setVisible(false);
         this.btnDash.setActionCommand("Dashboard");
-    //    this.btnProducto.setActionCommand("Productos");
-    //    this.btnTipoHab.setActionCommand("Movimientos");
+        this.btnProducto.setActionCommand("Productos");
+        this.btnTipoHab.setActionCommand("Movimientos");
         this.btnConfig.setActionCommand("Configuracion");
         this.btnRecepcion.setActionCommand("Recepcion");
-    //    this.btnReportes.setActionCommand("Reporte");
-        this.btnHab.setActionCommand("ReporteHab");
-        this.btnListRegistro.setActionCommand("ReporteReg");
-        this.btnProducto.setActionCommand("ReportePro");
-        this.btnTipoHab.setActionCommand("ReporteHabPro");
+        this.btnUsuario.setActionCommand("Usuarios");
+        this.btnModiUser.setActionCommand("modiUsuario");
+        this.btnSalir.setActionCommand("Salir");
     }
 
     public void setControlador(Controlador control){
         this.btnDash.addActionListener(control);
-      //  this.btnProducto.addActionListener(control);
-      //  this.btnTipoHab.addActionListener(control);
-        this.btnConfig.addActionListener(control);
-        this.btnRecepcion.addActionListener(control);
-       // this.btnReportes.addActionListener(control);
-        this.btnHab.addActionListener(control);
-        this.btnListRegistro.addActionListener(control);
         this.btnProducto.addActionListener(control);
         this.btnTipoHab.addActionListener(control);
+        this.btnConfig.addActionListener(control);
+        this.btnRecepcion.addActionListener(control);
+        this.btnUsuario.addActionListener(control);
+        this.btnModiUser.addActionListener(control);
+        this.btnSalir.addActionListener(control); 
     }
     
     public void iniciar(){
@@ -58,18 +54,23 @@ public class Menu extends javax.swing.JFrame {
         aside = new javax.swing.JPanel();
         modulos = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
-        btnConfig = new newscomponents.RSButtonIcon_new();
         btnDash = new newscomponents.RSButtonIcon_new();
         btnTipoHab = new newscomponents.RSButtonIcon_new();
         btnProducto = new newscomponents.RSButtonIcon_new();
         btnRecepcion = new newscomponents.RSButtonIcon_new();
         btnHab = new newscomponents.RSButtonIcon_new();
         btbHabitacion = new newscomponents.RSButtonIcon_new();
+        btnReportes = new newscomponents.RSButtonIcon_new();
         btnUsuario = new newscomponents.RSButtonIcon_new();
         btnListRegistro = new newscomponents.RSButtonIcon_new();
+        lbUserName = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        btnConfig = new newscomponents.RSButtonIcon_new();
         header = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         btnMenu = new RSMaterialComponent.RSButtonIconOne();
+        btnSalir = new RSMaterialComponent.RSButtonIconOne();
+        btnModiUser = new RSMaterialComponent.RSButtonIconOne();
         body = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -91,33 +92,11 @@ public class Menu extends javax.swing.JFrame {
         jLabel13.setOpaque(true);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.ipadx = 202;
         gridBagConstraints.ipady = 23;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 6, 0);
         modulos.add(jLabel13, gridBagConstraints);
-
-        btnConfig.setBackground(new java.awt.Color(42, 53, 66));
-        btnConfig.setText("Configuración");
-        btnConfig.setActionCommand("Kardex");
-        btnConfig.setBackgroundHover(new java.awt.Color(61, 137, 248));
-        btnConfig.setFocusPainted(false);
-        btnConfig.setFont(new java.awt.Font("Bahnschrift", 0, 16)); // NOI18N
-        btnConfig.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
-        btnConfig.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnConfig.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.SETTINGS);
-        btnConfig.setSizeIcon(25.0F);
-        btnConfig.setVerifyInputWhenFocusTarget(false);
-        btnConfig.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnConfigActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 10;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        modulos.add(btnConfig, gridBagConstraints);
 
         btnDash.setBackground(new java.awt.Color(241, 123, 55));
         btnDash.setText("Dashboard");
@@ -136,7 +115,7 @@ public class Menu extends javax.swing.JFrame {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         modulos.add(btnDash, gridBagConstraints);
 
@@ -160,7 +139,7 @@ public class Menu extends javax.swing.JFrame {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 6;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         modulos.add(btnTipoHab, gridBagConstraints);
 
@@ -181,7 +160,7 @@ public class Menu extends javax.swing.JFrame {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 7;
+        gridBagConstraints.gridy = 9;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         modulos.add(btnProducto, gridBagConstraints);
 
@@ -202,7 +181,7 @@ public class Menu extends javax.swing.JFrame {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         modulos.add(btnRecepcion, gridBagConstraints);
 
@@ -225,7 +204,7 @@ public class Menu extends javax.swing.JFrame {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridy = 7;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         modulos.add(btnHab, gridBagConstraints);
 
@@ -247,9 +226,31 @@ public class Menu extends javax.swing.JFrame {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         modulos.add(btbHabitacion, gridBagConstraints);
+
+        btnReportes.setBackground(new java.awt.Color(42, 53, 66));
+        btnReportes.setText("Reportes");
+        btnReportes.setActionCommand("Kardex");
+        btnReportes.setBackgroundHover(new java.awt.Color(61, 137, 248));
+        btnReportes.setFocusPainted(false);
+        btnReportes.setFont(new java.awt.Font("Bahnschrift", 0, 16)); // NOI18N
+        btnReportes.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+        btnReportes.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnReportes.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.ASSIGNMENT);
+        btnReportes.setSizeIcon(25.0F);
+        btnReportes.setVerifyInputWhenFocusTarget(false);
+        btnReportes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReportesActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 11;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        modulos.add(btnReportes, gridBagConstraints);
 
         btnUsuario.setBackground(new java.awt.Color(42, 53, 66));
         btnUsuario.setText("Usuarios");
@@ -269,7 +270,7 @@ public class Menu extends javax.swing.JFrame {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridy = 10;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         modulos.add(btnUsuario, gridBagConstraints);
 
@@ -292,9 +293,44 @@ public class Menu extends javax.swing.JFrame {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 8;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         modulos.add(btnListRegistro, gridBagConstraints);
+
+        lbUserName.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
+        lbUserName.setForeground(new java.awt.Color(204, 204, 204));
+        lbUserName.setText("Nombre Usuario");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new java.awt.Insets(9, 0, 10, 0);
+        modulos.add(lbUserName, gridBagConstraints);
+
+        jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/more_info_35px.png"))); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 0);
+        modulos.add(jLabel9, gridBagConstraints);
+
+        btnConfig.setBackground(new java.awt.Color(42, 53, 66));
+        btnConfig.setText("Configuración");
+        btnConfig.setActionCommand("Kardex");
+        btnConfig.setBackgroundHover(new java.awt.Color(61, 137, 248));
+        btnConfig.setFocusPainted(false);
+        btnConfig.setFont(new java.awt.Font("Bahnschrift", 0, 16)); // NOI18N
+        btnConfig.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+        btnConfig.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnConfig.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.SETTINGS);
+        btnConfig.setSizeIcon(25.0F);
+        btnConfig.setVerifyInputWhenFocusTarget(false);
+        btnConfig.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConfigActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 12;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        modulos.add(btnConfig, gridBagConstraints);
 
         aside.add(modulos);
 
@@ -331,12 +367,29 @@ public class Menu extends javax.swing.JFrame {
         gridBagConstraints.gridy = 0;
         header.add(btnMenu, gridBagConstraints);
 
+        btnSalir.setBackground(new java.awt.Color(255, 67, 67));
+        btnSalir.setBackgroundHover(new java.awt.Color(255, 67, 67));
+        btnSalir.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.EXIT_TO_APP);
+        btnSalir.setSizeIcon(30.0F);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 0;
+        header.add(btnSalir, gridBagConstraints);
+
+        btnModiUser.setBackground(new java.awt.Color(61, 137, 248));
+        btnModiUser.setBackgroundHover(new java.awt.Color(61, 137, 248));
+        btnModiUser.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.PERSON);
+        btnModiUser.setSizeIcon(30.0F);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        header.add(btnModiUser, gridBagConstraints);
+
         getContentPane().add(header, java.awt.BorderLayout.PAGE_START);
 
         body.setBackground(new java.awt.Color(236, 240, 245));
         body.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
         body.setForeground(new java.awt.Color(204, 204, 204));
-        body.setAutoscrolls(true);
         body.setLayout(new javax.swing.BoxLayout(body, javax.swing.BoxLayout.LINE_AXIS));
         getContentPane().add(body, java.awt.BorderLayout.CENTER);
 
@@ -363,6 +416,7 @@ public class Menu extends javax.swing.JFrame {
         this.btnProducto.setBackground(new Color(42,53,66));
         this.btnTipoHab.setBackground(new Color(42,53,66));
         this.btnRecepcion.setBackground(new Color(42,53,66));
+        this.btnUsuario.setBackground(new Color(42,53,66));
     }
     
     private void btnDashActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDashActionPerformed
@@ -374,10 +428,6 @@ public class Menu extends javax.swing.JFrame {
         resetMenu();
         this.btnProducto.setBackground(new Color(241,123,55));
     }//GEN-LAST:event_btnProductoActionPerformed
-
-    private void btnConfigActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfigActionPerformed
-
-    }//GEN-LAST:event_btnConfigActionPerformed
 
     private void btnRecepcionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRecepcionActionPerformed
         resetMenu();
@@ -403,13 +453,22 @@ public class Menu extends javax.swing.JFrame {
         
     }//GEN-LAST:event_btbHabitacionActionPerformed
 
-    private void btnUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsuarioActionPerformed
+    private void btnReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportesActionPerformed
         // TODO add your handling code here:
+    }//GEN-LAST:event_btnReportesActionPerformed
+
+    private void btnUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsuarioActionPerformed
+        resetMenu();
+        this.btnUsuario.setBackground(new Color(241,123,55));
     }//GEN-LAST:event_btnUsuarioActionPerformed
 
     private void btnListRegistroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListRegistroActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnListRegistroActionPerformed
+
+    private void btnConfigActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfigActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnConfigActionPerformed
 
     
 //    /**
@@ -457,13 +516,18 @@ public class Menu extends javax.swing.JFrame {
     private newscomponents.RSButtonIcon_new btnHab;
     private newscomponents.RSButtonIcon_new btnListRegistro;
     private RSMaterialComponent.RSButtonIconOne btnMenu;
+    public RSMaterialComponent.RSButtonIconOne btnModiUser;
     public newscomponents.RSButtonIcon_new btnProducto;
     public newscomponents.RSButtonIcon_new btnRecepcion;
+    public newscomponents.RSButtonIcon_new btnReportes;
+    public RSMaterialComponent.RSButtonIconOne btnSalir;
     private newscomponents.RSButtonIcon_new btnTipoHab;
     public newscomponents.RSButtonIcon_new btnUsuario;
-    private javax.swing.JPanel header;
+    public javax.swing.JPanel header;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel9;
+    public javax.swing.JLabel lbUserName;
     public javax.swing.JPanel modulos;
     // End of variables declaration//GEN-END:variables
 }
