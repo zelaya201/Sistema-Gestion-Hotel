@@ -6,10 +6,11 @@ public class VistaRegistro extends javax.swing.JPanel {
 
     public VistaRegistro() {
         initComponents();  
+        btnGuardarRegistro.setActionCommand("guardarRegistro");
     }
     
     public void setControlador(Controlador control){
-        
+        this.btnGuardarRegistro.addActionListener(control);
     }
 
     /**
@@ -35,6 +36,25 @@ public class VistaRegistro extends javax.swing.JPanel {
         jLabel6 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         lbTipoHab = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        cbHuesped = new RSMaterialComponent.RSComboBox();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        fechaEntrada = new newscomponents.RSDateChooser();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        txtDescuento = new RSMaterialComponent.RSTextFieldIconOne();
+        txtAdelanto = new RSMaterialComponent.RSTextFieldIconOne();
+        rSButtonIconOne1 = new RSMaterialComponent.RSButtonIconOne();
+        cbEstado = new RSMaterialComponent.RSComboBox();
+        jLabel13 = new javax.swing.JLabel();
+        fechaSalida = new newscomponents.RSDateChooser();
+        jLabel14 = new javax.swing.JLabel();
+        txtTotalPagar = new RSMaterialComponent.RSTextFieldOne();
+        jLabel15 = new javax.swing.JLabel();
+        txtTotalConDescuento = new RSMaterialComponent.RSTextFieldOne();
+        btnGuardarRegistro = new newscomponents.RSButtonIcon_new();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
 
@@ -204,6 +224,266 @@ public class VistaRegistro extends javax.swing.JPanel {
 
         habPanel.add(jPanel1, java.awt.BorderLayout.PAGE_START);
 
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setLayout(new java.awt.GridBagLayout());
+
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel2.setText("HUESPED");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipady = 10;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 30, 5, 10);
+        jPanel2.add(jLabel2, gridBagConstraints);
+
+        cbHuesped.setForeground(new java.awt.Color(0, 0, 0));
+        cbHuesped.setColorArrow(new java.awt.Color(61, 137, 248));
+        cbHuesped.setColorBorde(new java.awt.Color(204, 204, 204));
+        cbHuesped.setColorFondo(new java.awt.Color(255, 255, 255));
+        cbHuesped.setColorSeleccion(new java.awt.Color(61, 137, 248));
+        cbHuesped.setColorSeleccionTXT(new java.awt.Color(0, 0, 0));
+        cbHuesped.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        cbHuesped.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbHuespedActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 30, 5, 10);
+        jPanel2.add(cbHuesped, gridBagConstraints);
+
+        jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel9.setText("TIPO DE REGISTRO");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 20);
+        jPanel2.add(jLabel9, gridBagConstraints);
+
+        jLabel10.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel10.setText("FECHA DE ENTRADA");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipady = 10;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 30, 5, 10);
+        jPanel2.add(jLabel10, gridBagConstraints);
+
+        fechaEntrada.setBackground(new java.awt.Color(153, 153, 153));
+        fechaEntrada.setBgColor(new java.awt.Color(153, 153, 153));
+        fechaEntrada.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        fechaEntrada.setFormatDate("dd/MM/yyyy\n");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 30, 5, 10);
+        jPanel2.add(fechaEntrada, gridBagConstraints);
+
+        jLabel11.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel11.setText("DESCUENTO");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipady = 10;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 30, 5, 5);
+        jPanel2.add(jLabel11, gridBagConstraints);
+
+        jLabel12.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel12.setText("ADELANTO");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipady = 10;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 10);
+        jPanel2.add(jLabel12, gridBagConstraints);
+
+        txtDescuento.setForeground(new java.awt.Color(0, 0, 0));
+        txtDescuento.setBorderColor(new java.awt.Color(204, 204, 204));
+        txtDescuento.setColorIcon(new java.awt.Color(153, 153, 153));
+        txtDescuento.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.MONETIZATION_ON);
+        txtDescuento.setPlaceholder("");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 30, 5, 5);
+        jPanel2.add(txtDescuento, gridBagConstraints);
+
+        txtAdelanto.setForeground(new java.awt.Color(0, 0, 0));
+        txtAdelanto.setBorderColor(new java.awt.Color(204, 204, 204));
+        txtAdelanto.setColorIcon(new java.awt.Color(153, 153, 153));
+        txtAdelanto.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.MONETIZATION_ON);
+        txtAdelanto.setPlaceholder("");
+        txtAdelanto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtAdelantoActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 10);
+        jPanel2.add(txtAdelanto, gridBagConstraints);
+
+        rSButtonIconOne1.setBackground(new java.awt.Color(61, 137, 248));
+        rSButtonIconOne1.setText("addHuesped");
+        rSButtonIconOne1.setActionCommand("nuevoHuesped");
+        rSButtonIconOne1.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.PERSON_ADD);
+        rSButtonIconOne1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rSButtonIconOne1ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, -10, 5, 5);
+        jPanel2.add(rSButtonIconOne1, gridBagConstraints);
+
+        cbEstado.setForeground(new java.awt.Color(0, 0, 0));
+        cbEstado.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccione", "Hospedaje", "Reserva" }));
+        cbEstado.setColorArrow(new java.awt.Color(61, 137, 248));
+        cbEstado.setColorBorde(new java.awt.Color(255, 255, 255));
+        cbEstado.setColorFondo(new java.awt.Color(255, 255, 255));
+        cbEstado.setColorSeleccion(new java.awt.Color(61, 137, 248));
+        cbEstado.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 20);
+        jPanel2.add(cbEstado, gridBagConstraints);
+
+        jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel13.setText("FEHCA DE SALIDA");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipady = 10;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 20);
+        jPanel2.add(jLabel13, gridBagConstraints);
+
+        fechaSalida.setBackground(new java.awt.Color(153, 153, 153));
+        fechaSalida.setBgColor(new java.awt.Color(153, 153, 153));
+        fechaSalida.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        fechaSalida.setFormatDate("dd/MM/yyyy");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 20);
+        jPanel2.add(fechaSalida, gridBagConstraints);
+
+        jLabel14.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel14.setText("TOTAL A PAGAR");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipady = 10;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        jPanel2.add(jLabel14, gridBagConstraints);
+
+        txtTotalPagar.setEditable(false);
+        txtTotalPagar.setForeground(new java.awt.Color(0, 0, 0));
+        txtTotalPagar.setBorderColor(new java.awt.Color(153, 153, 153));
+        txtTotalPagar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        txtTotalPagar.setPlaceholder("");
+        txtTotalPagar.setSelectionColor(new java.awt.Color(102, 153, 255));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        jPanel2.add(txtTotalPagar, gridBagConstraints);
+
+        jLabel15.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel15.setText("TOTAL A PAGAR - DESCUENTO");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipady = 10;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 20);
+        jPanel2.add(jLabel15, gridBagConstraints);
+
+        txtTotalConDescuento.setEditable(false);
+        txtTotalConDescuento.setForeground(new java.awt.Color(0, 0, 0));
+        txtTotalConDescuento.setBorderColor(new java.awt.Color(153, 153, 153));
+        txtTotalConDescuento.setFocusable(false);
+        txtTotalConDescuento.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        txtTotalConDescuento.setPlaceholder("");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 20);
+        jPanel2.add(txtTotalConDescuento, gridBagConstraints);
+
+        btnGuardarRegistro.setBackground(new java.awt.Color(61, 137, 248));
+        btnGuardarRegistro.setText("Agregar Registro");
+        btnGuardarRegistro.setFocusPainted(false);
+        btnGuardarRegistro.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnGuardarRegistro.setHideActionText(true);
+        btnGuardarRegistro.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        btnGuardarRegistro.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.ADD);
+        btnGuardarRegistro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarRegistroActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(20, 40, 100, 40);
+        jPanel2.add(btnGuardarRegistro, gridBagConstraints);
+
+        habPanel.add(jPanel2, java.awt.BorderLayout.CENTER);
+
         add(habPanel, java.awt.BorderLayout.CENTER);
 
         jPanel3.setOpaque(false);
@@ -212,7 +492,7 @@ public class VistaRegistro extends javax.swing.JPanel {
         jLabel3.setBackground(new java.awt.Color(51, 51, 51));
         jLabel3.setFont(new java.awt.Font("Bahnschrift", 0, 14)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(42, 53, 66));
-        jLabel3.setText("Recepción / Registro de Habitaciones");
+        jLabel3.setText("Recepción / Registro de Hospedaje");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -223,23 +503,58 @@ public class VistaRegistro extends javax.swing.JPanel {
 
         add(jPanel3, java.awt.BorderLayout.PAGE_START);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void txtAdelantoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtAdelantoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtAdelantoActionPerformed
+
+    private void rSButtonIconOne1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSButtonIconOne1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rSButtonIconOne1ActionPerformed
+
+    private void cbHuespedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbHuespedActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbHuespedActionPerformed
+
+    private void btnGuardarRegistroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarRegistroActionPerformed
+
+    }//GEN-LAST:event_btnGuardarRegistroActionPerformed
        
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public newscomponents.RSButtonIcon_new btnGuardarRegistro;
+    public RSMaterialComponent.RSComboBox cbEstado;
+    public RSMaterialComponent.RSComboBox cbHuesped;
+    public newscomponents.RSDateChooser fechaEntrada;
+    public newscomponents.RSDateChooser fechaSalida;
     public javax.swing.JPanel habPanel;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     public javax.swing.JLabel lbDescrip;
     public javax.swing.JLabel lbEstado;
     public javax.swing.JLabel lbNumHab;
     public javax.swing.JLabel lbPrecio;
     public javax.swing.JLabel lbTipoHab;
+    private RSMaterialComponent.RSButtonIconOne rSButtonIconOne1;
+    private RSMaterialComponent.RSTextFieldIconOne txtAdelanto;
+    private RSMaterialComponent.RSTextFieldIconOne txtDescuento;
+    private RSMaterialComponent.RSTextFieldOne txtTotalConDescuento;
+    private RSMaterialComponent.RSTextFieldOne txtTotalPagar;
     // End of variables declaration//GEN-END:variables
 }
