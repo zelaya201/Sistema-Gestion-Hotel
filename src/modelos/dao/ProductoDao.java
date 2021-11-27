@@ -38,11 +38,9 @@ public class ProductoDao {
             
             while(rs.next()) {
                 objeto = new Producto();
-                
                 objeto.setCodigo(rs.getString("cod_producto"));
                 objeto.setDescripcion(rs.getString("descripcion_producto"));
                 objeto.setPrecio(rs.getDouble("precio_producto"));
-                
                 lista.insertar(objeto);
             }
         } catch(Exception e) {
@@ -87,10 +85,8 @@ public class ProductoDao {
         try {
             con = conectar.getConexion();
             ps = con.prepareStatement(sql);
-
             ps.setString(2, product.getDescripcion());
-            ps.setDouble(3, product.getPrecio());
-            
+            ps.setDouble(3, product.getPrecio());  
             ps.execute();
             return true;
         } catch(Exception e) {      

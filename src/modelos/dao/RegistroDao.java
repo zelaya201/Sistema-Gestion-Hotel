@@ -11,6 +11,7 @@ import modelos.conexion.Conexion;
 import modelos.entidades.Cliente;
 import modelos.entidades.Habitacion;
 import modelos.entidades.Registro;
+import modelos.entidades.Usuario;
 import utilidades.ListaSimple;
 
 /**
@@ -31,8 +32,13 @@ public class RegistroDao {
         return select(sql);
     }
     
+    public ListaSimple<Registro> selectAllOrder() throws SQLException{
+        String sql = "select * from registro ORDER BY fsalida_registro DESC LIMIT 10";
+        return select(sql);
+    }
+ 
     public ListaSimple<Registro> selectAllTo(String atributo, String condicion) throws SQLException{
-        String sql = "select * from registro where " + atributo + "='" + condicion + "'";
+        String sql = "select * from registro where " + atributo + "=" + condicion + "";
         return select(sql);
     }
     
@@ -66,7 +72,8 @@ public class RegistroDao {
                 obj.setDeposito(rs.getDouble("deposito_registro"));
                 obj.setMora(rs.getDouble("mora_registro"));
                 obj.setCliente(new Cliente (rs.getString("fk_dui_cliente")));
-                obj.setHabitacion(new Habitacion(rs.getInt("fk_id_habitacion")));
+                obj.setHabitacion(new Habitacion(rs.getInt("fk_num_habitacion")));
+                obj.setUsuario(new Usuario(rs.getInt("fk_id_usuario")));
                 
                 lista.insertar(obj);
             }

@@ -7,6 +7,7 @@ package modelos.entidades;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import modelos.dao.ClienteDao;
 import modelos.dao.HabitacionDao;
 import modelos.dao.RegistroProductoDao;
 import modelos.dao.UsuarioDao;
@@ -125,9 +126,16 @@ public class Registro implements Comparable<Registro>{
     }
 
     public Cliente getCliente() {
+        try {
+            ClienteDao daoCliente = new ClienteDao();
+            cliente = daoCliente.selectAllTo("dui_cliente", cliente.getDui()).toArray().get(0);
+        } catch (SQLException ex) {
+            Logger.getLogger(Registro.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         return cliente;
     }
-
+    
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
@@ -135,7 +143,7 @@ public class Registro implements Comparable<Registro>{
     public Habitacion getHabitacion() {
         try {
             HabitacionDao daoHabitacion = new HabitacionDao();
-            habitacion = daoHabitacion.selectAllTo("fk_num_habitacion", String.valueOf(habitacion.getNumHabitacion())).toArray().get(0);
+            habitacion = daoHabitacion.selectAllTo("num_habitacion", String.valueOf(habitacion.getNumHabitacion())).toArray().get(0);
             
         } catch (SQLException ex) {
             Logger.getLogger(Registro.class.getName()).log(Level.SEVERE, null, ex);

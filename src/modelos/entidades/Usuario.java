@@ -43,6 +43,10 @@ public class Usuario implements Comparable<Usuario>{
         this.estado = estado;
     }
 
+    public Usuario(int idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+ 
     public int getIdUsuario() {
         return idUsuario;
     }

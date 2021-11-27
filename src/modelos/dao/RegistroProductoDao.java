@@ -36,7 +36,7 @@ public class RegistroProductoDao {
     }
     
     public ListaSimple<RegistroProducto> selectAllTo(String atributo, String condicion) throws SQLException{
-        String sql = "select * from registro_producto where " + atributo + "='" + condicion + "'";
+        String sql = "select * from registro_producto where " + atributo + "=" + condicion + "";
         return select(sql);
     }
     
@@ -72,7 +72,7 @@ public class RegistroProductoDao {
                 obj.setSubtotal(rs.getDouble("subtotal_registro_producto"));
                 obj.setCantidad(rs.getInt("cant_registro_producto"));
                 obj.setRegistro(new Registro(rs.getInt("fk_id_registro")));
-                obj.setProducto(new Producto(rs.getString("fk_id_producto")));
+                obj.setProducto(new Producto(rs.getString("fk_cod_producto")));
                 
                 lista.insertar(obj);
             }
