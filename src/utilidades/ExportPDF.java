@@ -54,12 +54,15 @@ public class ExportPDF {
     public void setListaProducto(ListaSimple<Producto> ListaProducto) {
         this.ListaProducto = ListaProducto;
     }
+    
     public void setListHabitaciones(ListaSimple<Habitacion> ListHabitaciones) {
         this.ListHabitaciones = ListHabitaciones;
     }
+    
     public void setListaRegistro(ListaSimple<Registro> ListaRegistro) {
         this.ListaRegistro = ListaRegistro;
     }
+    
     public void setListaRegistroProducto(ListaSimple<RegistroProducto> ListaRegistroProducto) {
         this.ListaRegistroProducto = ListaRegistroProducto;
     }
@@ -67,11 +70,12 @@ public class ExportPDF {
     public void setPath(String path) {
         this.path = path;
     }
+    
     public void setHotel(Hotel hotel) {
         this.hotel = hotel;
     }
     
-        public void crearDetalleProducto() throws FileNotFoundException, IOException{
+    public void crearDetalleProducto() throws FileNotFoundException, IOException{
         //Creación del Archivo
         String ruta = path + "\\" + "Detalle de Venta " + getFecha(2) + ".pdf"; //Ruta donde se guardar el archivo
         PdfWriter writer = new PdfWriter(ruta);
@@ -147,6 +151,7 @@ public class ExportPDF {
             System.out.println(ex);
         }
     }
+    
     public void crearDetalleHabitacion() throws FileNotFoundException, IOException{
         //Creación del Archivo
         String ruta = path + "\\" + "Detalle de Habitacion 00" +ListaRegistro.toArray().get(0).getHabitacion().getNumHabitacion() + " " + getFecha(2) + ".pdf"; //Ruta donde se guardar el archivo
@@ -214,6 +219,7 @@ public class ExportPDF {
             System.out.println(ex);
         }
     }  
+    
     public void crearListaHabitaciones() throws FileNotFoundException, IOException{
         //Creación del Archivo
         String ruta = path + "\\" + "Listado de Habitaciones " + getFecha(2) + ".pdf"; //Ruta donde se guardar el archivo
@@ -270,6 +276,7 @@ public class ExportPDF {
             System.out.println(ex);
         }
     }
+    
     public void crearListaProducto() throws FileNotFoundException, IOException{
         //Creación del Archivo
         String ruta = path + "\\" + "Listado de Productos " + getFecha(2) + ".pdf"; //Ruta donde se guardar el archivo
@@ -322,6 +329,7 @@ public class ExportPDF {
             System.out.println(ex);
         }
     }
+    
     public String getFecha(int formato){
         
         String fechaFormato = null;
