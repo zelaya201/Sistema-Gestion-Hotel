@@ -86,6 +86,7 @@ public class ExportPDF {
         documento.setMargins(40, 20, 40, 20);
         
         //Cabecera del Archivo
+     
         Table encabezado = new Table(1).useAllAvailableWidth();
         encabezado.setHorizontalAlignment(HorizontalAlignment.CENTER);
         encabezado.addCell(new Cell().setBorder(Border.NO_BORDER).setFont(font1).setFontColor(new DeviceRgb(90, 90, 90)).add(new Paragraph(getFecha(1)).setVerticalAlignment(VerticalAlignment.MIDDLE).setTextAlignment(TextAlignment.RIGHT).setFontSize(10f)));
@@ -96,29 +97,38 @@ public class ExportPDF {
         
         Paragraph saltoDeLinea = new Paragraph(""); //Arreglar segunda columna y agregar el numero de habitacion al encabezado
         //Cuerpo de Primera Tabla  
+        
         Table habitacionDetalles = new Table(3).useAllAvailableWidth();
         habitacionDetalles.setHorizontalAlignment(HorizontalAlignment.CENTER);
-        habitacionDetalles.addCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).add(new Paragraph(String.valueOf(ListaRegistroProducto.toArray().get(0).getRegistro().getHabitacion().getNumHabitacion())).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
-        habitacionDetalles.addCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).add(new Paragraph(String.valueOf(ListaRegistroProducto.toArray().get(0).getRegistro().getTipo())).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
-        habitacionDetalles.addCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).add(new Paragraph(String.valueOf("$" + formatoDecimal(ListaRegistroProducto.toArray().get(0).getRegistro().getHabitacion().getPrecio()))).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
-        habitacionDetalles.addCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).add(new Paragraph(String.valueOf(ListaRegistroProducto.toArray().get(0).getRegistro().getCliente().getNombre() + ListaRegistroProducto.toArray().get(0).getRegistro().getCliente().getApellido())).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
-        habitacionDetalles.addCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).add(new Paragraph(String.valueOf(ListaRegistroProducto.toArray().get(0).getRegistro().getFechaEntrada())).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
-        habitacionDetalles.addCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).add(new Paragraph(String.valueOf(ListaRegistroProducto.toArray().get(0).getRegistro().getFechaSalida())).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+        habitacionDetalles.addCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).add(new Paragraph(String.valueOf("N° De Habitación: " + ListaRegistroProducto.toArray().get(0).getRegistro().getHabitacion().getNumHabitacion())).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+        habitacionDetalles.addCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).add(new Paragraph(String.valueOf("Tipo de Habitación: " + ListaRegistroProducto.toArray().get(0).getRegistro().getHabitacion().getTipoHabitacion().getNombre())).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+        habitacionDetalles.addCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).add(new Paragraph(String.valueOf("Precio: $" + formatoDecimal(ListaRegistroProducto.toArray().get(0).getRegistro().getHabitacion().getPrecio()))).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+        habitacionDetalles.addCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).add(new Paragraph(String.valueOf("Cliente: " + ListaRegistroProducto.toArray().get(0).getRegistro().getCliente().getNombre()+ " " + ListaRegistroProducto.toArray().get(0).getRegistro().getCliente().getApellido())).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+        habitacionDetalles.addCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).add(new Paragraph(String.valueOf("Fecha de Entrada: " + ListaRegistroProducto.toArray().get(0).getRegistro().getFechaEntrada())).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+        habitacionDetalles.addCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).add(new Paragraph(String.valueOf("Fecha de Salida: " + ListaRegistroProducto.toArray().get(0).getRegistro().getFechaSalida())).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
         
         //Cuerpo de Segunda Tabla 
-        Table detalleproducto = new Table(4).useAllAvailableWidth();
+        Table detalleproducto = new Table(5).useAllAvailableWidth();
         detalleproducto.setHorizontalAlignment(HorizontalAlignment.CENTER);
+        detalleproducto.addHeaderCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).setBackgroundColor(new DeviceRgb(221,221,221)).add(new Paragraph("Código Producto").setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
         detalleproducto.addHeaderCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).setBackgroundColor(new DeviceRgb(221,221,221)).add(new Paragraph("Producto").setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
         detalleproducto.addHeaderCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).setBackgroundColor(new DeviceRgb(221,221,221)).add(new Paragraph("Cantidad").setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
         detalleproducto.addHeaderCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).setBackgroundColor(new DeviceRgb(221,221,221)).add(new Paragraph("Precio Unitario").setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
         detalleproducto.addHeaderCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).setBackgroundColor(new DeviceRgb(221,221,221)).add(new Paragraph("Subtotal").setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
        
+        double stotal = 0;
+        
         for (RegistroProducto x : ListaRegistroProducto.toArray()) {
+             detalleproducto.addCell(new Cell().setFont(font2).add(new Paragraph(String.valueOf(x.getProducto().getCodigo())).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
              detalleproducto.addCell(new Cell().setFont(font2).add(new Paragraph(String.valueOf(x.getProducto().getDescripcion())).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
              detalleproducto.addCell(new Cell().setFont(font2).add(new Paragraph(String.valueOf(x.getCantidad())).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
              detalleproducto.addCell(new Cell().setFont(font2).add(new Paragraph(String.valueOf("$" + formatoDecimal(x.getProducto().getPrecio()))).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
              detalleproducto.addCell(new Cell().setFont(font2).add(new Paragraph(String.valueOf("$" + formatoDecimal(x.getSubtotal()))).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+             
+             stotal = stotal + x.getSubtotal();
         }
+        
+        Paragraph totalSub = new Paragraph("Total Global: $ " + formatoDecimal(stotal)).setTextAlignment(TextAlignment.RIGHT);
         
         //Agregamos todos los objetos al documento
         documento.add(encabezado);
@@ -126,6 +136,7 @@ public class ExportPDF {
         documento.add(habitacionDetalles);
         documento.add(saltoDeLinea);
         documento.add(detalleproducto);
+        documento.add(totalSub);
         documento.close();
         
         //Creamos el archivo en la ruta especificada
