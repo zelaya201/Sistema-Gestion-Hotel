@@ -17,6 +17,7 @@ import utilidades.ListaSimple;
  * @author Mario Zelaya
  */
 public class UsuarioDao {
+    
     Conexion conectar = new Conexion();
     Connection con;
     PreparedStatement ps;

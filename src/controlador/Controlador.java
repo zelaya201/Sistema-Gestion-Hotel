@@ -719,6 +719,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
             }
         } 
     }
+    
     public void llenarComboRegistro() throws SQLException{
             registroVista.cbHuesped.removeAllItems();
             registroVista.cbHuesped.addItem("Seleccione");
@@ -1260,6 +1261,14 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
         }
     }
 
+    public String formatoDecimal(Double precio) {
+        DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
+        simbolos.setDecimalSeparator('.');
+        DecimalFormat formateador = new DecimalFormat("0.00", simbolos);
+
+        return formateador.format(precio);
+    }
+    
     @Override
     public void actionPerformed(ActionEvent btn) {
         
@@ -1474,14 +1483,6 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
         }
     }
 
-    public String formatoDecimal(Double precio) {
-        DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
-        simbolos.setDecimalSeparator('.');
-        DecimalFormat formateador = new DecimalFormat("0.00", simbolos);
-
-        return formateador.format(precio);
-    }
-
     @Override
     public void mouseClicked(MouseEvent me) {
 
@@ -1508,7 +1509,9 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
 
             }
 
-            if (principalOn.equals("mTipo") && me.getSource() == tipoVista.tablaTiposHab) {
+        }
+        
+        if (principalOn.equals("mTipo") && me.getSource() == tipoVista.tablaTiposHab) {
 
                 int col = tipoVista.tablaTiposHab.getSelectedColumn();
                 try {
@@ -1567,7 +1570,6 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
                     System.out.println("ERROR en el mouse clicked del tipo > " + e);
                 }
             }
-        }
     
     }
 
@@ -1644,8 +1646,6 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
             }
         }
     }
-    
-    
 
     public void eventoLabel(String btn){
         if (principalOn.equals("mTipo")) {
