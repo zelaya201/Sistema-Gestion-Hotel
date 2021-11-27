@@ -39,8 +39,10 @@ public class UsuarioDao {
     }
     
     public ListaSimple<Usuario> buscar(String dato) {
-        String sql = "select * FROM usuario where nick_usuario like '" + dato + "%'";
-        return select(sql);
+        String sql = "SELECT u.id_usuario, CONCAT_WS(' ',u.nom_usuario,u.ape_usuario) AS nom_completo, "
+                + "u.tel_usuario, TIMESTAMPDIFF(YEAR, u.fnac_usuario, NOW()) AS edad, u.genero_usuario, u.nick_usuario, u.rol_usuario, u.clave_usuario, u.estado_usuario "
+                + "FROM usuario u WHERE nick_usuario like '" + dato + "%' OR nom_usuario like '" + dato + "%' OR ape_usuario like '" + dato + "%'";
+        return selectEspecifico(sql);
     }
     
     public ListaSimple<Usuario> selectId(int id) {

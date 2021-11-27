@@ -98,6 +98,11 @@ public class Login extends javax.swing.JFrame {
         tfUser.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         tfUser.setPlaceholder("Ingrese su usuario");
         tfUser.setSelectionColor(new java.awt.Color(54, 77, 91));
+        tfUser.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                tfUserKeyTyped(evt);
+            }
+        });
 
         btnIngresar.setBackground(new java.awt.Color(241, 123, 55));
         btnIngresar.setText("Ingresar");
@@ -210,6 +215,11 @@ public class Login extends javax.swing.JFrame {
     private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnIngresarActionPerformed
+
+    private void tfUserKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfUserKeyTyped
+        char val = evt.getKeyChar();
+        if((val<'a' || val>'z') && (val < '0' || val > '9')) evt.consume();
+    }//GEN-LAST:event_tfUserKeyTyped
 
     /**
      * @param args the command line arguments
