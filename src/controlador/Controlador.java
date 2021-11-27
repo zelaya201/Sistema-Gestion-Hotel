@@ -89,9 +89,10 @@ public class Controlador implements ActionListener, MouseListener{
     private Dashboard dashVista;
     private JFreeCharts barChart = new JFreeCharts();
 
-    public Controlador(Menu menu) {
+    public Controlador(Menu menu) throws SQLException {
         this.menu = menu;
         this.menu.setControlador(this);
+        mostrarModulos("mDashboard");
         this.menu.iniciar();
     }
     
@@ -186,7 +187,7 @@ public class Controlador implements ActionListener, MouseListener{
 
             if (request == JFileChooser.APPROVE_OPTION) {
                 path = file.getSelectedFile().getPath();
-                ListaSimple<Registro> registro = daoRegistro.selectAllTo("fk_num_habitacion", "9");
+                ListaSimple<Registro> registro = daoRegistro.selectAllTo("fk_num_habitacion", "4");
                 ListaSimple<Hotel> hotel = daoHotel.selectAll();
 
                 ExportPDF exporPdf = new ExportPDF();
@@ -232,7 +233,7 @@ public class Controlador implements ActionListener, MouseListener{
 
             if (request == JFileChooser.APPROVE_OPTION) {
                 path = file.getSelectedFile().getPath();
-                ListaSimple<RegistroProducto> registroProducto = daoRegistroProducto.selectAllTo("fk_id_registro", "3");
+                ListaSimple<RegistroProducto> registroProducto = daoRegistroProducto.selectAllTo("fk_id_registro", "1");
                 ListaSimple<Hotel> hotel = daoHotel.selectAll();
 
                 ExportPDF exporPdf = new ExportPDF();
