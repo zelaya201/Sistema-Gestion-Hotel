@@ -71,6 +71,7 @@ import vistas.modulos.ModalConfig;
 import vistas.modulos.ModalEditConfig;
 import vistas.modulos.ModalUsuario;
 import vistas.modulos.VistaHabitacion;
+import vistas.modulos.VistaListadoRegistro;
 import vistas.modulos.VistaRecepcion;
 import vistas.modulos.VistaRegistro;
 import vistas.modulos.VistaTipo;
@@ -119,11 +120,11 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
     private ConfirmDialogTipo modalEliminar;
     private modalHabitacion modalHab;
     
-    
     /* REGISTRO HABITACIÓN */
     private VistaTipo tipoVista;
     private VistaHabitacion habitacionVista;
     private VistaRegistro registroVista;
+    private VistaListadoRegistro listadoRegisVista;
 
     /* RECEPCIÓN */
     private VistaRecepcion recepVista;
@@ -133,8 +134,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
     private ProductoDao daoProducto = new ProductoDao();
 
     /* CLIENTE */
-    private ClienteDao daoCliente;
-    
+    private ClienteDao daoCliente = new ClienteDao();
 
     /* CONFIGURACIÓN */
     private ModalConfig configModal;
@@ -211,6 +211,12 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
             mostrarTablaHabitaciones(habitacionVista.tablaHabitaciones);
             principalOn = "mHabitacion";
             new CambiaPanel(menu.body, habitacionVista);
+        }else if(mod.equals("mListRegistro")){
+            this.listadoRegisVista = new VistaListadoRegistro();
+            listadoRegisVista.setControlador(this);
+           
+            principalOn = "mListRegistro";
+            new CambiaPanel(menu.body, listadoRegisVista);
         }
     }
 
@@ -520,49 +526,64 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
         }
 
         if (btn.getActionCommand().equals("ReporteHab")) {
+            
+            ListaSimple<Habitacion> habitaciones = daoHabitacion.selectAll();
+            
+            if(!habitaciones.isEmpty()){
+                
+                String path = "";
 
-            String path = "";
+                JFileChooser file = new JFileChooser();
+                file.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                int request = file.showSaveDialog(menu);
 
-            JFileChooser file = new JFileChooser();
-            file.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            int request = file.showSaveDialog(menu);
+                if (request == JFileChooser.APPROVE_OPTION) {
+                    path = file.getSelectedFile().getPath();
+                    ListaSimple<Hotel> hotel = daoHotel.selectAll();
 
-            if (request == JFileChooser.APPROVE_OPTION) {
-                path = file.getSelectedFile().getPath();
-                ListaSimple<Habitacion> habitaciones = daoHabitacion.selectAll();
-                ListaSimple<Hotel> hotel = daoHotel.selectAll();
-
-                ExportPDF exporPdf = new ExportPDF();
-                exporPdf.setHotel(hotel.toArray().get(0));
-                exporPdf.setListHabitaciones(habitaciones);
-                exporPdf.setPath(path);
-                exporPdf.crearListaHabitaciones();
-                DesktopNotify.setDefaultTheme(NotifyTheme.Green);
-                DesktopNotify.showDesktopMessage("Reporte generado", "Ruta: " + path, DesktopNotify.INFORMATION, 10000);
+                    ExportPDF exporPdf = new ExportPDF();
+                    exporPdf.setHotel(hotel.toArray().get(0));
+                    exporPdf.setListHabitaciones(habitaciones);
+                    exporPdf.setPath(path);
+                    exporPdf.crearListaHabitaciones();
+                    DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                    DesktopNotify.showDesktopMessage("Reporte generado", "Ruta: " + path, DesktopNotify.INFORMATION, 10000);
+                }
+            }else{
+                DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                DesktopNotify.showDesktopMessage("No hay datos", "Para generar un reporte se necesitan datos", DesktopNotify.INFORMATION, 10000);
             }
 
         }
         
         if (btn.getActionCommand().equals("ReportePro")) {
+            
+            ListaSimple<Producto> producto = daoProducto.selectAll();
+            
+            if(!producto.isEmpty()){
+                
+                String path = "";
 
-            String path = "";
+                JFileChooser file = new JFileChooser();
+                file.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                int request = file.showSaveDialog(menu);
 
-            JFileChooser file = new JFileChooser();
-            file.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            int request = file.showSaveDialog(menu);
+                if (request == JFileChooser.APPROVE_OPTION) {
+                    path = file.getSelectedFile().getPath();
 
-            if (request == JFileChooser.APPROVE_OPTION) {
-                path = file.getSelectedFile().getPath();
-                ListaSimple<Producto> producto = daoProducto.selectAll();
-                ListaSimple<Hotel> hotel = daoHotel.selectAll();
+                    ListaSimple<Hotel> hotel = daoHotel.selectAll();
 
-                ExportPDF exporPdf = new ExportPDF();
-                exporPdf.setHotel(hotel.toArray().get(0));
-                exporPdf.setListaProducto(producto);
-                exporPdf.setPath(path);
-                exporPdf.crearListaProducto();
-                DesktopNotify.setDefaultTheme(NotifyTheme.Green);
-                DesktopNotify.showDesktopMessage("Reporte generado", "Ruta: " + path, DesktopNotify.INFORMATION, 10000);
+                    ExportPDF exporPdf = new ExportPDF();
+                    exporPdf.setHotel(hotel.toArray().get(0));
+                    exporPdf.setListaProducto(producto);
+                    exporPdf.setPath(path);
+                    exporPdf.crearListaProducto();
+                    DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                    DesktopNotify.showDesktopMessage("Reporte generado", "Ruta: " + path, DesktopNotify.INFORMATION, 10000);
+                }
+            }else{
+                DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                DesktopNotify.showDesktopMessage("No hay datos", "Para generar un reporte se necesitan datos", DesktopNotify.INFORMATION, 10000);
             }
 
         }
@@ -1290,7 +1311,6 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
                 try {
                     configModal.dispose();
                     mostrarModals("modalConfig");
-                    System.out.println("Hola");
                 } catch (SQLException ex) {
                     Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -1361,6 +1381,14 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
                 }
             }
             
+            if(btn.getActionCommand().equals("Registro")){
+                try {
+                    mostrarModulos("mListRegistro");
+                } catch (SQLException ex) {
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
             if(btn.getActionCommand().equals("Usuarios")) {
                 try {
                     mostrarModulos("mUsuarios");
