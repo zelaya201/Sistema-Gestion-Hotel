@@ -26,9 +26,11 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import modelos.dao.ClaveAccesoDao;
 import modelos.dao.HabitacionDao;
 import modelos.dao.HotelDao;
 import modelos.dao.UsuarioDao;
+import modelos.entidades.ClaveAcceso;
 import modelos.entidades.Habitacion;
 import modelos.entidades.Hotel;
 import modelos.entidades.Usuario;
@@ -63,6 +65,8 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
     private Usuario usuario = new Usuario();
     private Usuario usuarioSelected = null;
     private UsuarioDao daoUsuario = new UsuarioDao();
+    private ClaveAcceso claveAcceso = new ClaveAcceso();
+    private ClaveAccesoDao daoClave =  new ClaveAccesoDao();
     private VistaUsuario usuarioVista;
     private ModalUsuario usuarioModal;
     
@@ -141,12 +145,48 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
         }
         
         /* CONTROL DE USUARIOS */
-        if (modals.equals("nuevoUsuario")) {
+        if (modals.equals("claveAcceso")) {
+            usuarioModal = new ModalUsuario(new JFrame(), true);
+            usuarioModal.setControlador(this);
+            modalOn = "usuarioModal";
+
+            usuarioModal.jPanel1.remove(usuarioModal.btnBaja);
+            usuarioModal.form.remove(usuarioModal.iconName);
+            usuarioModal.form.remove(usuarioModal.jtNom);
+            usuarioModal.form.remove(usuarioModal.jtApe);
+            usuarioModal.form.remove(usuarioModal.iconBirthday);
+            usuarioModal.form.remove(usuarioModal.jDate);
+            usuarioModal.form.remove(usuarioModal.iconTel);
+            usuarioModal.form.remove(usuarioModal.jtTel);
+            usuarioModal.form.remove(usuarioModal.cbGenero);
+            usuarioModal.form.remove(usuarioModal.iconRol);
+            usuarioModal.form.remove(usuarioModal.cbRol);
+            usuarioModal.form.remove(usuarioModal.iconUser);
+            usuarioModal.form.remove(usuarioModal.jtUser);
+            usuarioModal.form.remove(usuarioModal.modiPassCheck);
+
+            usuarioModal.header.setText("Confirmar Acceso");
+            usuarioModal.btnGuardar.setText("Confirmar");
+            
+            usuarioModal.setSize(434, 234);
+            usuarioModal.iniciar();
+        }else if (modals.equals("nuevoUsuario")) {
             usuarioModal = new ModalUsuario(new JFrame(), true);
             usuarioSelected = null;
            
             usuarioModal.setControlador(this);
+            
+            if (!claveAcceso.getClave().isEmpty()) {
+                usuarioModal.form.remove(usuarioModal.iconRol);
+                usuarioModal.form.remove(usuarioModal.cbRol);
+                usuarioModal.cbRol.setSelectedItem("Administrador");
+                usuarioModal.setSize(555, 445);
+            }else {
+                usuarioModal.setSize(555, 495);
+            }
+            
             usuarioModal.jPanel1.remove(usuarioModal.btnBaja);
+            usuarioModal.form.remove(usuarioModal.modiPassCheck);
             modalOn = "usuarioModal";
             usuarioModal.iniciar();
         }else if(modals.equals("editarUsuario")){
@@ -222,6 +262,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
             usuarioModal.form.remove(usuarioModal.cbGenero);
             usuarioModal.form.remove(usuarioModal.iconRol);
             usuarioModal.form.remove(usuarioModal.cbRol);
+            usuarioModal.form.remove(usuarioModal.modiPassCheck);
 
             usuarioModal.header.setText("Confirmar Acceso");
             usuarioModal.btnGuardar.setText("Confirmar");
@@ -399,7 +440,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                                         DesktopNotify.setDefaultTheme(NotifyTheme.Green);
                                         DesktopNotify.showDesktopMessage("Usuario guardado", "El usuario ha sido alamcenado exitosamente.", DesktopNotify.SUCCESS, 8000);
                                     }
-
+                                    
                                     modalOn = "";
                                     usuarioModal.dispose();
 
@@ -416,7 +457,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                     }else {
                         if(usuarioSelected != null){
                             //Modificar
-                            ListaSimple<Usuario> existeUser = daoUsuario.buscar(usuarioModal.jtUser.getText());
+                            ListaSimple<Usuario> existeUser = daoUsuario.selectAllTo("nick_usuario", usuarioModal.jtUser.getText());
                             String claveAux = usuarioModal.jtPass.getText();
                             Date fecha = usuarioModal.jDate.getDate();
 
@@ -426,47 +467,37 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                             if (!usuarioModal.jtNom.getText().equals(usuarioSelected.getNombre()) || !usuarioModal.jtApe.getText().equals(usuarioSelected.getApellido())
                                     || !fechaNac.equals(usuarioSelected.getfNacimiento()) || !usuarioModal.jtTel.getText().equals(usuarioSelected.getTelefono())
                                     || !usuarioModal.cbGenero.getSelectedItem().toString().equals(usuarioSelected.getGenero()) || !usuarioModal.jtUser.getText().equals(usuarioSelected.getNick())
-                                    || !usuarioModal.cbRol.getSelectedItem().toString().equals(usuarioSelected.getRol()) || claveAux.isEmpty()) {
+                                    || !usuarioModal.cbRol.getSelectedItem().toString().equals(usuarioSelected.getRol())) {
                                 if(existeUser.isEmpty()){
-                                    if (!usuarioModal.jtPass.getText().isEmpty() && !usuarioModal.jtPassRepet.getText().isEmpty()){
-                                        usuarioSelected.setNombre(usuarioModal.jtNom.getText());
-                                        usuarioSelected.setApellido(usuarioModal.jtApe.getText());
+                                    usuarioSelected.setNombre(usuarioModal.jtNom.getText());
+                                    usuarioSelected.setApellido(usuarioModal.jtApe.getText());
 
+                                    usuarioSelected.setfNacimiento(fechaNac);
+                                    usuarioSelected.setTelefono(usuarioModal.jtTel.getText());
+                                    usuarioSelected.setGenero(usuarioModal.cbGenero.getSelectedItem().toString());
+                                    usuarioSelected.setNick(usuarioModal.jtUser.getText());
+                                    usuarioSelected.setRol(usuarioModal.cbRol.getSelectedItem().toString());
+                                    
+                                    if(daoUsuario.update(usuarioSelected)){ //Guardado
+                                        //Mensaje de modificado
+                                        DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                                        DesktopNotify.showDesktopMessage("Usuario actualizado", "El usuario ha sido modificado exitosamente.", DesktopNotify.SUCCESS, 8000);
+                                        usuarioSelected = null;
+                                        usuarioModal.dispose();
+                                    }else{ //Ocurrio un error
+                                        DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                                        DesktopNotify.showDesktopMessage("Error", "Usuario no actualizado", DesktopNotify.FAIL, 8000);
+                                    }
+                                }else {
+                                    usuarioSelected.setNombre(usuarioModal.jtNom.getText());
+                                    usuarioSelected.setApellido(usuarioModal.jtApe.getText());
 
-                                        usuarioSelected.setfNacimiento(fechaNac);
-                                        usuarioSelected.setTelefono(usuarioModal.jtTel.getText());
-                                        usuarioSelected.setGenero(usuarioModal.cbGenero.getSelectedItem().toString());
-                                        usuarioSelected.setNick(usuarioModal.jtUser.getText());
-                                        usuarioSelected.setRol(usuarioModal.cbRol.getSelectedItem().toString());
+                                    usuarioSelected.setfNacimiento(fechaNac);
+                                    usuarioSelected.setTelefono(usuarioModal.jtTel.getText());
+                                    usuarioSelected.setGenero(usuarioModal.cbGenero.getSelectedItem().toString());
+                                    usuarioSelected.setRol(usuarioModal.cbRol.getSelectedItem().toString());
 
-                                         if(usuarioModal.jtPass.getText().equals(usuarioModal.jtPassRepet.getText())){
-                                            String clave = Encriptacion.getStringMessageDigest(usuarioModal.jtPass.getText(), Encriptacion.SHA256); //Encriptamos la clave
-
-                                            usuarioSelected.setClave(clave);
-                                         }
-
-
-                                        if(daoUsuario.update(usuarioSelected)){ //Guardado
-                                            //Mensaje de modificado
-                                            DesktopNotify.setDefaultTheme(NotifyTheme.Green);
-                                            DesktopNotify.showDesktopMessage("Usuario actualizado", "El usuario ha sido modificado exitosamente.", DesktopNotify.SUCCESS, 8000);
-                                            usuarioSelected = null;
-                                            usuarioModal.dispose();
-                                        }else{ //Ocurrio un error
-                                            DesktopNotify.setDefaultTheme(NotifyTheme.Red);
-                                            DesktopNotify.showDesktopMessage("Error", "Usuario no actualizado", DesktopNotify.FAIL, 8000);
-                                        }
-
-                                    }else {
-                                        usuarioSelected.setNombre(usuarioModal.jtNom.getText());
-                                        usuarioSelected.setApellido(usuarioModal.jtApe.getText());
-
-                                        usuarioSelected.setfNacimiento(fechaNac);
-                                        usuarioSelected.setTelefono(usuarioModal.jtTel.getText());
-                                        usuarioSelected.setGenero(usuarioModal.cbGenero.getSelectedItem().toString());
-                                        usuarioSelected.setNick(usuarioModal.jtUser.getText());
-                                        usuarioSelected.setRol(usuarioModal.cbRol.getSelectedItem().toString());
-
+                                    if(existeUser.toArray().get(0).getNick().equals(usuarioSelected.getNick())){ 
                                         if(daoUsuario.update(usuarioSelected)){
                                             DesktopNotify.setDefaultTheme(NotifyTheme.Green);
                                             DesktopNotify.showDesktopMessage("Usuario actualizado", "El usuario ha sido modificado exitosamente.", DesktopNotify.SUCCESS, 8000);
@@ -477,25 +508,29 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                                             DesktopNotify.showDesktopMessage("Error", "Usuario no actualizado", DesktopNotify.FAIL, 8000);
                                         }
 
-                                    }
-                                }else {
-                                    if (!usuarioModal.jtPass.getText().isEmpty() && !usuarioModal.jtPassRepet.getText().isEmpty()){
-                                        usuarioSelected.setNombre(usuarioModal.jtNom.getText());
-                                        usuarioSelected.setApellido(usuarioModal.jtApe.getText());
+                                    }else{ //Usuario ya existe
+                                        DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                                        DesktopNotify.showDesktopMessage("Usuario " + usuarioModal.jtUser.getText() +  " ya existe", "El nuevo nombre de usuario debe ser diferente a los demás.", DesktopNotify.WARNING, 10000);
+                                    }   
+                                }
+                            }else if (usuarioModal.modiPassCheck.isSelected()) {
+                                if (!usuarioModal.jtPass.getText().isEmpty() && !usuarioModal.jtPassRepet.getText().isEmpty()){
+                                    usuarioSelected.setNombre(usuarioModal.jtNom.getText());
+                                    usuarioSelected.setApellido(usuarioModal.jtApe.getText());
 
-                                        usuarioSelected.setfNacimiento(fechaNac);
-                                        usuarioSelected.setTelefono(usuarioModal.jtTel.getText());
-                                        usuarioSelected.setGenero(usuarioModal.cbGenero.getSelectedItem().toString());
-                                        usuarioSelected.setRol(usuarioModal.cbRol.getSelectedItem().toString());
-
-                                         if(usuarioModal.jtPass.getText().equals(usuarioModal.jtPassRepet.getText())){
+                                    usuarioSelected.setfNacimiento(fechaNac);
+                                    usuarioSelected.setTelefono(usuarioModal.jtTel.getText());
+                                    usuarioSelected.setGenero(usuarioModal.cbGenero.getSelectedItem().toString());
+                                    usuarioSelected.setNick(usuarioModal.jtUser.getText());
+                                    usuarioSelected.setRol(usuarioModal.cbRol.getSelectedItem().toString());
+                                    
+                                        if(usuarioModal.jtPass.getText().equals(usuarioModal.jtPassRepet.getText())){
                                             String clave = Encriptacion.getStringMessageDigest(usuarioModal.jtPass.getText(), Encriptacion.SHA256); //Encriptamos la clave
 
                                             usuarioSelected.setClave(clave);
-                                         }
 
-                                        if(existeUser.toArray().get(0).getNick().equals(usuarioSelected.getNick())){ 
-                                            if(daoUsuario.update(usuarioSelected)){
+                                            if(daoUsuario.update(usuarioSelected)){ //Guardado
+                                                //Mensaje de modificado
                                                 DesktopNotify.setDefaultTheme(NotifyTheme.Green);
                                                 DesktopNotify.showDesktopMessage("Usuario actualizado", "El usuario ha sido modificado exitosamente.", DesktopNotify.SUCCESS, 8000);
                                                 usuarioSelected = null;
@@ -504,35 +539,14 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                                                 DesktopNotify.setDefaultTheme(NotifyTheme.Red);
                                                 DesktopNotify.showDesktopMessage("Error", "Usuario no actualizado", DesktopNotify.FAIL, 8000);
                                             }
-
-                                        }else{ //Usuario ya existe
+                                        }else{
                                             DesktopNotify.setDefaultTheme(NotifyTheme.Red);
-                                            DesktopNotify.showDesktopMessage("Usuario " + usuarioModal.jtUser.getText() +  " ya existe", "El nuevo nombre de usuario debe ser diferente a los demás.", DesktopNotify.WARNING, 10000);
-                                        }   
-                                    }else {
-                                        usuarioSelected.setNombre(usuarioModal.jtNom.getText());
-                                        usuarioSelected.setApellido(usuarioModal.jtApe.getText());
-
-                                        usuarioSelected.setfNacimiento(fechaNac);
-                                        usuarioSelected.setTelefono(usuarioModal.jtTel.getText());
-                                        usuarioSelected.setGenero(usuarioModal.cbGenero.getSelectedItem().toString());
-                                        usuarioSelected.setRol(usuarioModal.cbRol.getSelectedItem().toString());
-
-                                        if(existeUser.toArray().get(0).getNick().equals(usuarioSelected.getNick())){ 
-                                            if(daoUsuario.update(usuarioSelected)){
-                                                DesktopNotify.setDefaultTheme(NotifyTheme.Green);
-                                                DesktopNotify.showDesktopMessage("Usuario actualizado", "El usuario ha sido modificado exitosamente.", DesktopNotify.SUCCESS, 8000);
-                                                usuarioSelected = null;
-                                                usuarioModal.dispose();
-                                            }else{ //Ocurrio un error
-                                                DesktopNotify.setDefaultTheme(NotifyTheme.Red);
-                                                DesktopNotify.showDesktopMessage("Error", "Usuario no actualizado", DesktopNotify.FAIL, 8000);
-                                            }
-                                        }else{ //Usuario ya existe
-                                            DesktopNotify.setDefaultTheme(NotifyTheme.Red);
-                                            DesktopNotify.showDesktopMessage("Usuario " + usuarioModal.jtUser.getText() +  " ya existe", "El nuevo nombre de usuario debe ser diferente a los demás.", DesktopNotify.WARNING, 10000);
-                                        }    
-                                    }
+                                            DesktopNotify.showDesktopMessage("Contraseñas diferentes", "Las contraseñas tienen que ser iguales.", DesktopNotify.WARNING, 8000);
+                                        }
+                                }else {
+                                    //Campos incompletos
+                                    DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                                    DesktopNotify.showDesktopMessage("Campos vacíos", "Por favor rellene todos los campos.", DesktopNotify.WARNING, 8000); //8 seg
                                 }
                             }else {
                                 DesktopNotify.setDefaultTheme(NotifyTheme.Red);
@@ -552,17 +566,17 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                         String clave = Encriptacion.getStringMessageDigest(usuarioModal.jtPass.getText(), Encriptacion.SHA256);
 
                         if (clave.equals(usuario.getClave())) {
-                                //usuarioSelected.setEstado(0);
+                                usuarioSelected.setEstado(0);
                                 
-                                DesktopNotify.setDefaultTheme(NotifyTheme.Red);
-                                DesktopNotify.showDesktopMessage("Hola hola", "Hola hola.", DesktopNotify.INFORMATION, 8000);
+//                                DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+//                                DesktopNotify.showDesktopMessage("Hola hola", "Hola hola.", DesktopNotify.INFORMATION, 8000);
                                 
-//                                if(daoUsuario.update(usuarioSelected)){
-//                                    DesktopNotify.setDefaultTheme(NotifyTheme.Red);
-//                                    DesktopNotify.showDesktopMessage("Usuario eliminado", "El usuario ha sido eliminado exitosamente.", DesktopNotify.INFORMATION, 8000);
-//                                    mostrarDatos(usuarioVista.tbUsuarios);
-//                                    usuarioModal.dispose();
-//                                }
+                                if(daoUsuario.update(usuarioSelected)){
+                                    DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                                    DesktopNotify.showDesktopMessage("Usuario eliminado", "El usuario ha sido eliminado exitosamente.", DesktopNotify.INFORMATION, 8000);
+                                    mostrarDatos(usuarioVista.tbUsuarios);
+                                    usuarioModal.dispose();
+                                }
 
                                 if (usuarioSelected.getNick().equals(usuario.getNick())) {
                                     usuarioSelected = null;
@@ -586,6 +600,30 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                     }else{
                         DesktopNotify.setDefaultTheme(NotifyTheme.Red);
                         DesktopNotify.showDesktopMessage("Usuario incorrecto", "Asegúrese de que el usuario digitado sea correcto.", DesktopNotify.WARNING, 8000);
+                    }
+                }else if (!usuarioModal.jtPass.getText().isEmpty() && !usuarioModal.jtPassRepet.getText().isEmpty()) {
+                    try {
+                        /* CONFIRMAR ACCESO - NUEVO USUARIO */
+                        
+                        claveAcceso = daoClave.selectAll().toArray().get(0);
+                        
+                        if(usuarioModal.jtPass.getText().equals(usuarioModal.jtPassRepet.getText())){
+                            String clave = Encriptacion.getStringMessageDigest(usuarioModal.jtPass.getText(), Encriptacion.SHA256);
+                            
+                            if (clave.equals(claveAcceso.getClave())) {
+                                usuarioModal.dispose();
+                                
+                                mostrarModals("nuevoUsuario");
+                            }else{
+                                DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                                DesktopNotify.showDesktopMessage("Contraseña incorrecta", "Asegúrese que la contraseña sea correcta.", DesktopNotify.WARNING, 8000);
+                            }
+                        }else {
+                            DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                            DesktopNotify.showDesktopMessage("Contraseñas diferentes", "Las contraseñas tienen que ser iguales.", DesktopNotify.WARNING, 8000);
+                        }
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }else{
                     //Campos vacios
@@ -824,6 +862,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                     String nick = usuarioVista.tbUsuarios.getValueAt(fila, 5).toString();
                     ListaSimple<Usuario> lista = daoUsuario.buscar(nick);
                     usuarioSelected = lista.toArray().get(0);
+                    claveAcceso.setClave("");
                     mostrarModals("editarUsuario");
                 }else if(columna == 9){
                     int fila = usuarioVista.tbUsuarios.getSelectedRow();
@@ -853,8 +892,17 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
         }
         
         try {
+            if (me.getSource().equals(login.lbNuevaCuenta)) {
+                mostrarModals("claveAcceso");
+            }
+        }catch (Exception e) {
+            
+        }
+        
+        try {
             if(me.getSource().equals(usuarioVista.btnNuevo)) {
                 try {
+                    claveAcceso.setClave("");
                     mostrarModals("nuevoUsuario");
                 } catch (SQLException ex) {
                     Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);

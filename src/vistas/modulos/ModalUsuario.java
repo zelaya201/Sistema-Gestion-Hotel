@@ -465,7 +465,7 @@ public class ModalUsuario extends javax.swing.JDialog {
     public javax.swing.JLabel iconPass;
     public javax.swing.JLabel iconRol;
     public javax.swing.JLabel iconTel;
-    private javax.swing.JLabel iconUser;
+    public javax.swing.JLabel iconUser;
     public com.toedter.calendar.JDateChooser jDate;
     private javax.swing.JLabel jLabel1;
     public javax.swing.JPanel jPanel1;
