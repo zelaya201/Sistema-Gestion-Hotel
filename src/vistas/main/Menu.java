@@ -64,7 +64,6 @@ public class Menu extends javax.swing.JFrame {
         btnRecepcion = new newscomponents.RSButtonIcon_new();
         btnHab = new newscomponents.RSButtonIcon_new();
         btbHabitacion = new newscomponents.RSButtonIcon_new();
-        btnReportes = new newscomponents.RSButtonIcon_new();
         btnUsuario = new newscomponents.RSButtonIcon_new();
         btnListRegistro = new newscomponents.RSButtonIcon_new();
         lbUserName = new javax.swing.JLabel();
@@ -148,13 +147,13 @@ public class Menu extends javax.swing.JFrame {
         modulos.add(btnTipoHab, gridBagConstraints);
 
         btnProducto.setBackground(new java.awt.Color(42, 53, 66));
-        btnProducto.setText("Productos");
+        btnProducto.setText("Ventas");
         btnProducto.setBackgroundHover(new java.awt.Color(61, 137, 248));
         btnProducto.setFocusPainted(false);
         btnProducto.setFont(new java.awt.Font("Bahnschrift", 0, 16)); // NOI18N
         btnProducto.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
         btnProducto.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnProducto.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.ARCHIVE);
+        btnProducto.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.SHOPPING_CART);
         btnProducto.setSizeIcon(25.0F);
         btnProducto.setVerifyInputWhenFocusTarget(false);
         btnProducto.addActionListener(new java.awt.event.ActionListener() {
@@ -233,28 +232,6 @@ public class Menu extends javax.swing.JFrame {
         gridBagConstraints.gridy = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         modulos.add(btbHabitacion, gridBagConstraints);
-
-        btnReportes.setBackground(new java.awt.Color(42, 53, 66));
-        btnReportes.setText("Reportes");
-        btnReportes.setActionCommand("Kardex");
-        btnReportes.setBackgroundHover(new java.awt.Color(61, 137, 248));
-        btnReportes.setFocusPainted(false);
-        btnReportes.setFont(new java.awt.Font("Bahnschrift", 0, 16)); // NOI18N
-        btnReportes.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
-        btnReportes.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnReportes.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.ASSIGNMENT);
-        btnReportes.setSizeIcon(25.0F);
-        btnReportes.setVerifyInputWhenFocusTarget(false);
-        btnReportes.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnReportesActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 11;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        modulos.add(btnReportes, gridBagConstraints);
 
         btnUsuario.setBackground(new java.awt.Color(42, 53, 66));
         btnUsuario.setText("Usuarios");
@@ -459,10 +436,6 @@ public class Menu extends javax.swing.JFrame {
         
     }//GEN-LAST:event_btbHabitacionActionPerformed
 
-    private void btnReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportesActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnReportesActionPerformed
-
     private void btnUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsuarioActionPerformed
         resetMenu();
         this.btnUsuario.setBackground(new Color(241,123,55));
@@ -525,7 +498,6 @@ public class Menu extends javax.swing.JFrame {
     public RSMaterialComponent.RSButtonIconOne btnModiUser;
     public newscomponents.RSButtonIcon_new btnProducto;
     public newscomponents.RSButtonIcon_new btnRecepcion;
-    public newscomponents.RSButtonIcon_new btnReportes;
     public RSMaterialComponent.RSButtonIconOne btnSalir;
     private newscomponents.RSButtonIcon_new btnTipoHab;
     public newscomponents.RSButtonIcon_new btnUsuario;

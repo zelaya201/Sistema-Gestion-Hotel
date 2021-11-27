@@ -181,12 +181,7 @@ public class Registro implements Comparable<Registro>{
 
     @Override
     public int compareTo(Registro t) {
-        if (this.idRegistro > t.getIdRegistro()){
-            return 1;
-        } else if (this.idRegistro < t.getIdRegistro()) {
-            return -1;
-        }else {
-            return 0;
-        }
+        Registro actual = this;
+        return (actual.getFechaSalida().compareToIgnoreCase(t.getFechaSalida()));
     }
 }

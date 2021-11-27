@@ -94,7 +94,7 @@
                     <Column editable="false" title="Estado" type="java.lang.Object"/>
                     <Column editable="false" title="Fecha de Entrada" type="java.lang.Object"/>
                     <Column editable="false" title="Fecha de Salida" type="java.lang.Object"/>
-                    <Column editable="false" title="Precio" type="java.lang.Object"/>
+                    <Column editable="false" title="Total" type="java.lang.Object"/>
                     <Column editable="false" title="Reporte" type="java.lang.Object"/>
                   </Table>
                 </Property>
@@ -150,7 +150,7 @@
                       <Editor/>
                       <Renderer/>
                     </Column>
-                    <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="false">
+                    <Column maxWidth="-1" minWidth="-1" prefWidth="10" resizable="false">
                       <Title/>
                       <Editor/>
                       <Renderer/>
