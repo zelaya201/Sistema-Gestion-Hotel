@@ -48,7 +48,7 @@ public class VistaListadoRegistro extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Id de Registro", "N° de Habitación", "Descripción", "Cliente", "Usuario", "Estado", "Fecha de Entrada", "Fecha de Salida", "Total", "Reporte"
+                "Id de Registro", "N° de Habitación", "Descripción", "Cliente", "Recepcionista", "Tipo", "Estado", "Fecha de Entrada", "Fecha de Salida", "Total"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -95,8 +95,8 @@ public class VistaListadoRegistro extends javax.swing.JPanel {
             tablaHabitaciones.getColumnModel().getColumn(7).setResizable(false);
             tablaHabitaciones.getColumnModel().getColumn(7).setPreferredWidth(10);
             tablaHabitaciones.getColumnModel().getColumn(8).setResizable(false);
+            tablaHabitaciones.getColumnModel().getColumn(8).setPreferredWidth(10);
             tablaHabitaciones.getColumnModel().getColumn(9).setResizable(false);
-            tablaHabitaciones.getColumnModel().getColumn(9).setPreferredWidth(10);
         }
 
         habPanel.add(jScrollPane2, java.awt.BorderLayout.CENTER);

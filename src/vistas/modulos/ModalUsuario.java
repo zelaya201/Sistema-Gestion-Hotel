@@ -1,6 +1,9 @@
 package vistas.modulos;
 
+import static com.itextpdf.kernel.pdf.PdfName.Pattern;
 import controlador.Controlador;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import utilidades.TextPrompt;
 
 public class ModalUsuario extends javax.swing.JDialog {
@@ -94,7 +97,7 @@ public class ModalUsuario extends javax.swing.JDialog {
         btnBaja.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBaja.setOpaque(true);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.ipadx = 50;
         gridBagConstraints.ipady = 15;
@@ -178,6 +181,12 @@ public class ModalUsuario extends javax.swing.JDialog {
             }
         });
         jtApe.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jtApeKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jtApeKeyReleased(evt);
+            }
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 jtApeKeyTyped(evt);
             }
@@ -245,6 +254,7 @@ public class ModalUsuario extends javax.swing.JDialog {
         form.add(jtPassRepet, gridBagConstraints);
 
         jDate.setBorder(javax.swing.BorderFactory.createCompoundBorder(null, javax.swing.BorderFactory.createEmptyBorder(0, 5, 0, 0)));
+        jDate.setDateFormatString("dd/MMM/yyyy");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -321,6 +331,12 @@ public class ModalUsuario extends javax.swing.JDialog {
             }
         });
         jtNom.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jtNomKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jtNomKeyReleased(evt);
+            }
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 jtNomKeyTyped(evt);
             }
@@ -357,7 +373,7 @@ public class ModalUsuario extends javax.swing.JDialog {
         form.add(cbGenero, gridBagConstraints);
 
         modiPassCheck.setBackground(new java.awt.Color(255, 255, 255));
-        modiPassCheck.setText("Modificar Contraseñas");
+        modiPassCheck.setText("Modificar Contraseña");
         modiPassCheck.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 modiPassCheckActionPerformed(evt);
@@ -367,7 +383,7 @@ public class ModalUsuario extends javax.swing.JDialog {
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_END;
-        gridBagConstraints.insets = new java.awt.Insets(12, 123, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(12, 138, 0, 0);
         form.add(modiPassCheck, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -388,6 +404,10 @@ public class ModalUsuario extends javax.swing.JDialog {
     }//GEN-LAST:event_jtApeActionPerformed
 
     private void jtApeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtApeKeyTyped
+//        char val = evt.getKeyChar();
+//        if((val<'a' || val>'z') && (val<'A' || val>'Z') && (val != ' ') && (val !='ñ')&& (val !='Ñ')&&(val<'á'|| val>'ú')&&(val<'Á'||val>'Ú')){
+//            evt.consume();
+//        }
         
     }//GEN-LAST:event_jtApeKeyTyped
 
@@ -405,12 +425,28 @@ public class ModalUsuario extends javax.swing.JDialog {
     }//GEN-LAST:event_jtNomActionPerformed
 
     private void jtNomKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtNomKeyTyped
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_jtNomKeyTyped
 
     private void modiPassCheckActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modiPassCheckActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_modiPassCheckActionPerformed
+
+    private void jtNomKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtNomKeyPressed
+        
+    }//GEN-LAST:event_jtNomKeyPressed
+
+    private void jtApeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtApeKeyPressed
+        
+    }//GEN-LAST:event_jtApeKeyPressed
+
+    private void jtNomKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtNomKeyReleased
+        jtNom.setText(jtNom.getText().toUpperCase());
+    }//GEN-LAST:event_jtNomKeyReleased
+
+    private void jtApeKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtApeKeyReleased
+        jtApe.setText(jtApe.getText().toUpperCase());
+    }//GEN-LAST:event_jtApeKeyReleased
 
     
     /**

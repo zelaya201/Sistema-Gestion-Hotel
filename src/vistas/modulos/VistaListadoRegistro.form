@@ -90,12 +90,12 @@
                     <Column editable="false" title="N&#xb0; de Habitaci&#xf3;n" type="java.lang.Object"/>
                     <Column editable="false" title="Descripci&#xf3;n" type="java.lang.Object"/>
                     <Column editable="false" title="Cliente" type="java.lang.Object"/>
-                    <Column editable="false" title="Usuario" type="java.lang.Object"/>
+                    <Column editable="false" title="Recepcionista" type="java.lang.Object"/>
+                    <Column editable="false" title="Tipo" type="java.lang.Object"/>
                     <Column editable="false" title="Estado" type="java.lang.Object"/>
                     <Column editable="false" title="Fecha de Entrada" type="java.lang.Object"/>
                     <Column editable="false" title="Fecha de Salida" type="java.lang.Object"/>
                     <Column editable="false" title="Total" type="java.lang.Object"/>
-                    <Column editable="false" title="Reporte" type="java.lang.Object"/>
                   </Table>
                 </Property>
                 <Property name="altoHead" type="int" value="30"/>
@@ -165,12 +165,12 @@
                       <Editor/>
                       <Renderer/>
                     </Column>
-                    <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="false">
+                    <Column maxWidth="-1" minWidth="-1" prefWidth="10" resizable="false">
                       <Title/>
                       <Editor/>
                       <Renderer/>
                     </Column>
-                    <Column maxWidth="-1" minWidth="-1" prefWidth="10" resizable="false">
+                    <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="false">
                       <Title/>
                       <Editor/>
                       <Renderer/>
