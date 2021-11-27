@@ -412,13 +412,14 @@ public class Controlador implements ActionListener, MouseListener{
     public void crearGrafica() throws SQLException{
         int totales[]= new int[12];
         int total = 0;
+        
         ListaSimple<Registro> registro = daoRegistro.selectAll();
         
-        for(int i=0; i<12; i++){
-            for(int j=0; j<registro.toArray().size(); j++){
-                if(registro.toArray().get(j).getEstado()==0){
-                    String fecha[]= registro.toArray().get(j).getFechaSalida().split("/");
-                    if((Integer.parseInt(fecha[1])-1)== i){
+        for(int i = 0; i < 12; i++){
+            for(int j = 0; j < registro.toArray().size(); j++){
+                if(registro.toArray().get(j).getEstado() == 0){
+                    String fecha[] = registro.toArray().get(j).getFechaSalida().split("/");
+                    if((Integer.parseInt(fecha[1])-1) == i){
                         total++;
                     }
                 }
