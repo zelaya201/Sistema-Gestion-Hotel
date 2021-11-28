@@ -11,7 +11,6 @@ public class VistaRecepcion extends javax.swing.JPanel {
     }
     
     public void setControlador(Controlador control){
-        
     }
 
     /**

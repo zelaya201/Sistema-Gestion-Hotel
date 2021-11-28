@@ -17,7 +17,7 @@ public class Menu extends javax.swing.JFrame {
         this.btnHab.setVisible(false);
         this.btnTipoHab.setVisible(false);
         this.btnDash.setActionCommand("Dashboard");
-        this.btnProducto.setActionCommand("Productos");
+        this.btnVenta.setActionCommand("Ventas");
         this.btnTipoHab.setActionCommand("Tipo");
         this.btnHab.setActionCommand("Habitacion");
         this.btnListRegistro.setActionCommand("Registro");
@@ -30,7 +30,7 @@ public class Menu extends javax.swing.JFrame {
 
     public void setControlador(Controlador control){
         this.btnDash.addActionListener(control);
-        this.btnProducto.addActionListener(control);
+//        this.btnVenta.addActionListener(control);
         this.btnTipoHab.addActionListener(control);    
         this.btnHab.addActionListener(control);
         this.btnListRegistro.addActionListener(control);
@@ -38,7 +38,11 @@ public class Menu extends javax.swing.JFrame {
         this.btnRecepcion.addActionListener(control);
         this.btnUsuario.addActionListener(control);
         this.btnModiUser.addActionListener(control);
-        this.btnSalir.addActionListener(control); 
+        this.btnSalir.addActionListener(control);
+        this.btnVenta.addActionListener(control);
+//        this.btnTipoHab.addActionListener(control);
+//        this.btnConfig.addActionListener(control);
+//        this.btnRecepcion.addActionListener(control);
     }
     
     public void iniciar(){
@@ -60,7 +64,7 @@ public class Menu extends javax.swing.JFrame {
         jLabel13 = new javax.swing.JLabel();
         btnDash = new newscomponents.RSButtonIcon_new();
         btnTipoHab = new newscomponents.RSButtonIcon_new();
-        btnProducto = new newscomponents.RSButtonIcon_new();
+        btnVenta = new newscomponents.RSButtonIcon_new();
         btnRecepcion = new newscomponents.RSButtonIcon_new();
         btnHab = new newscomponents.RSButtonIcon_new();
         btbHabitacion = new newscomponents.RSButtonIcon_new();
@@ -146,26 +150,26 @@ public class Menu extends javax.swing.JFrame {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         modulos.add(btnTipoHab, gridBagConstraints);
 
-        btnProducto.setBackground(new java.awt.Color(42, 53, 66));
-        btnProducto.setText("Ventas");
-        btnProducto.setBackgroundHover(new java.awt.Color(61, 137, 248));
-        btnProducto.setFocusPainted(false);
-        btnProducto.setFont(new java.awt.Font("Bahnschrift", 0, 16)); // NOI18N
-        btnProducto.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
-        btnProducto.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnProducto.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.SHOPPING_CART);
-        btnProducto.setSizeIcon(25.0F);
-        btnProducto.setVerifyInputWhenFocusTarget(false);
-        btnProducto.addActionListener(new java.awt.event.ActionListener() {
+        btnVenta.setBackground(new java.awt.Color(42, 53, 66));
+        btnVenta.setText("Ventas");
+        btnVenta.setBackgroundHover(new java.awt.Color(61, 137, 248));
+        btnVenta.setFocusPainted(false);
+        btnVenta.setFont(new java.awt.Font("Bahnschrift", 0, 16)); // NOI18N
+        btnVenta.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+        btnVenta.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnVenta.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.SHOPPING_CART);
+        btnVenta.setSizeIcon(25.0F);
+        btnVenta.setVerifyInputWhenFocusTarget(false);
+        btnVenta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnProductoActionPerformed(evt);
+                btnVentaActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 9;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        modulos.add(btnProducto, gridBagConstraints);
+        modulos.add(btnVenta, gridBagConstraints);
 
         btnRecepcion.setBackground(new java.awt.Color(42, 53, 66));
         btnRecepcion.setText("Recepción");
@@ -394,7 +398,7 @@ public class Menu extends javax.swing.JFrame {
 
     public void resetMenu(){
         this.btnDash.setBackground(new Color(42,53,66));
-        this.btnProducto.setBackground(new Color(42,53,66));
+        this.btnVenta.setBackground(new Color(42,53,66));
         this.btnHab.setBackground(new Color(42,53,66));
         this.btnTipoHab.setBackground(new Color(42,53,66));
         this.btnRecepcion.setBackground(new Color(42,53,66));
@@ -406,10 +410,10 @@ public class Menu extends javax.swing.JFrame {
         this.btnDash.setBackground(new Color(241,123,55));
     }//GEN-LAST:event_btnDashActionPerformed
 
-    private void btnProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProductoActionPerformed
+    private void btnVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVentaActionPerformed
         resetMenu();
-        this.btnProducto.setBackground(new Color(241,123,55));
-    }//GEN-LAST:event_btnProductoActionPerformed
+        this.btnVenta.setBackground(new Color(241,123,55));
+    }//GEN-LAST:event_btnVentaActionPerformed
 
     private void btnRecepcionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRecepcionActionPerformed
         resetMenu();
@@ -496,11 +500,11 @@ public class Menu extends javax.swing.JFrame {
     private newscomponents.RSButtonIcon_new btnListRegistro;
     private RSMaterialComponent.RSButtonIconOne btnMenu;
     public RSMaterialComponent.RSButtonIconOne btnModiUser;
-    public newscomponents.RSButtonIcon_new btnProducto;
     public newscomponents.RSButtonIcon_new btnRecepcion;
     public RSMaterialComponent.RSButtonIconOne btnSalir;
     private newscomponents.RSButtonIcon_new btnTipoHab;
     public newscomponents.RSButtonIcon_new btnUsuario;
+    public newscomponents.RSButtonIcon_new btnVenta;
     public javax.swing.JPanel header;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel13;

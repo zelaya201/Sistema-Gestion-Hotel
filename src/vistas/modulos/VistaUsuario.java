@@ -8,7 +8,7 @@ public class VistaUsuario extends javax.swing.JPanel {
 
     public VistaUsuario() {
         initComponents();
-        new TextPrompt("Buscar usuario", tfBusqueda);
+        new TextPrompt("Buscar por usuario, nombre o apellido", tfBusqueda);
     }
     
     public void setControlador(Controlador control){
@@ -106,7 +106,7 @@ public class VistaUsuario extends javax.swing.JPanel {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 18;
-        gridBagConstraints.ipady = 9;
+        gridBagConstraints.ipady = 11;
         jPanel3.add(jLabel1, gridBagConstraints);
 
         add(jPanel3, java.awt.BorderLayout.PAGE_START);

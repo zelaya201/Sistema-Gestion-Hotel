@@ -102,6 +102,7 @@ public class RegistroProductoDao {
             ps.execute();
             return true;
         } catch(Exception e) {      
+            System.out.println(e + "ERROOOOOR");
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, e);
         } finally{
             try {

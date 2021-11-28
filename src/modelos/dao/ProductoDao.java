@@ -116,6 +116,7 @@ public class ProductoDao {
             con = conectar.getConexion();
             ps = con.prepareStatement(sql);
 
+            ps.setString(1, product.getCodigo());
             ps.setString(2, product.getDescripcion());
             ps.setDouble(3, product.getPrecio());  
 

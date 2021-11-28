@@ -12,6 +12,8 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -93,7 +95,7 @@ import vistas.modulos.modalHabitacion;
  *
  * @author Adonay
  */
-public class Controlador implements ActionListener, MouseListener, KeyListener {
+public class Controlador implements ActionListener, MouseListener, KeyListener, ItemListener {
 
     private DefaultTableModel modelo;
     private Menu menu;
@@ -621,6 +623,67 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
             
             tabla.setModel(modelo);
         }
+        
+        /* Listado Registro */
+        if(principalOn.equals("mListRegistro")){
+            
+            tabla.setDefaultRenderer(Object.class, new ImgTabla()); //Renderizar para poner las img
+
+            tabla.getColumnModel().getColumn(0).setCellRenderer(diseño); //Mantener diseño de la tabla por columns
+            tabla.getColumnModel().getColumn(1).setCellRenderer(diseño);
+            tabla.getColumnModel().getColumn(2).setCellRenderer(diseño);
+            tabla.getColumnModel().getColumn(3).setCellRenderer(diseño);
+            tabla.getColumnModel().getColumn(4).setCellRenderer(diseño);
+            tabla.getColumnModel().getColumn(5).setCellRenderer(diseño);
+            tabla.getColumnModel().getColumn(7).setCellRenderer(diseño);
+            tabla.getColumnModel().getColumn(8).setCellRenderer(diseño);
+            tabla.getColumnModel().getColumn(9).setCellRenderer(diseño);
+            
+            ListaRegisCola = new ColaPrioridadN(13);
+            
+            for(Object obj : lista.toArray()){
+                Registro x = (Registro) obj;
+                String prioridad[] = x.getFechaSalida().split("/");
+                ListaRegisCola.offer(x, (x.getEstado() == 1) ? Integer.parseInt(prioridad[1]) - 1 : 12);
+            }
+            
+            int i = 1;
+
+            for (Object obj : ListaRegisCola.toArray()) {
+                
+                Registro x = (Registro) obj;
+
+                ImageIcon img_edit = new ImageIcon(getClass().getResource("/img/file.png"));
+                JLabel lbImg_edit = new JLabel(new ImageIcon(img_edit.getImage()));
+                
+                ImageIcon img_estado1 = new ImageIcon(getClass().getResource("/img/estado1.png"));
+                JLabel lbImg_estado1 = new JLabel(new ImageIcon(img_estado1.getImage()));
+                
+                ImageIcon img_estado0 = new ImageIcon(getClass().getResource("/img/estado0.png"));
+                JLabel lbImg_estado0 = new JLabel(new ImageIcon(img_estado0.getImage()));
+
+                modelo.addRow(new Object[]{
+                    x.getIdRegistro(), 
+                    x.getHabitacion().getNumHabitacion(), 
+                    x.getHabitacion().getDescripcion(), 
+                    x.getCliente().getNombre() + " " + x.getCliente().getApellido(), 
+                    x.getUsuario().getNombre() + " " + x.getUsuario().getApellido(), 
+                    x.getTipo(),
+                    (x.getEstado() != 0) ? lbImg_estado1 : lbImg_estado0,
+                    x.getFechaEntrada(),
+                    x.getFechaSalida(),
+                    "$ " + formatoDecimal(x.getTotal())
+                });
+                i++;
+                
+            }
+
+            if (modelo.getRowCount() < 1) {
+                modelo.addRow(new Object[]{"", "", "Ningún resultado encontrado"});
+            }
+
+            tabla.setModel(modelo);
+        }
     }
     
     public void actualizarHeader(Usuario user) {
@@ -662,7 +725,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
 
                             //Eliminar Modulos
                             menu.modulos.remove(menu.btnUsuario);
-                            menu.modulos.remove(menu.btnProducto);
+                            menu.modulos.remove(menu.btnVenta);
                             menu.modulos.remove(menu.btnConfig);
                         }
                         
@@ -1275,6 +1338,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
                                     }else {
                                         DesktopNotify.setDefaultTheme(NotifyTheme.Red);
                                         DesktopNotify.showDesktopMessage("Usuario no modificado", "No se ha modificado ningún campo.", DesktopNotify.FAIL, 8000);
+                                        usuarioModal.dispose();
                                     }
                                 }else{
                                     //Campos incompletos
@@ -1441,6 +1505,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
         registroVista.lbTipoHab.setText(habi.getTipoHabitacion().getNombre());
         registroVista.lbPrecio.setText("$" + String.valueOf(habi.getPrecio()));
     }
+
     
     public void mostrarInfoHab2() throws SQLException {
 //        Registro regis = daoRegistro.selectRegisHab();
@@ -2379,6 +2444,21 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
 
     @Override
     public void keyPressed(KeyEvent ke) {
+        /* RECEPCION */
+        if (principalOn.equals("mListRegistro")) {
+            try {
+                ListaSimple<Registro> lista = daoRegistro.buscar(listadoRegisVista.tfBusqueda.getText() + ke.getKeyChar());
+                
+                if (!lista.isEmpty()) {
+                    mostrarBusqueda(lista, listadoRegisVista.tablaHabitaciones);
+                } else {
+                    mostrarDatos(listadoRegisVista.tablaHabitaciones);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
         /* CONTROL DE USUARIOS */
         if (principalOn.equals("mUsuarios")) {
             ListaSimple<Usuario> lista = daoUsuario.buscar(usuarioVista.tfBusqueda.getText() + ke.getKeyChar());
@@ -2418,6 +2498,11 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
                 System.out.println(ex);
             }
         }
+    }
+
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }
