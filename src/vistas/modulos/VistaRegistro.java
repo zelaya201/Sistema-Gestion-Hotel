@@ -6,12 +6,12 @@ public class VistaRegistro extends javax.swing.JPanel {
 
     public VistaRegistro() {
         initComponents();  
-        btnGuardarRegistro.setActionCommand("guardarRegistro");
+        btnCulminarRegistro.setActionCommand("guardarRegistro");
         btnAddHuesped.setActionCommand("AgregarHuesped");
     }
     
     public void setControlador(Controlador control){
-        this.btnGuardarRegistro.addActionListener(control);
+        this.btnCulminarRegistro.addActionListener(control);
         this.btnAddHuesped.addActionListener(control);
     }
 
@@ -38,7 +38,7 @@ public class VistaRegistro extends javax.swing.JPanel {
         jLabel6 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         lbTipoHab = new javax.swing.JLabel();
-        jPanel2 = new javax.swing.JPanel();
+        form = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         cbHuesped = new RSMaterialComponent.RSComboBox();
         jLabel9 = new javax.swing.JLabel();
@@ -56,7 +56,8 @@ public class VistaRegistro extends javax.swing.JPanel {
         txtTotalPagar = new RSMaterialComponent.RSTextFieldOne();
         jLabel15 = new javax.swing.JLabel();
         txtTotalConDescuento = new RSMaterialComponent.RSTextFieldOne();
-        btnGuardarRegistro = new newscomponents.RSButtonIcon_new();
+        btnCulminarRegistro = new newscomponents.RSButtonIcon_new();
+        btnGuardarRegistro1 = new newscomponents.RSButtonIcon_new();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
 
@@ -226,8 +227,8 @@ public class VistaRegistro extends javax.swing.JPanel {
 
         habPanel.add(jPanel1, java.awt.BorderLayout.PAGE_START);
 
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel2.setLayout(new java.awt.GridBagLayout());
+        form.setBackground(new java.awt.Color(255, 255, 255));
+        form.setLayout(new java.awt.GridBagLayout());
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel2.setText("HUESPED");
@@ -239,7 +240,7 @@ public class VistaRegistro extends javax.swing.JPanel {
         gridBagConstraints.ipady = 10;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 30, 5, 10);
-        jPanel2.add(jLabel2, gridBagConstraints);
+        form.add(jLabel2, gridBagConstraints);
 
         cbHuesped.setForeground(new java.awt.Color(0, 0, 0));
         cbHuesped.setColorArrow(new java.awt.Color(61, 137, 248));
@@ -257,11 +258,11 @@ public class VistaRegistro extends javax.swing.JPanel {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 30, 5, 10);
-        jPanel2.add(cbHuesped, gridBagConstraints);
+        form.add(cbHuesped, gridBagConstraints);
 
         jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel9.setText("TIPO DE REGISTRO");
@@ -273,7 +274,7 @@ public class VistaRegistro extends javax.swing.JPanel {
         gridBagConstraints.ipady = 5;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 20);
-        jPanel2.add(jLabel9, gridBagConstraints);
+        form.add(jLabel9, gridBagConstraints);
 
         jLabel10.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel10.setText("FECHA DE ENTRADA");
@@ -285,7 +286,7 @@ public class VistaRegistro extends javax.swing.JPanel {
         gridBagConstraints.ipady = 10;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 30, 5, 10);
-        jPanel2.add(jLabel10, gridBagConstraints);
+        form.add(jLabel10, gridBagConstraints);
 
         fechaEntrada.setBackground(new java.awt.Color(153, 153, 153));
         fechaEntrada.setBgColor(new java.awt.Color(153, 153, 153));
@@ -298,7 +299,7 @@ public class VistaRegistro extends javax.swing.JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 30, 5, 10);
-        jPanel2.add(fechaEntrada, gridBagConstraints);
+        form.add(fechaEntrada, gridBagConstraints);
 
         jLabel11.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel11.setText("DESCUENTO");
@@ -309,7 +310,7 @@ public class VistaRegistro extends javax.swing.JPanel {
         gridBagConstraints.ipady = 10;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 30, 5, 5);
-        jPanel2.add(jLabel11, gridBagConstraints);
+        form.add(jLabel11, gridBagConstraints);
 
         jLabel12.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel12.setText("ADELANTO");
@@ -320,7 +321,7 @@ public class VistaRegistro extends javax.swing.JPanel {
         gridBagConstraints.ipady = 10;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 10);
-        jPanel2.add(jLabel12, gridBagConstraints);
+        form.add(jLabel12, gridBagConstraints);
 
         txtDescuento.setForeground(new java.awt.Color(0, 0, 0));
         txtDescuento.setBorderColor(new java.awt.Color(204, 204, 204));
@@ -333,7 +334,7 @@ public class VistaRegistro extends javax.swing.JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 30, 5, 5);
-        jPanel2.add(txtDescuento, gridBagConstraints);
+        form.add(txtDescuento, gridBagConstraints);
 
         txtAdelanto.setForeground(new java.awt.Color(0, 0, 0));
         txtAdelanto.setBorderColor(new java.awt.Color(204, 204, 204));
@@ -351,7 +352,7 @@ public class VistaRegistro extends javax.swing.JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 10);
-        jPanel2.add(txtAdelanto, gridBagConstraints);
+        form.add(txtAdelanto, gridBagConstraints);
 
         btnAddHuesped.setBackground(new java.awt.Color(61, 137, 248));
         btnAddHuesped.setText("addHuesped");
@@ -369,7 +370,7 @@ public class VistaRegistro extends javax.swing.JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, -10, 5, 5);
-        jPanel2.add(btnAddHuesped, gridBagConstraints);
+        form.add(btnAddHuesped, gridBagConstraints);
 
         cbEstado.setForeground(new java.awt.Color(0, 0, 0));
         cbEstado.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccione", "Hospedaje", "Reserva" }));
@@ -382,11 +383,11 @@ public class VistaRegistro extends javax.swing.JPanel {
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 20);
-        jPanel2.add(cbEstado, gridBagConstraints);
+        form.add(cbEstado, gridBagConstraints);
 
         jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel13.setText("FECHA DE SALIDA");
@@ -398,7 +399,7 @@ public class VistaRegistro extends javax.swing.JPanel {
         gridBagConstraints.ipady = 10;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 20);
-        jPanel2.add(jLabel13, gridBagConstraints);
+        form.add(jLabel13, gridBagConstraints);
 
         fechaSalida.setBackground(new java.awt.Color(153, 153, 153));
         fechaSalida.setBgColor(new java.awt.Color(153, 153, 153));
@@ -411,7 +412,7 @@ public class VistaRegistro extends javax.swing.JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 20);
-        jPanel2.add(fechaSalida, gridBagConstraints);
+        form.add(fechaSalida, gridBagConstraints);
 
         jLabel14.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel14.setText("TOTAL A PAGAR");
@@ -422,7 +423,7 @@ public class VistaRegistro extends javax.swing.JPanel {
         gridBagConstraints.ipady = 10;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        jPanel2.add(jLabel14, gridBagConstraints);
+        form.add(jLabel14, gridBagConstraints);
 
         txtTotalPagar.setEditable(false);
         txtTotalPagar.setForeground(new java.awt.Color(0, 0, 0));
@@ -436,7 +437,7 @@ public class VistaRegistro extends javax.swing.JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        jPanel2.add(txtTotalPagar, gridBagConstraints);
+        form.add(txtTotalPagar, gridBagConstraints);
 
         jLabel15.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel15.setText("TOTAL A PAGAR - DESCUENTO");
@@ -447,7 +448,7 @@ public class VistaRegistro extends javax.swing.JPanel {
         gridBagConstraints.ipady = 10;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 20);
-        jPanel2.add(jLabel15, gridBagConstraints);
+        form.add(jLabel15, gridBagConstraints);
 
         txtTotalConDescuento.setEditable(false);
         txtTotalConDescuento.setForeground(new java.awt.Color(0, 0, 0));
@@ -461,18 +462,39 @@ public class VistaRegistro extends javax.swing.JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 20);
-        jPanel2.add(txtTotalConDescuento, gridBagConstraints);
+        form.add(txtTotalConDescuento, gridBagConstraints);
 
-        btnGuardarRegistro.setBackground(new java.awt.Color(61, 137, 248));
-        btnGuardarRegistro.setText("Agregar Registro");
-        btnGuardarRegistro.setFocusPainted(false);
-        btnGuardarRegistro.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        btnGuardarRegistro.setHideActionText(true);
-        btnGuardarRegistro.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        btnGuardarRegistro.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.ADD);
-        btnGuardarRegistro.addActionListener(new java.awt.event.ActionListener() {
+        btnCulminarRegistro.setBackground(new java.awt.Color(241, 123, 55));
+        btnCulminarRegistro.setText("Culminar Registro");
+        btnCulminarRegistro.setFocusPainted(false);
+        btnCulminarRegistro.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnCulminarRegistro.setHideActionText(true);
+        btnCulminarRegistro.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        btnCulminarRegistro.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.DONE);
+        btnCulminarRegistro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGuardarRegistroActionPerformed(evt);
+                btnCulminarRegistroActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(20, 40, 100, 21);
+        form.add(btnCulminarRegistro, gridBagConstraints);
+
+        btnGuardarRegistro1.setBackground(new java.awt.Color(61, 137, 248));
+        btnGuardarRegistro1.setText("Agregar Registro");
+        btnGuardarRegistro1.setFocusPainted(false);
+        btnGuardarRegistro1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnGuardarRegistro1.setHideActionText(true);
+        btnGuardarRegistro1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        btnGuardarRegistro1.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.ADD);
+        btnGuardarRegistro1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarRegistro1ActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -481,10 +503,10 @@ public class VistaRegistro extends javax.swing.JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(20, 40, 100, 40);
-        jPanel2.add(btnGuardarRegistro, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(20, 32, 100, 40);
+        form.add(btnGuardarRegistro1, gridBagConstraints);
 
-        habPanel.add(jPanel2, java.awt.BorderLayout.CENTER);
+        habPanel.add(form, java.awt.BorderLayout.CENTER);
 
         add(habPanel, java.awt.BorderLayout.CENTER);
 
@@ -518,18 +540,24 @@ public class VistaRegistro extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_cbHuespedActionPerformed
 
-    private void btnGuardarRegistroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarRegistroActionPerformed
+    private void btnCulminarRegistroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCulminarRegistroActionPerformed
 
-    }//GEN-LAST:event_btnGuardarRegistroActionPerformed
+    }//GEN-LAST:event_btnCulminarRegistroActionPerformed
+
+    private void btnGuardarRegistro1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarRegistro1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnGuardarRegistro1ActionPerformed
        
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private RSMaterialComponent.RSButtonIconOne btnAddHuesped;
-    public newscomponents.RSButtonIcon_new btnGuardarRegistro;
+    public newscomponents.RSButtonIcon_new btnCulminarRegistro;
+    public newscomponents.RSButtonIcon_new btnGuardarRegistro1;
     public RSMaterialComponent.RSComboBox cbEstado;
     public RSMaterialComponent.RSComboBox cbHuesped;
     public newscomponents.RSDateChooser fechaEntrada;
     public newscomponents.RSDateChooser fechaSalida;
+    public javax.swing.JPanel form;
     public javax.swing.JPanel habPanel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -547,7 +575,6 @@ public class VistaRegistro extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     public javax.swing.JLabel lbDescrip;
     public javax.swing.JLabel lbEstado;

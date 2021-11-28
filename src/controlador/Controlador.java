@@ -192,6 +192,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
             new CambiaPanel(menu.body, recepVista);
         } else if (mod.equals("mRegistro")) {
             registroVista = new VistaRegistro();
+            registroVista.remove(registroVista.btnCulminarRegistro);
             registroVista.setControlador(this);
             mostrarInfoHab();
             llenarComboRegistro();
@@ -1403,7 +1404,6 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
     }
    
     public void generarHabitaciones() throws SQLException {
-
         ListaSimple<Habitacion> listaHab = this.daoHabitacion.selectAll();
 
         for (Habitacion x : listaHab.toArray()) {
