@@ -1,6 +1,10 @@
 package vistas.modulos;
 
 import controlador.Controlador;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import utilidades.TextPrompt;
 
 public class VistaListadoRegistro extends javax.swing.JPanel {
@@ -8,6 +12,17 @@ public class VistaListadoRegistro extends javax.swing.JPanel {
     public VistaListadoRegistro() {
         initComponents();
         new TextPrompt("Buscar por fecha de entrada o salida", this.tfBusqueda);
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(VistaListadoRegistro.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            Logger.getLogger(VistaListadoRegistro.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(VistaListadoRegistro.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnsupportedLookAndFeelException ex) {
+            Logger.getLogger(VistaListadoRegistro.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public void setControlador(Controlador control){

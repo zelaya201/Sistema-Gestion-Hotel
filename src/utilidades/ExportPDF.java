@@ -157,16 +157,21 @@ public class ExportPDF {
         Paragraph totalpag = new Paragraph("Total a Pagar: $ " + formatoDecimal(costoTotal - ListaRegistro.toArray().get(0).getDeposito())).setTextAlignment(TextAlignment.RIGHT);
         
         //Agregamos todos los objetos al documento
+        
         documento.add(encabezado);
         documento.add(saltoDeLinea);
         documento.add(huespedDetalles);
         documento.add(saltoDeLinea);
         documento.add(detalleRegistro);
         documento.add(saltoDeLinea);
-        documento.add(producCons);
-        documento.add(saltoDeLinea);
-        documento.add(detalleproducto);
-        documento.add(saltoDeLinea);
+        //
+        if (!ListaRegistro.toArray().get(0).getRegistrosProductos().isEmpty()) {
+            documento.add(producCons);
+            documento.add(saltoDeLinea);
+            documento.add(detalleproducto);
+            documento.add(saltoDeLinea);
+        }
+        //
         documento.add(deposit);
         documento.add(costtotal);
         documento.add(totalpag);

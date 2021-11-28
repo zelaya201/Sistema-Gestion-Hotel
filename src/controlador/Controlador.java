@@ -1603,26 +1603,33 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
         }
         
         if (btn.equals("Factura")) {
+            
+            if (registroSelected.getEstado() == 0) {
+                String path = "";
 
-            String path = "";
+                JFileChooser file = new JFileChooser();
+                file.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                int request = file.showSaveDialog(menu);
 
-            JFileChooser file = new JFileChooser();
-            file.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            int request = file.showSaveDialog(menu);
+                if (request == JFileChooser.APPROVE_OPTION) {
+                    path = file.getSelectedFile().getPath();
+                    ListaSimple<Registro> registro = daoRegistro.selectAllTo("id_registro", String.valueOf(registroSelected.getIdRegistro()));
+                    ListaSimple<Hotel> hotel = daoHotel.selectAll();
 
-            if (request == JFileChooser.APPROVE_OPTION) {
-                path = file.getSelectedFile().getPath();
-                ListaSimple<Registro> registro = daoRegistro.selectAllTo("id_registro", String.valueOf(registroSelected.getIdRegistro()));
-                ListaSimple<Hotel> hotel = daoHotel.selectAll();
-
-                ExportPDF exporPdf = new ExportPDF();
-                exporPdf.setHotel(hotel.toArray().get(0));
-                exporPdf.setListaRegistro(registro);
-                exporPdf.setPath(path);
-                exporPdf.crearFacturaProducto();
-                DesktopNotify.setDefaultTheme(NotifyTheme.Green);
-                DesktopNotify.showDesktopMessage("Reporte generado", "Ruta: " + path, DesktopNotify.INFORMATION, 10000);
+                    ExportPDF exporPdf = new ExportPDF();
+                    exporPdf.setHotel(hotel.toArray().get(0));
+                    exporPdf.setListaRegistro(registro);
+                    exporPdf.setPath(path);
+                    exporPdf.crearFacturaProducto();
+                    DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                    DesktopNotify.showDesktopMessage("Reporte generado", "Ruta: " + path, DesktopNotify.INFORMATION, 10000);
+                }
+            }else {
+                DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                DesktopNotify.showDesktopMessage("Registro no culminado", "El registro seleccionado aun no ha sido facturado.", DesktopNotify.INFORMATION, 10000);
             }
+
+            
 
         }
         
