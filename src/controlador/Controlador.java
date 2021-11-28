@@ -1131,7 +1131,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                 if (daoRegistro.insert(registro)) {
                     
                     DesktopNotify.setDefaultTheme(NotifyTheme.Green);
-                    DesktopNotify.showDesktopMessage("Registro Satisfactorio", "Hospedaje o Reserva satisfactorio", DesktopNotify.SUCCESS, 8000);
+                    DesktopNotify.showDesktopMessage("Registro Satisfactorio", "Hospedaje o Reserva completados", DesktopNotify.SUCCESS, 8000);
                     
                     if (daoHabitacion.updateEstado(habitacion)) {
                         System.out.println("disposicion actualizada");
@@ -2298,6 +2298,8 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                 } else if (recepcionSelected.getDisposicion().equals("OCUPADA")){
                     mostrarModulos("mFinalizar");
                     System.out.println("ENTRAMOS A OCUPADA");
+                } else if(recepcionSelected.getDisposicion().equals("RESERVACION")){
+                    System.out.println("ENTRAMOS A RESERVACION");
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
