@@ -42,14 +42,14 @@ public class RegistroDao {
         String sql = "select * from registro where " + atributo + "=" + condicion + "";
         return select(sql);
     }
-
-    public ListaSimple<Registro> buscar(String dato) throws SQLException {
-        String sql = "select * from registro where id_regsitro like '" + dato + "'";
+    
+    public ListaSimple<Registro> buscar(String dato) throws SQLException{
+        String sql = "select * from registro where fentrada_registro like '" + dato + "%' or fsalida_registro like '" + dato + "%'";
         return select(sql);
     }
-
-    public ListaSimple<Registro> selectId(int id) throws SQLException {
-        String sql = "select * from regsitro where id_registro =" + id;
+    
+    public ListaSimple<Registro> selectId(int id) throws SQLException{
+        String sql = "select * from registro where id_registro =" + id;
         return select(sql);
     }
 

@@ -25,6 +25,8 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -32,6 +34,8 @@ import javax.swing.JFileChooser;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -62,6 +66,7 @@ import modelos.entidades.Habitacion;
 import modelos.entidades.Hotel;
 import modelos.entidades.TipoHabitacion;
 import utilidades.CambiaPanel;
+import utilidades.ColaPrioridadN;
 import utilidades.ExportPDF;
 import utilidades.ImgTabla;
 import utilidades.ListaSimple;
@@ -71,14 +76,19 @@ import vistas.main.Menu;
 import vistas.modulos.ConfirmDialog;
 import vistas.modulos.ConfirmDialogTipo;
 import vistas.modulos.Dashboard;
+import vistas.modulos.ModalAddProducto;
 import vistas.modulos.ModalConfig;
 import vistas.modulos.ModalEditConfig;
+import vistas.modulos.ModalModProducto;
 import vistas.modulos.ModalUsuario;
+import vistas.modulos.VistaAddVenta;
 import vistas.modulos.VistaHabitacion;
+import vistas.modulos.VistaListadoRegistro;
 import vistas.modulos.VistaRecepcion;
 import vistas.modulos.VistaRegistro;
 import vistas.modulos.VistaTipo;
 import vistas.modulos.VistaUsuario;
+import vistas.modulos.VistaVentas;
 import vistas.modulos.modalHabitacion;
 
 
@@ -92,6 +102,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
     private Menu menu;
     private Login login;
     private ConfirmDialog confirmDialog;
+    private ColaPrioridadN ListaRegisCola;
     private String principalOn = "";
     private String modalOn = "";
     private String modalConfig = "";
@@ -111,12 +122,29 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
 
     /* REGISTRO HABITACIÓN */
     private RegistroDao daoRegistro = new RegistroDao();
+    private Registro registroSelected = null;
 
+    /* VENTAS - PRODUCTOS */
+    private Producto productoSelected = null;
+    private RegistroProducto registroPSelected = null;
+
+    VistaVentas ventasVista;
+    private ModalAddProducto modalProducto;
+    private VistaAddVenta addVentaVista;
+    private ModalModProducto modalMProducto;
+    ListaSimple<RegistroProducto> registrosProductos = new ListaSimple();
+
+//    private Producto 
+    private ProductoDao daoProducto = new ProductoDao();//
+    ListaSimple<Producto> productSelected = new ListaSimple();
+    
     /* REGISTRO PRODUCTO */
-    private RegistroProductoDao daoRegistroProducto = new RegistroProductoDao();
-    DefaultTableModel md;
+    private RegistroProductoDao daoRegistroP = new RegistroProductoDao();
+    private DefaultTableModel md;
+       
+    private boolean isLoged = false;
     
-    
+
     /* HABITACIÓN */
     private HabitacionDao daoHabitacion = new HabitacionDao();
     private TipoHabitacionDao tipoHabDao = new TipoHabitacionDao();
@@ -126,22 +154,18 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
     private ConfirmDialogTipo modalEliminar;
     private modalHabitacion modalHab;
     
-    
     /* REGISTRO HABITACIÓN */
     private VistaTipo tipoVista;
     private VistaHabitacion habitacionVista;
     private VistaRegistro registroVista;
+    private VistaListadoRegistro listadoRegisVista;
 
     /* RECEPCIÓN */
     private VistaRecepcion recepVista;
     private Habitacion recepcionSelected = null;
 
-    /* PRODUCTO */
-    private ProductoDao daoProducto = new ProductoDao();
-
     /* CLIENTE */
     private ClienteDao daoCliente = new ClienteDao();
-    
 
     /* CONFIGURACIÓN */
     private ModalConfig configModal;
@@ -166,6 +190,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
 
     public void mostrarModulos(String mod) throws SQLException {
 
@@ -180,6 +205,13 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             modalConfig = "mConfig";
             mostrarInfoHotel();
             configModal.iniciar();
+        } else if (mod.equals("mVentas")) {
+            ventasVista = new VistaVentas();
+            ventasVista.setControlador(this);
+            generarHabitacionesOcupadas();
+            registrosProductos = new ListaSimple();
+            principalOn = "mVentas";
+            new CambiaPanel(menu.body, ventasVista);
         } else if (mod.equals("mRecepcion")) {
             recepVista = new VistaRecepcion();
             recepVista.setControlador(this);
@@ -195,6 +227,13 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             registroVista.txtDescuento.setText("0");
             registroVista.txtAdelanto.setText("0");
             new CambiaPanel(menu.body, registroVista);
+        } else if (mod.equals("mAddVenta")) {
+            addVentaVista = new VistaAddVenta();
+            addVentaVista.setControlador(this);
+            mostrarInfoHab2();
+            principalOn = "mAddVenta";
+            new CambiaPanel(menu.body, addVentaVista);
+            llenarComboProducto();
         } else if (mod.equals("mDashboard")) {
             dashVista = new Dashboard();
             cargarDashboard();
@@ -220,6 +259,12 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             mostrarTablaHabitaciones(habitacionVista.tablaHabitaciones);
             principalOn = "mHabitacion";
             new CambiaPanel(menu.body, habitacionVista);
+        }else if(mod.equals("mListRegistro")){
+            this.listadoRegisVista = new VistaListadoRegistro();
+            listadoRegisVista.setControlador(this);
+            principalOn = "mListRegistro";
+            mostrarDatos(listadoRegisVista.tablaListaRegistros);
+            new CambiaPanel(menu.body, listadoRegisVista);
         }
     }
 
@@ -240,6 +285,25 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             modalConfig = "";
         }
 
+        // VENTAS-PRODUCTOS
+        if (modals.equals("nuevoProducto") && principalOn.equals("mVentas")) {
+
+            modalProducto = new ModalAddProducto(new JFrame(), true);
+            modalProducto.setControlador(this);
+            modalOn = "nuevoProducto";
+            modalProducto.iniciar();
+            
+        }
+        
+        if (modals.equals("modiProducto") && principalOn.equals("mVentas")) {
+            modalMProducto = new ModalModProducto(new JFrame(), true);
+            modalMProducto.setControlador(this);
+            modalOn = "modiProducto";
+            mostrarTablaM(modalMProducto.tbModP);
+            modalMProducto.iniciar();
+
+        }
+        
         /* CONTROL DE USUARIOS */
         if (modals.equals("claveAcceso")) {
             usuarioModal = new ModalUsuario(new JFrame(), true);
@@ -265,7 +329,9 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             usuarioModal.btnGuardar.setText("Confirmar");
 
             usuarioModal.setSize(434, 234);
-            
+
+            usuarioModal.setLocationRelativeTo(null);
+
             usuarioModal.iniciar();
         } else if (modals.equals("nuevoUsuario")) {
             usuarioModal = new ModalUsuario(new JFrame(), true);
@@ -278,8 +344,9 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                 usuarioModal.form.remove(usuarioModal.cbRol);
                 usuarioModal.cbRol.setSelectedItem("Administrador");
                 usuarioModal.setSize(555, 445);
-            } else {
+            }else {
                 usuarioModal.setSize(555, 495);
+                usuarioModal.setLocationRelativeTo(null);
             }
 
             usuarioModal.jPanel1.remove(usuarioModal.btnBaja);
@@ -305,7 +372,9 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                 usuarioModal.jtNom.setText(usuarioSelected.getNombre());
                 usuarioModal.jtApe.setText(usuarioSelected.getApellido());
 
-                Date date = new SimpleDateFormat("yyyy-MM-dd").parse(usuarioSelected.getfNacimiento());
+                
+                Date date = new SimpleDateFormat("yyyy/MM/dd").parse(usuarioSelected.getfNacimiento());
+
                 String formatDate = new SimpleDateFormat("dd/MM/yyyy").format(date);
                 Date parseDate = new SimpleDateFormat("dd/MM/yyyy").parse(formatDate);
 
@@ -319,7 +388,9 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
 
                 if (usuario.getRol().equals("Administrador") && !usuarioSelected.getNick().equals(usuario.getNick())) {
                     usuarioModal.cbRol.setEnabled(true);
-                } else if (usuario.getRol().equals("Administrador") || usuarioSelected.getNick().equals(usuario.getNick())) {
+
+                }else if (usuario.getRol().equals("Recepcionista") || usuarioSelected.getNick().equals(usuario.getNick())){
+
                     usuarioModal.cbRol.setEnabled(false);
                 }
 
@@ -327,6 +398,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                 new TextPrompt("Repita la nueva contraseña", usuarioModal.jtPass);
 
                 usuarioModal.setSize(555, 470); //Width - Height
+                usuarioModal.setLocationRelativeTo(null);
                 usuarioModal.iniciar();
             } catch (ParseException ex) {
                 Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
@@ -338,9 +410,10 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             confirmDialog.header.setText("Eliminar usuario");
 
             confirmDialog.textDialog.setText("<html>¿Estás seguro que quieres eliminar el usuario <b>" + usuarioSelected.getNick() + "</b>?<br><b>Al eliminar un usuario se eliminara toda su información y registros.</b></html>");
-            confirmDialog.setSize(610, 260);
             confirmDialog.btnEliminar.setText("Eliminar");
 
+            confirmDialog.setSize(610, 260);
+            confirmDialog.setLocationRelativeTo(null);
             confirmDialog.iniciar();
         } else if (modals.equals("confirmarAcceso")) {
             usuarioModal = new ModalUsuario(new JFrame(), true);
@@ -364,6 +437,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             usuarioModal.btnGuardar.setText("Confirmar");
 
             usuarioModal.setSize(485, 284);
+            usuarioModal.setLocationRelativeTo(null);
             usuarioModal.iniciar();
             modalOn = "";
         }else if(modals.equals("eliminarTipos")){
@@ -407,7 +481,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
         }
     }
 
-    public void mostrarDatos(JTable tabla) {
+    public void mostrarDatos(JTable tabla) throws SQLException {
         DefaultTableCellRenderer diseño = (DefaultTableCellRenderer) tabla.getCellRenderer(0, 0); //Obtener diseño de la tabla
         modelo = (DefaultTableModel) tabla.getModel();
         modelo.setRowCount(0);
@@ -450,14 +524,188 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
 
             tabla.setModel(modelo);
         }
-    }
+        
+        if(principalOn.equals("mListRegistro")){
+            
+            tabla.setDefaultRenderer(Object.class, new ImgTabla()); //Renderizar para poner las img
 
+            tabla.getColumnModel().getColumn(0).setCellRenderer(diseño); //Mantener diseño de la tabla por columns
+            tabla.getColumnModel().getColumn(1).setCellRenderer(diseño);
+            tabla.getColumnModel().getColumn(2).setCellRenderer(diseño);
+            tabla.getColumnModel().getColumn(3).setCellRenderer(diseño);
+            tabla.getColumnModel().getColumn(4).setCellRenderer(diseño);
+            tabla.getColumnModel().getColumn(5).setCellRenderer(diseño);
+            tabla.getColumnModel().getColumn(7).setCellRenderer(diseño);
+            tabla.getColumnModel().getColumn(8).setCellRenderer(diseño);
+            tabla.getColumnModel().getColumn(9).setCellRenderer(diseño);
+
+            ListaSimple<Registro> registro = daoRegistro.selectAll();
+            ListaRegisCola = new ColaPrioridadN(13);
+            
+            for(Registro x : registro.toArray()){
+                String prioridad[] = x.getFechaSalida().split("/");
+                ListaRegisCola.offer(x, (x.getEstado() == 1) ? Integer.parseInt(prioridad[1]) - 1 : 12);
+            }
+            
+            int i = 1;
+
+            for (Object obj : ListaRegisCola.toArray()) {
+                
+                Registro x = (Registro) obj;
+
+                ImageIcon img_edit = new ImageIcon(getClass().getResource("/img/file.png"));
+                JLabel lbImg_edit = new JLabel(new ImageIcon(img_edit.getImage()));
+                
+                ImageIcon img_estado1 = new ImageIcon(getClass().getResource("/img/estado1.png"));
+                JLabel lbImg_estado1 = new JLabel(new ImageIcon(img_estado1.getImage()));
+                
+                ImageIcon img_estado0 = new ImageIcon(getClass().getResource("/img/estado0.png"));
+                JLabel lbImg_estado0 = new JLabel(new ImageIcon(img_estado0.getImage()));
+
+                modelo.addRow(new Object[]{
+                    x.getIdRegistro(), 
+                    x.getHabitacion().getNumHabitacion(), 
+                    x.getHabitacion().getDescripcion(), 
+                    x.getCliente().getNombre() + " " + x.getCliente().getApellido(), 
+                    x.getUsuario().getNombre() + " " + x.getUsuario().getApellido(), 
+                    x.getTipo(),
+                    (x.getEstado() != 0) ? lbImg_estado1 : lbImg_estado0,
+                    x.getFechaEntrada(),
+                    x.getFechaSalida(),
+                    "$ " + formatoDecimal(x.getTotal()),
+                    lbImg_edit
+                });
+                i++;
+                
+            }
+
+            if (modelo.getRowCount() < 1) {
+                modelo.addRow(new Object[]{"", "", "Ningún resultado encontrado"});
+            }
+
+            tabla.setModel(modelo);
+        }
+    }
+    
+    public void mostrarBusqueda(ListaSimple lista, JTable tabla){
+        DefaultTableCellRenderer diseño = (DefaultTableCellRenderer) tabla.getCellRenderer(0, 0); //Obtener diseño de la tabla
+        modelo = (DefaultTableModel)tabla.getModel();
+        modelo.setRowCount(0);
+
+        /* CONTROL DE USUARIOS */
+        if(principalOn.equals("mUsuarios")){
+            tabla.setDefaultRenderer(Object.class, new ImgTabla()); //Renderizar para poner las img
+            
+            tabla.getColumnModel().getColumn(0).setCellRenderer(diseño); //Mantener diseño de la tabla por columns
+            tabla.getColumnModel().getColumn(1).setCellRenderer(diseño);
+            tabla.getColumnModel().getColumn(2).setCellRenderer(diseño);
+            tabla.getColumnModel().getColumn(3).setCellRenderer(diseño);
+            tabla.getColumnModel().getColumn(4).setCellRenderer(diseño);
+            tabla.getColumnModel().getColumn(5).setCellRenderer(diseño);
+            tabla.getColumnModel().getColumn(6).setCellRenderer(diseño);
+            tabla.getColumnModel().getColumn(7).setCellRenderer(diseño);
+
+            ListaSimple<Usuario> usuarios = daoUsuario.selectAll();
+            int i = 1;
+            
+            for(Object obj : lista.toArray()){
+                Usuario x = (Usuario)obj;
+                ImageIcon img_edit = new ImageIcon(getClass().getResource("/img/editar.png"));
+                JLabel lbImg_edit = new JLabel(new ImageIcon(img_edit.getImage()));
+
+                ImageIcon img_delete = new ImageIcon(getClass().getResource("/img/delete.png"));
+                JLabel lbImg_delete = new JLabel(new ImageIcon(img_delete.getImage()));
+                
+                if(x.getEstado() > 0){
+                   
+                    modelo.addRow(new Object[]{i, x.getNombre(), x.getEdad() + " años", x.getGenero(), x.getTelefono(), x.getNick(), x.getClave(), x.getRol(), lbImg_edit, lbImg_delete});
+                    i++;
+                }
+               
+            }
+            
+            if(modelo.getRowCount() < 1){
+                modelo.addRow(new Object[]{"", "", "Ningún resultado encontrado"});
+            }
+            
+            tabla.setModel(modelo);
+        }
+        
+        /* Listado Registro */
+        if(principalOn.equals("mListRegistro")){
+            
+            tabla.setDefaultRenderer(Object.class, new ImgTabla()); //Renderizar para poner las img
+
+            tabla.getColumnModel().getColumn(0).setCellRenderer(diseño); //Mantener diseño de la tabla por columns
+            tabla.getColumnModel().getColumn(1).setCellRenderer(diseño);
+            tabla.getColumnModel().getColumn(2).setCellRenderer(diseño);
+            tabla.getColumnModel().getColumn(3).setCellRenderer(diseño);
+            tabla.getColumnModel().getColumn(4).setCellRenderer(diseño);
+            tabla.getColumnModel().getColumn(5).setCellRenderer(diseño);
+            tabla.getColumnModel().getColumn(7).setCellRenderer(diseño);
+            tabla.getColumnModel().getColumn(8).setCellRenderer(diseño);
+            tabla.getColumnModel().getColumn(9).setCellRenderer(diseño);
+            
+            ListaRegisCola = new ColaPrioridadN(13);
+            
+            for(Object obj : lista.toArray()){
+                Registro x = (Registro) obj;
+                String prioridad[] = x.getFechaSalida().split("/");
+                ListaRegisCola.offer(x, (x.getEstado() == 1) ? Integer.parseInt(prioridad[1]) - 1 : 12);
+            }
+            
+            int i = 1;
+
+            for (Object obj : ListaRegisCola.toArray()) {
+                
+                Registro x = (Registro) obj;
+
+                ImageIcon img_edit = new ImageIcon(getClass().getResource("/img/file.png"));
+                JLabel lbImg_edit = new JLabel(new ImageIcon(img_edit.getImage()));
+                
+                ImageIcon img_estado1 = new ImageIcon(getClass().getResource("/img/estado1.png"));
+                JLabel lbImg_estado1 = new JLabel(new ImageIcon(img_estado1.getImage()));
+                
+                ImageIcon img_estado0 = new ImageIcon(getClass().getResource("/img/estado0.png"));
+                JLabel lbImg_estado0 = new JLabel(new ImageIcon(img_estado0.getImage()));
+
+                modelo.addRow(new Object[]{
+                    x.getIdRegistro(), 
+                    x.getHabitacion().getNumHabitacion(), 
+                    x.getHabitacion().getDescripcion(), 
+                    x.getCliente().getNombre() + " " + x.getCliente().getApellido(), 
+                    x.getUsuario().getNombre() + " " + x.getUsuario().getApellido(), 
+                    x.getTipo(),
+                    (x.getEstado() != 0) ? lbImg_estado1 : lbImg_estado0,
+                    x.getFechaEntrada(),
+                    x.getFechaSalida(),
+                    "$ " + formatoDecimal(x.getTotal())
+                });
+                i++;
+                
+            }
+
+            if (modelo.getRowCount() < 1) {
+                modelo.addRow(new Object[]{"", "", "Ningún resultado encontrado"});
+            }
+
+            tabla.setModel(modelo);
+        }
+    }
+    
+    public void actualizarHeader(Usuario user) {
+        String n[] = user.getNombre().split(" ");
+        String a[] = user.getApellido().split(" ");
+
+        menu.lbUserName.setText(n[0] + " " + a[0]);
+    }
+    
     public void verificarCredenciales(ActionEvent btn) throws SQLException {
         if (principalOn.equals("Login")) {
             if (!login.tfUser.getText().isEmpty() && !login.tfPass.getText().isEmpty()) {
                 /* APLICAR ARBOLES DE BUSQUEDA */
-                ListaSimple<Usuario> usuarios = daoUsuario.buscar(login.tfUser.getText());
-
+                ListaSimple<Usuario> usuarios = daoUsuario.selectAllTo("nick_usuario", login.tfUser.getText());
+                
                 if (!usuarios.isEmpty() && usuarios.toArray().get(0).getEstado() == 1) {
                     //String nick = login.tfUser.getText();
                     String clave = Encriptacion.getStringMessageDigest(login.tfPass.getText(), Encriptacion.SHA256);
@@ -474,8 +722,9 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
 
                             menu.lbUserName.setText(n[0] + " " + a[0]);
                             menu.header.remove(menu.btnModiUser);
-                            //principalOn = "Menu";
-                        } else {
+
+                        }else{
+
                             String n[] = usuario.getNombre().split(" ");
                             String a[] = usuario.getApellido().split(" ");
 
@@ -483,9 +732,8 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
 
                             //Eliminar Modulos
                             menu.modulos.remove(menu.btnUsuario);
-                            menu.modulos.remove(menu.btnProducto);
-
-//                            principalOn = "Menu";
+                            menu.modulos.remove(menu.btnVenta);
+                            menu.modulos.remove(menu.btnConfig);
                         }
                         
                         mostrarModulos("mDashboard");
@@ -528,50 +776,165 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             }
         }
 
-        if (btn.getActionCommand().equals("ReporteHab")) {
+        //DETALLES / MODIFICAR PRODUCTOS
+        if (btn.getActionCommand().equals("btnModProducto") && modalOn == "modiProducto") {
+            if (!modalMProducto.tfNomP.getText().isEmpty() && !modalMProducto.tfPrecio.getText().isEmpty()) {
+                productoSelected.setDescripcion(modalMProducto.tfNomP.getText());
+                productoSelected.setPrecio(Double.parseDouble(modalMProducto.tfPrecio.getText()));
+                if(daoProducto.update(productoSelected)){
+                    DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                    DesktopNotify.showDesktopMessage("Información de producto modificada", "La información del Hotel se modificó correctamente.", DesktopNotify.SUCCESS, 8000);
+                    mostrarTablaM(modalMProducto.tbModP);
+                    modalMProducto.tfNomP.setText("");
+                    modalMProducto.tfPrecio.setText("");
+                }else{
+                    DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                    DesktopNotify.showDesktopMessage("Producto no actualizar", "La información no se actualizó correctamente.", DesktopNotify.FAIL, 8000);
+                }
+            }
+        }
+        
+        //GUARDAR NUEVO PRODUCTO
+        if (btn.getActionCommand().equals("GuardarProducto") && principalOn == "mVentas") {
+            
+            if (!modalProducto.tfNomP.getText().isEmpty() && !modalProducto.tfPrecio.getText().isEmpty()) {
+                //wtf xd?
+                if (daoProducto.insertar(new Producto("PR00" + daoProducto.selectAll().toArray().size() + 1, modalProducto.tfNomP.getText(), Double.parseDouble(modalProducto.tfPrecio.getText())))) {
+                    DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                    DesktopNotify.showDesktopMessage("Nuevo producto ingresado", "La información del producto se guardó correctamente.", DesktopNotify.SUCCESS, 8000);
+                    modalProducto.dispose();
+                    modalOn = "";
+                    mostrarModulos("mVentas");
+                } else {
+                    DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                    DesktopNotify.showDesktopMessage("Error al ingresar producto", "La información no se guardó correctamente.", DesktopNotify.FAIL, 8000);
+                    modalProducto.dispose();
+                    modalOn = "";
+                    mostrarModulos("mVentas");
+                }
 
-            String path = "";
+            } else {
+               
+                DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                DesktopNotify.showDesktopMessage("Error al guardar producto", "Ingresa los datos requeridos.", DesktopNotify.WARNING, 8000);
+//                    modalProducto.dispose();
+                modalOn = "";
+                mostrarModulos("mVentas");
+            }
+        }
+        
+        /* Boton de agregar venta a registro*/
+        if (btn.getActionCommand().equals("addRegistroP") && principalOn == "mAddVenta") {
+            if(!registrosProductos.isEmpty()){
+                for(RegistroProducto x : registrosProductos.toArray()){
 
-            JFileChooser file = new JFileChooser();
-            file.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            int request = file.showSaveDialog(menu);
+                    this.daoRegistroP.insertar(x);
+                }
 
-            if (request == JFileChooser.APPROVE_OPTION) {
-                path = file.getSelectedFile().getPath();
-                ListaSimple<Habitacion> habitaciones = daoHabitacion.selectAll();
-                ListaSimple<Hotel> hotel = daoHotel.selectAll();
-
-                ExportPDF exporPdf = new ExportPDF();
-                exporPdf.setHotel(hotel.toArray().get(0));
-                exporPdf.setListHabitaciones(habitaciones);
-                exporPdf.setPath(path);
-                exporPdf.crearListaHabitaciones();
                 DesktopNotify.setDefaultTheme(NotifyTheme.Green);
-                DesktopNotify.showDesktopMessage("Reporte generado", "Ruta: " + path, DesktopNotify.INFORMATION, 10000);
+                DesktopNotify.showDesktopMessage("Productos almacenados correctamente", "Se agregaron " + registrosProductos.toArray().size() + " producto(s)", DesktopNotify.SUCCESS, 8000);
+                mostrarModulos("mVentas");
+                registrosProductos = null;
+            }else{
+                DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                DesktopNotify.showDesktopMessage("Error al guardar el registro de productos", "No se obtuvieron los productos", DesktopNotify.FAIL, 8000);
+            }
+        }
+        
+        /* Boton de agregar producto a la venta */
+        if (btn.getActionCommand().equals("addProductoV") && principalOn == "mAddVenta") {
+            if (!addVentaVista.tfCantidad.getText().isEmpty() && !addVentaVista.tfPrecio.getText().isEmpty() && !addVentaVista.cbProducto.getSelectedItem().toString().equals("Seleccione")) {
+                if (!addVentaVista.tfCantidad.getText().equals("0")) {
+                    Producto newProducto = daoProducto.selectAllTo("descripcion_producto", addVentaVista.cbProducto.getSelectedItem().toString()).toArray().get(0);
+                    
+                    String precio[] = addVentaVista.tfPrecio.getText().split(" ");
+                    
+                    RegistroProducto obj = new RegistroProducto(Double.parseDouble(precio[1]),
+                            Integer.parseInt(addVentaVista.tfCantidad.getText()), registroSelected,
+                            newProducto);
+                    
+                    //System.out.println(obj.getProducto().getDescripcion());
+                    
+                    registrosProductos.insertar(obj);
+                    addVentaVista.cbProducto.setSelectedIndex(0);
+                    addVentaVista.tfCantidad.setText("");
+                    addVentaVista.tfPrecio.setText("");
+                    DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                    DesktopNotify.showDesktopMessage("Nuevo Registro - Producto ingresado", "La información del producto se guardó correctamente.", DesktopNotify.SUCCESS, 8000);
+                    //mostrarModulos("mAddVenta");
+                    mostrarTablaRP(registrosProductos, addVentaVista.tbRegistroP);
+                }else {
+                    DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                    DesktopNotify.showDesktopMessage("Error al guardar producto", "La cantidad ingresada debe ser mayor a 0.", DesktopNotify.FAIL, 8000);
+                    mostrarModulos("mAddVenta");
+                }
+                
+            } else {
+                DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                DesktopNotify.showDesktopMessage("Error al guardar producto", "Ingrese todos los datos requeridos.", DesktopNotify.FAIL, 8000);
+                mostrarModulos("mAddVenta");
+            }
+        }
+        
+        if (btn.getActionCommand().equals("ReporteHab")) {
+            
+            ListaSimple<Habitacion> habitaciones = daoHabitacion.selectAll();
+            
+            if(!habitaciones.isEmpty()){
+                
+                String path = "";
+
+                JFileChooser file = new JFileChooser();
+                file.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                int request = file.showSaveDialog(menu);
+
+                if (request == JFileChooser.APPROVE_OPTION) {
+                    path = file.getSelectedFile().getPath();
+                    ListaSimple<Hotel> hotel = daoHotel.selectAll();
+
+                    ExportPDF exporPdf = new ExportPDF();
+                    exporPdf.setHotel(hotel.toArray().get(0));
+                    exporPdf.setListHabitaciones(habitaciones);
+                    exporPdf.setPath(path);
+                    exporPdf.crearListaHabitaciones();
+                    DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                    DesktopNotify.showDesktopMessage("Reporte generado", "Ruta: " + path, DesktopNotify.INFORMATION, 10000);
+                }
+            }else{
+                DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                DesktopNotify.showDesktopMessage("No hay datos", "Para generar un reporte se necesitan datos", DesktopNotify.INFORMATION, 10000);
             }
 
         }
         
         if (btn.getActionCommand().equals("ReportePro")) {
+            
+            ListaSimple<Producto> producto = daoProducto.selectAll();
+            
+            if(!producto.isEmpty()){
+                
+                String path = "";
 
-            String path = "";
+                JFileChooser file = new JFileChooser();
+                file.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                int request = file.showSaveDialog(menu);
 
-            JFileChooser file = new JFileChooser();
-            file.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            int request = file.showSaveDialog(menu);
+                if (request == JFileChooser.APPROVE_OPTION) {
+                    path = file.getSelectedFile().getPath();
 
-            if (request == JFileChooser.APPROVE_OPTION) {
-                path = file.getSelectedFile().getPath();
-                ListaSimple<Producto> producto = daoProducto.selectAll();
-                ListaSimple<Hotel> hotel = daoHotel.selectAll();
+                    ListaSimple<Hotel> hotel = daoHotel.selectAll();
 
-                ExportPDF exporPdf = new ExportPDF();
-                exporPdf.setHotel(hotel.toArray().get(0));
-                exporPdf.setListaProducto(producto);
-                exporPdf.setPath(path);
-                exporPdf.crearListaProducto();
-                DesktopNotify.setDefaultTheme(NotifyTheme.Green);
-                DesktopNotify.showDesktopMessage("Reporte generado", "Ruta: " + path, DesktopNotify.INFORMATION, 10000);
+                    ExportPDF exporPdf = new ExportPDF();
+                    exporPdf.setHotel(hotel.toArray().get(0));
+                    exporPdf.setListaProducto(producto);
+                    exporPdf.setPath(path);
+                    exporPdf.crearListaProducto();
+                    DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                    DesktopNotify.showDesktopMessage("Reporte generado", "Ruta: " + path, DesktopNotify.INFORMATION, 10000);
+                }
+            }else{
+                DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                DesktopNotify.showDesktopMessage("No hay datos", "Para generar un reporte se necesitan datos", DesktopNotify.INFORMATION, 10000);
             }
 
         }
@@ -586,7 +949,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
 
             if (request == JFileChooser.APPROVE_OPTION) {
                 path = file.getSelectedFile().getPath();
-                ListaSimple<RegistroProducto> registroProducto = daoRegistroProducto.selectAllTo("fk_id_registro", "1");
+                ListaSimple<RegistroProducto> registroProducto = daoRegistroP.selectAllTo("fk_id_registro", "1");
                 ListaSimple<Hotel> hotel = daoHotel.selectAll();
 
                 ExportPDF exporPdf = new ExportPDF();
@@ -603,6 +966,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
         if (btn.getActionCommand().equals("checkbox") && modalOn.equals("usuarioModal")) {
             if (usuarioModal.modiPassCheck.isSelected()) {
                 usuarioModal.setSize(555, 530);
+                usuarioModal.setLocationRelativeTo(null);
                 usuarioModal.iconPass.setVisible(true);
                 usuarioModal.jtPass.setVisible(true);
                 usuarioModal.jtPassRepet.setVisible(true);
@@ -611,6 +975,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                 usuarioModal.jtPass.setVisible(false);
                 usuarioModal.jtPassRepet.setVisible(false);
                 usuarioModal.setSize(555, 470);
+                usuarioModal.setLocationRelativeTo(null);
             }
 
         }
@@ -789,6 +1154,14 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
         return diff;
     }
     
+    public String formatoDecimal(Double precio) {
+        DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
+        simbolos.setDecimalSeparator('.');
+        DecimalFormat formateador = new DecimalFormat("0.00", simbolos);
+
+        return formateador.format(precio);
+    }
+    
     public void llenarComboBox() throws SQLException{
         if (modalOn.equals("modalNewHabitacion") || modalOn.equals("modalModHab")) {
             modalHab.cbTiposHabitacion.removeAllItems();
@@ -900,244 +1273,300 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
     }
 
     public void eventosBotones(String btn) throws SQLException, IOException {
-        if (modalOn.equals("usuarioModal") || modalOn.equals("modalDialog")) {
-            if (btn.equals("Agregar")) {
-                if (!usuarioModal.jtNom.getText().isEmpty() && !usuarioModal.jtApe.getText().isEmpty()
+        if(modalOn.equals("usuarioModal") || modalOn.equals("modalDialog")){
+            if(btn.equals("Agregar")){
+                if(!usuarioModal.jtNom.getText().isEmpty() && !usuarioModal.jtApe.getText().isEmpty()
                         && usuarioModal.jDate.getDate() != null && !usuarioModal.jtTel.getText().isEmpty()
                         && usuarioModal.cbGenero.getSelectedIndex() > 0 && !usuarioModal.jtUser.getText().isEmpty()
-                        && usuarioModal.cbRol.getSelectedIndex() > 0) {
+                        && usuarioModal.cbRol.getSelectedIndex() > 0){                    
+                    String nom = usuarioModal.jtNom.getText().trim().toUpperCase();
+                    //nom = nom.replace(" ", "");
+                    String ape = usuarioModal.jtApe.getText().trim().toUpperCase();
+                    //ape = ape.replace(" ", "");
+                    String tel = usuarioModal.jtTel.getText().trim();
 
-                    if (usuarioSelected == null) {
-                        if (!usuarioModal.jtPass.getText().isEmpty() && !usuarioModal.jtPassRepet.getText().isEmpty()) {
-                            if (usuarioModal.jtPass.getText().equals(usuarioModal.jtPassRepet.getText())) {
-                                String clave = Encriptacion.getStringMessageDigest(usuarioModal.jtPass.getText(), Encriptacion.SHA256); //Encriptamos la clave
+                    Date fecha = usuarioModal.jDate.getDate();
+                    DateFormat f = new SimpleDateFormat("yyyy/MM/dd");
+                    String fechaNac = f.format(fecha);
 
-                                ListaSimple<Usuario> existeUser = daoUsuario.buscar(usuarioModal.jtUser.getText());
+                    String genero = usuarioModal.cbGenero.getSelectedItem().toString();
+                    String nick = usuarioModal.jtUser.getText().trim();
+                    String rol = usuarioModal.cbRol.getSelectedItem().toString();
+                    
+                    /* Edad */
+                    DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+                    LocalDate birthday = LocalDate.parse(fechaNac, fmt);
+                    LocalDate ahora = LocalDate.now();
 
-                                if (existeUser.isEmpty()) {
-                                    String nom = usuarioModal.jtNom.getText();
-                                    String ape = usuarioModal.jtApe.getText();
-                                    String tel = usuarioModal.jtTel.getText();
-
-                                    Date fecha = usuarioModal.jDate.getDate();
-                                    DateFormat f = new SimpleDateFormat("yyyy-MM-dd");
-                                    String fechaNac = f.format(fecha);
-
-                                    String genero = usuarioModal.cbGenero.getSelectedItem().toString();
-                                    String nick = usuarioModal.jtUser.getText();
-                                    String rol = usuarioModal.cbRol.getSelectedItem().toString();
-
-                                    Usuario usuario = new Usuario(nom, ape, tel, fechaNac, genero, nick, rol, clave, 1);
-
-                                    if (daoUsuario.insert(usuario)) {
-                                        //Mensaje de guardado
-                                        DesktopNotify.setDefaultTheme(NotifyTheme.Green);
-                                        DesktopNotify.showDesktopMessage("Usuario guardado", "El usuario ha sido alamcenado exitosamente.", DesktopNotify.SUCCESS, 8000);
-                                    }
-
-                                    modalOn = "";
-                                    usuarioModal.dispose();
-
-                                } else {
-                                    DesktopNotify.setDefaultTheme(NotifyTheme.Red);
-                                    DesktopNotify.showDesktopMessage("Usuario " + usuarioModal.jtUser.getText() + " ya existe", "El nuevo nombre de usuario debe ser diferente a los demás.", DesktopNotify.WARNING, 10000);
-                                }
-                            } else {
-                                //Contraseñas diferentes
-                                DesktopNotify.setDefaultTheme(NotifyTheme.Red);
-                                DesktopNotify.showDesktopMessage("Contraseñas diferentes", "Las contraseñas tienen que ser iguales.", DesktopNotify.WARNING, 8000);
-                            }
-                        }
-                    } else {
-                        if (usuarioSelected != null) {
-                            //Modificar
-                            ListaSimple<Usuario> existeUser = daoUsuario.selectAllTo("nick_usuario", usuarioModal.jtUser.getText());
-                            String claveAux = usuarioModal.jtPass.getText();
-                            Date fecha = usuarioModal.jDate.getDate();
-
-                            DateFormat f = new SimpleDateFormat("yyyy-MM-dd");
-                            String fechaNac = f.format(fecha);
-
-                            if (!usuarioModal.jtNom.getText().equals(usuarioSelected.getNombre()) || !usuarioModal.jtApe.getText().equals(usuarioSelected.getApellido())
-                                    || !fechaNac.equals(usuarioSelected.getfNacimiento()) || !usuarioModal.jtTel.getText().equals(usuarioSelected.getTelefono())
-                                    || !usuarioModal.cbGenero.getSelectedItem().toString().equals(usuarioSelected.getGenero()) || !usuarioModal.jtUser.getText().equals(usuarioSelected.getNick())
-                                    || !usuarioModal.cbRol.getSelectedItem().toString().equals(usuarioSelected.getRol())) {
-                                if (existeUser.isEmpty()) {
-                                    usuarioSelected.setNombre(usuarioModal.jtNom.getText());
-                                    usuarioSelected.setApellido(usuarioModal.jtApe.getText());
-
-                                    usuarioSelected.setfNacimiento(fechaNac);
-                                    usuarioSelected.setTelefono(usuarioModal.jtTel.getText());
-                                    usuarioSelected.setGenero(usuarioModal.cbGenero.getSelectedItem().toString());
-                                    usuarioSelected.setNick(usuarioModal.jtUser.getText());
-                                    usuarioSelected.setRol(usuarioModal.cbRol.getSelectedItem().toString());
-
-                                    if (daoUsuario.update(usuarioSelected)) { //Guardado
-                                        //Mensaje de modificado
-                                        DesktopNotify.setDefaultTheme(NotifyTheme.Green);
-                                        DesktopNotify.showDesktopMessage("Usuario actualizado", "El usuario ha sido modificado exitosamente.", DesktopNotify.SUCCESS, 8000);
-                                        usuarioSelected = null;
-                                        usuarioModal.dispose();
-                                    } else { //Ocurrio un error
-                                        DesktopNotify.setDefaultTheme(NotifyTheme.Red);
-                                        DesktopNotify.showDesktopMessage("Error", "Usuario no actualizado", DesktopNotify.FAIL, 8000);
-                                    }
-                                } else {
-                                    usuarioSelected.setNombre(usuarioModal.jtNom.getText());
-                                    usuarioSelected.setApellido(usuarioModal.jtApe.getText());
-
-                                    usuarioSelected.setfNacimiento(fechaNac);
-                                    usuarioSelected.setTelefono(usuarioModal.jtTel.getText());
-                                    usuarioSelected.setGenero(usuarioModal.cbGenero.getSelectedItem().toString());
-                                    usuarioSelected.setRol(usuarioModal.cbRol.getSelectedItem().toString());
-
-                                    if (existeUser.toArray().get(0).getNick().equals(usuarioSelected.getNick())) {
-                                        if (daoUsuario.update(usuarioSelected)) {
-                                            DesktopNotify.setDefaultTheme(NotifyTheme.Green);
-                                            DesktopNotify.showDesktopMessage("Usuario actualizado", "El usuario ha sido modificado exitosamente.", DesktopNotify.SUCCESS, 8000);
-                                            usuarioSelected = null;
-                                            usuarioModal.dispose();
-                                        } else { //Ocurrio un error
-                                            DesktopNotify.setDefaultTheme(NotifyTheme.Red);
-                                            DesktopNotify.showDesktopMessage("Error", "Usuario no actualizado", DesktopNotify.FAIL, 8000);
-                                        }
-
-                                    } else { //Usuario ya existe
-                                        DesktopNotify.setDefaultTheme(NotifyTheme.Red);
-                                        DesktopNotify.showDesktopMessage("Usuario " + usuarioModal.jtUser.getText() + " ya existe", "El nuevo nombre de usuario debe ser diferente a los demás.", DesktopNotify.WARNING, 10000);
-                                    }
-                                }
-                            } else if (usuarioModal.modiPassCheck.isSelected()) {
+                    Period periodo = Period.between(birthday, ahora);
+                    
+                    if (periodo.getYears() >= 18) {
+                        if (validarNombre(nom) && validarNombre(ape)) {
+                            if(usuarioSelected == null){
                                 if (!usuarioModal.jtPass.getText().isEmpty() && !usuarioModal.jtPassRepet.getText().isEmpty()) {
-                                    usuarioSelected.setNombre(usuarioModal.jtNom.getText());
-                                    usuarioSelected.setApellido(usuarioModal.jtApe.getText());
+                                    if(usuarioModal.jtPass.getText().equals(usuarioModal.jtPassRepet.getText())){
+                                        String clave = Encriptacion.getStringMessageDigest(usuarioModal.jtPass.getText().trim(), Encriptacion.SHA256); //Encriptamos la clave
 
-                                    usuarioSelected.setfNacimiento(fechaNac);
-                                    usuarioSelected.setTelefono(usuarioModal.jtTel.getText());
-                                    usuarioSelected.setGenero(usuarioModal.cbGenero.getSelectedItem().toString());
-                                    usuarioSelected.setNick(usuarioModal.jtUser.getText());
-                                    usuarioSelected.setRol(usuarioModal.cbRol.getSelectedItem().toString());
+                                        ListaSimple<Usuario> existeUser = daoUsuario.selectAllTo("nick_usuario", usuarioModal.jtUser.getText());
 
-                                    if (usuarioModal.jtPass.getText().equals(usuarioModal.jtPassRepet.getText())) {
-                                        String clave = Encriptacion.getStringMessageDigest(usuarioModal.jtPass.getText(), Encriptacion.SHA256); //Encriptamos la clave
+                                        if(existeUser.isEmpty()){
+                                            Usuario usuario = new Usuario(nom, ape, tel, fechaNac, genero, nick, rol, clave, 1);
 
-                                        usuarioSelected.setClave(clave);
+                                            if(daoUsuario.insert(usuario)){
+                                                //Mensaje de guardado
+                                                DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                                                DesktopNotify.showDesktopMessage("Usuario guardado", "El usuario ha sido alamcenado exitosamente.", DesktopNotify.SUCCESS, 8000);
+                                            }
 
-                                        if (daoUsuario.update(usuarioSelected)) { //Guardado
-                                            //Mensaje de modificado
-                                            DesktopNotify.setDefaultTheme(NotifyTheme.Green);
-                                            DesktopNotify.showDesktopMessage("Usuario actualizado", "El usuario ha sido modificado exitosamente.", DesktopNotify.SUCCESS, 8000);
-                                            usuarioSelected = null;
+                                            modalOn = "";
                                             usuarioModal.dispose();
-                                        } else { //Ocurrio un error
+
+                                        }else if (existeUser.toArray().get(0).getEstado() == 0){
                                             DesktopNotify.setDefaultTheme(NotifyTheme.Red);
-                                            DesktopNotify.showDesktopMessage("Error", "Usuario no actualizado", DesktopNotify.FAIL, 8000);
+                                            DesktopNotify.showDesktopMessage("Usuario " + usuarioModal.jtUser.getText() +  " no está disponible", "El nuevo nombre de usuario debe ser diferente.", DesktopNotify.WARNING, 10000);                             
+                                        }else {
+                                            DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                                            DesktopNotify.showDesktopMessage("Usuario " + usuarioModal.jtUser.getText() +  " ya existe", "El nuevo nombre de usuario debe ser diferente a los demás.", DesktopNotify.WARNING, 10000); 
                                         }
-                                    } else {
+                                    }else{
+                                        //Contraseñas diferentes
                                         DesktopNotify.setDefaultTheme(NotifyTheme.Red);
                                         DesktopNotify.showDesktopMessage("Contraseñas diferentes", "Las contraseñas tienen que ser iguales.", DesktopNotify.WARNING, 8000);
                                     }
-                                } else {
+                                }
+                            }else {
+                                if(usuarioSelected != null){
+                                    if (usuarioSelected.getNick().equals(usuario.getNick())) {
+                                        isLoged = true;
+                                    }
+                                    //Modificar
+                                    ListaSimple<Usuario> existeUser = daoUsuario.selectAllTo("nick_usuario", usuarioModal.jtUser.getText());
+
+                                    if (!nom.equals(usuarioSelected.getNombre()) || !ape.equals(usuarioSelected.getApellido())
+                                            || !fechaNac.equals(usuarioSelected.getfNacimiento()) || !tel.equals(usuarioSelected.getTelefono())
+                                            || !genero.equals(usuarioSelected.getGenero()) || !nick.equals(usuarioSelected.getNick())
+                                            || !rol.equals(usuarioSelected.getRol())) {
+                                        if(existeUser.isEmpty()){
+                                            usuarioSelected.setNombre(nom);
+                                            usuarioSelected.setApellido(ape);
+
+                                            usuarioSelected.setfNacimiento(fechaNac);
+                                            usuarioSelected.setTelefono(tel);
+                                            usuarioSelected.setGenero(genero);
+                                            usuarioSelected.setNick(nick);
+                                            usuarioSelected.setRol(rol);
+
+                                            if(daoUsuario.update(usuarioSelected)){ //Guardado
+                                                //Mensaje de modificado
+                                                DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                                                DesktopNotify.showDesktopMessage("Usuario actualizado", "El usuario ha sido modificado exitosamente.", DesktopNotify.SUCCESS, 8000);
+                                                if (isLoged) {
+                                                    usuario.setNick(usuarioSelected.getNick());
+                                                    actualizarHeader(usuarioSelected);
+                                                }
+                                                usuarioSelected = null;
+                                                usuarioModal.dispose();
+                                                isLoged = false;
+                                            }else{ //Ocurrio un error
+                                                DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                                                DesktopNotify.showDesktopMessage("Error", "Usuario no actualizado", DesktopNotify.FAIL, 8000);
+                                            }
+                                        }else {
+                                            usuarioSelected.setNombre(nom);
+                                            usuarioSelected.setApellido(ape);
+
+                                            usuarioSelected.setfNacimiento(fechaNac);
+                                            usuarioSelected.setTelefono(tel);
+                                            usuarioSelected.setGenero(genero);
+                                            usuarioSelected.setRol(rol);
+
+                                            if(existeUser.toArray().get(0).getNick().equals(usuarioSelected.getNick())){ 
+                                                if(daoUsuario.update(usuarioSelected)){
+                                                    DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                                                    DesktopNotify.showDesktopMessage("Usuario actualizado", "El usuario ha sido modificado exitosamente.", DesktopNotify.SUCCESS, 8000);
+                                                    if (isLoged) {
+                                                        actualizarHeader(usuarioSelected);
+                                                    }   
+                                                    usuarioSelected = null;
+                                                    usuarioModal.dispose();
+                                                    isLoged = false;
+                                                }else{ //Ocurrio un error
+                                                    DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                                                    DesktopNotify.showDesktopMessage("Error", "Usuario no actualizado", DesktopNotify.FAIL, 8000);
+                                                }
+
+                                            }else if (existeUser.toArray().get(0).getEstado() == 0){
+                                                DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                                                DesktopNotify.showDesktopMessage("Usuario " + nick +  " no está disponible", "El nuevo nombre de usuario debe ser diferente.", DesktopNotify.WARNING, 10000);                             
+                                            }else {
+                                                DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                                                DesktopNotify.showDesktopMessage("Usuario " + nick +  " ya existe", "El nuevo nombre de usuario debe ser diferente a los demás.", DesktopNotify.WARNING, 10000); 
+                                            }   
+                                        }
+                                    }else if (usuarioModal.modiPassCheck.isSelected()) {
+                                        if (!usuarioModal.jtPass.getText().isEmpty() && !usuarioModal.jtPassRepet.getText().isEmpty()){
+                                            usuarioSelected.setNombre(nom);
+                                            usuarioSelected.setApellido(ape);
+
+                                            usuarioSelected.setfNacimiento(fechaNac);
+                                            usuarioSelected.setTelefono(tel);
+                                            usuarioSelected.setGenero(genero);
+                                            usuarioSelected.setNick(nick);
+                                            usuarioSelected.setRol(rol);
+
+                                            if(usuarioModal.jtPass.getText().trim().equals(usuarioModal.jtPassRepet.getText().trim())){
+                                                String clave = Encriptacion.getStringMessageDigest(usuarioModal.jtPass.getText().trim(), Encriptacion.SHA256); //Encriptamos la clave
+
+                                                usuarioSelected.setClave(clave);
+
+                                                if(daoUsuario.update(usuarioSelected)){ //Guardado
+                                                    //Mensaje de modificado
+                                                    DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                                                    DesktopNotify.showDesktopMessage("Usuario actualizado", "El usuario ha sido modificado exitosamente.", DesktopNotify.SUCCESS, 8000);
+                                                    actualizarHeader(usuarioSelected);
+                                                    usuarioSelected = null;
+                                                    usuarioModal.dispose();
+                                                }else{ //Ocurrio un error
+                                                    DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                                                    DesktopNotify.showDesktopMessage("Error", "Usuario no actualizado", DesktopNotify.FAIL, 8000);
+                                                }
+                                            }else{
+                                                DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                                                DesktopNotify.showDesktopMessage("Contraseñas diferentes", "Las contraseñas tienen que ser iguales.", DesktopNotify.WARNING, 8000);
+                                            }
+                                        }else {
+                                            //Campos incompletos
+                                            DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                                            DesktopNotify.showDesktopMessage("Campos vacíos", "Por favor rellene todos los campos.", DesktopNotify.WARNING, 8000); //8 seg
+                                        }
+                                    }else {
+                                        DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                                        DesktopNotify.showDesktopMessage("Usuario no modificado", "No se ha modificado ningún campo.", DesktopNotify.FAIL, 8000);
+                                        usuarioModal.dispose();
+                                    }
+                                }else{
                                     //Campos incompletos
                                     DesktopNotify.setDefaultTheme(NotifyTheme.Red);
                                     DesktopNotify.showDesktopMessage("Campos vacíos", "Por favor rellene todos los campos.", DesktopNotify.WARNING, 8000); //8 seg
                                 }
-                            } else {
-                                DesktopNotify.setDefaultTheme(NotifyTheme.Red);
-                                DesktopNotify.showDesktopMessage("Usuario no modificado", "No se ha modificado ningún campo.", DesktopNotify.FAIL, 8000);
                             }
-                        } else {
-                            //Campos incompletos
+                        }else {
                             DesktopNotify.setDefaultTheme(NotifyTheme.Red);
-                            DesktopNotify.showDesktopMessage("Campos vacíos", "Por favor rellene todos los campos.", DesktopNotify.WARNING, 8000); //8 seg
+                            DesktopNotify.showDesktopMessage("Nombre o Apellido Inválido", "El nombre o apellido ingresado es inválido.", DesktopNotify.WARNING, 8000); //8 seg
                         }
+                    }else {
+                        DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                        DesktopNotify.showDesktopMessage("Fecha Inválida", "El usuario debe ser mayor de edad.", DesktopNotify.WARNING, 8000); //8 seg
                     }
-                } else if (!usuarioModal.jtUser.getText().isEmpty() && !usuarioModal.jtPass.getText().isEmpty() && !usuarioModal.jtPassRepet.getText().isEmpty()) {
-
+                }else if (!usuarioModal.jtUser.getText().isEmpty() && !usuarioModal.jtPass.getText().isEmpty() && !usuarioModal.jtPassRepet.getText().isEmpty()) {
+                    
                     /* CONFIRMAR ACCESO - ELIMINAR */
-                    if (usuarioModal.jtUser.getText().equals(usuario.getNick())) {
-                        String clave = Encriptacion.getStringMessageDigest(usuarioModal.jtPass.getText(), Encriptacion.SHA256);
+                    
+                    if (usuarioModal.jtUser.getText().trim().equals(usuario.getNick())) {
+                        String clave = Encriptacion.getStringMessageDigest(usuarioModal.jtPass.getText().trim(), Encriptacion.SHA256);
 
                         if (clave.equals(usuario.getClave())) {
-                            usuarioSelected.setEstado(0);
-
-//                                DesktopNotify.setDefaultTheme(NotifyTheme.Red);
-//                                DesktopNotify.showDesktopMessage("Hola hola", "Hola hola.", DesktopNotify.INFORMATION, 8000);
-                            if (daoUsuario.update(usuarioSelected)) {
-                                DesktopNotify.setDefaultTheme(NotifyTheme.Red);
-                                DesktopNotify.showDesktopMessage("Usuario eliminado", "El usuario ha sido eliminado exitosamente.", DesktopNotify.INFORMATION, 8000);
-                                mostrarDatos(usuarioVista.tbUsuarios);
-                                usuarioModal.dispose();
-                            }
-
-                            if (usuarioSelected.getNick().equals(usuario.getNick())) {
-                                usuarioSelected = null;
-                                usuario = null;
-                                menu.dispose();
-                                DesktopNotify.setDefaultTheme(NotifyTheme.Green);
-                                DesktopNotify.showDesktopMessage("Sesión cerrada", "Se ha cerrado sesión con exito.", DesktopNotify.SUCCESS, 8000); //8 seg
-                                try {
-                                    mostrarModulos("Login");
-                                } catch (SQLException ex) {
-                                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                                usuarioSelected.setEstado(0);
+                                
+                                if(daoUsuario.update(usuarioSelected)){
+                                    DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                                    DesktopNotify.showDesktopMessage("Usuario eliminado", "El usuario ha sido eliminado exitosamente.", DesktopNotify.INFORMATION, 8000);
+                                    usuarioModal.dispose();
                                 }
-                            }
 
-                            modalOn = "";
-                            usuarioModal.dispose();
-                        } else {
+                                if (usuarioSelected.getNick().equals(usuario.getNick())) {
+                                    usuarioSelected = null;
+                                    usuario = null; 
+                                    isLoged = false;
+                                    menu.dispose(); 
+                                    DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                                    DesktopNotify.showDesktopMessage("Sesión cerrada", "Se ha cerrado sesión con exito.", DesktopNotify.SUCCESS, 8000); //8 seg
+                                    try {
+                                        mostrarModulos("Login");
+                                    } catch (SQLException ex) {
+                                        Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                }
+                                
+                                modalOn = "";
+                                usuarioModal.dispose();
+                        }else{
                             DesktopNotify.setDefaultTheme(NotifyTheme.Red);
                             DesktopNotify.showDesktopMessage("Contraseña incorrecta", "Asegúrese que la contraseña sea correcta.", DesktopNotify.WARNING, 8000);
                         }
-                    } else {
+                    }else{
                         DesktopNotify.setDefaultTheme(NotifyTheme.Red);
                         DesktopNotify.showDesktopMessage("Usuario incorrecto", "Asegúrese de que el usuario digitado sea correcto.", DesktopNotify.WARNING, 8000);
                     }
-                } else if (!usuarioModal.jtPass.getText().isEmpty() && !usuarioModal.jtPassRepet.getText().isEmpty()) {
+                }else if (!usuarioModal.jtPass.getText().isEmpty() && !usuarioModal.jtPassRepet.getText().isEmpty()) {
                     try {
                         /* CONFIRMAR ACCESO - NUEVO USUARIO */
-
+                        
                         claveAcceso = daoClave.selectAll().toArray().get(0);
-
-                        if (usuarioModal.jtPass.getText().equals(usuarioModal.jtPassRepet.getText())) {
-                            String clave = Encriptacion.getStringMessageDigest(usuarioModal.jtPass.getText(), Encriptacion.SHA256);
-
+                        
+                        if(usuarioModal.jtPass.getText().trim().equals(usuarioModal.jtPassRepet.getText().trim())){
+                            String clave = Encriptacion.getStringMessageDigest(usuarioModal.jtPass.getText().trim(), Encriptacion.SHA256);
+                            
                             if (clave.equals(claveAcceso.getClave())) {
                                 usuarioModal.dispose();
-
+                                
                                 mostrarModals("nuevoUsuario");
-                            } else {
+                            }else{
                                 DesktopNotify.setDefaultTheme(NotifyTheme.Red);
                                 DesktopNotify.showDesktopMessage("Contraseña incorrecta", "Asegúrese que la contraseña sea correcta.", DesktopNotify.WARNING, 8000);
                             }
-                        } else {
+                        }else {
                             DesktopNotify.setDefaultTheme(NotifyTheme.Red);
                             DesktopNotify.showDesktopMessage("Contraseñas diferentes", "Las contraseñas tienen que ser iguales.", DesktopNotify.WARNING, 8000);
                         }
                     } catch (SQLException ex) {
                         Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                } else {
+                }else{
                     //Campos vacios
                     DesktopNotify.setDefaultTheme(NotifyTheme.Red);
                     DesktopNotify.showDesktopMessage("Campos vacíos", "Por favor rellene todos los campos.", DesktopNotify.WARNING, 8000); //8 seg
                 }
-
+            
                 try {
                     mostrarDatos(usuarioVista.tbUsuarios);
-                } catch (Exception e) {
-
+                } catch(Exception e) {
+                    
                 }
             }
-
+        
             if (btn.equals("Eliminar")) {
                 try {
-                    confirmDialog.dispose();
+                    confirmDialog.dispose();    
                     mostrarModals("confirmarAcceso");
                 } catch (SQLException ex) {
                     Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+        }
+        
+        if (btn.equals("Factura")) {
+
+            String path = "";
+
+            JFileChooser file = new JFileChooser();
+            file.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int request = file.showSaveDialog(menu);
+
+            if (request == JFileChooser.APPROVE_OPTION) {
+                path = file.getSelectedFile().getPath();
+                ListaSimple<Registro> registro = daoRegistro.selectAllTo("id_registro", String.valueOf(registroSelected.getIdRegistro()));
+                ListaSimple<Hotel> hotel = daoHotel.selectAll();
+
+                ExportPDF exporPdf = new ExportPDF();
+                exporPdf.setHotel(hotel.toArray().get(0));
+                exporPdf.setListaRegistro(registro);
+                exporPdf.setPath(path);
+                exporPdf.crearFacturaProducto();
+                DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                DesktopNotify.showDesktopMessage("Reporte generado", "Ruta: " + path, DesktopNotify.INFORMATION, 10000);
+            }
+
         }
         
         if (btn.equals("ReporteReg")) {
@@ -1203,6 +1632,22 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
         registroVista.lbEstado.setText(habi.getDisposicion());
         registroVista.lbTipoHab.setText(habi.getTipoHabitacion().getNombre());
         registroVista.lbPrecio.setText("$" + String.valueOf(habi.getPrecio()));
+    }
+
+    
+    public void mostrarInfoHab2() throws SQLException {
+//        Registro regis = daoRegistro.selectRegisHab();
+        ListaSimple<Registro> regis = daoRegistro.selectAllTo("fk_num_habitacion", String.valueOf(registroSelected.getHabitacion().getNumHabitacion()));
+        registroSelected = regis.toArray().get(0);
+        addVentaVista.lbCliente.setText(regis.toArray().get(0).getCliente().getDui());
+
+        addVentaVista.lbNumHab.setText(String.valueOf(regis.toArray().get(0).getHabitacion().getNumHabitacion()));
+        addVentaVista.lbTipoHab.setText(regis.toArray().get(0).getHabitacion().getTipoHabitacion().getNombre());
+
+        addVentaVista.lbPrecio.setText("$" + String.valueOf(formatoDecimal(regis.toArray().get(0).getHabitacion().getPrecio())));
+        addVentaVista.lbFechaIn.setText(regis.toArray().get(0).getFechaEntrada());
+        addVentaVista.lbFechaOut.setText(regis.toArray().get(0).getFechaSalida());
+
     }
 
     public void generarHabitaciones() throws SQLException {
@@ -1287,6 +1732,13 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             scroll.setBorder((javax.swing.border.Border) Border.NO_BORDER);
             recepVista.habPanel.add(scroll);
         }
+    }
+    
+    public boolean validarNombre(String txt) {
+        String regx = "^[\\p{L}\\p{M}]+([\\p{L}\\p{Pd}\\p{Zs}']*[\\p{L}\\p{M}])+$|^[\\p{L}\\p{M}]+$";
+        Pattern pattern = Pattern.compile(regx,Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(txt);
+        return matcher.find();
     }
 
     public void cargarDashboard() throws SQLException {
@@ -1378,14 +1830,6 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             dashVista.tablaUltFact.setModel(modelo2);
         }
     }
-
-    public String formatoDecimal(Double precio) {
-        DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
-        simbolos.setDecimalSeparator('.');
-        DecimalFormat formateador = new DecimalFormat("0.00", simbolos);
-
-        return formateador.format(precio);
-    }
     
     @Override
     public void actionPerformed(ActionEvent btn) {
@@ -1396,7 +1840,6 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                 try {
                     configModal.dispose();
                     mostrarModals("modalConfig");
-                    System.out.println("Hola");
                 } catch (SQLException ex) {
                     Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -1480,6 +1923,79 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                 }
             }
             
+            if (btn.getActionCommand().equals("Ventas")) {
+                try {
+                    mostrarModulos("mVentas");
+                } catch (SQLException ex) {
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            
+            if (btn.getActionCommand().equals("agregarProducto")) {
+                try {
+                    mostrarModals("nuevoProducto");
+                } catch (SQLException ex) {
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            if (btn.getActionCommand().equals("modificarProducto")) {
+                try {
+                    mostrarModals("modiProducto");
+                } catch (SQLException ex) {
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            if (btn.getActionCommand().equals("GuardarProducto")) {
+                try {
+                    accionesDeBotones(btn);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            if (btn.getActionCommand().equals("addProductoV")) {
+                try {
+                    accionesDeBotones(btn);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        
+            if (btn.getActionCommand().equals("addRegistroP")) {
+                try {
+                    accionesDeBotones(btn);
+
+                } catch (SQLException ex) {
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            
+            if(btn.getActionCommand().equals("btnModProducto")){
+                try {
+                    accionesDeBotones(btn);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            
+            if(btn.getActionCommand().equals("Registro")){
+                try {
+                    mostrarModulos("mListRegistro");
+                } catch (SQLException ex) {
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
             if(btn.getActionCommand().equals("Usuarios")) {
                 try {
                     mostrarModulos("mUsuarios");
@@ -1511,6 +2027,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                 try {
                     usuarioSelected = null;
                     usuario = null; 
+                    isLoged = false;
                     menu.dispose(); 
                     DesktopNotify.setDefaultTheme(NotifyTheme.Green);
                     DesktopNotify.showDesktopMessage("Sesión cerrada", "Se ha cerrado sesión con exito.", DesktopNotify.SUCCESS, 8000); //8 seg
@@ -1604,7 +2121,50 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
 
     @Override
     public void mouseClicked(MouseEvent me) {
+        
+        if (modalOn.equals("modiProducto") && principalOn.equals("mVentas") && me.getSource() == modalMProducto.tbModP) {
+            ListaSimple<Producto> producto = null;
+            int fila = modalMProducto.tbModP.getSelectedRow();
+            String codigo = modalMProducto.tbModP.getValueAt(fila, 0).toString();
+            
+            try {
+                producto = this.daoProducto.selectCod(codigo);
+            } catch (SQLException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            this.productoSelected = producto.toArray().get(0);
+            
+            this.modalMProducto.tfNomP.setText(productoSelected.getDescripcion());
+            this.modalMProducto.tfPrecio.setText(String.valueOf(productoSelected.getPrecio()));
+        }
+        
+        
+        //ELIMINAR PRODUCTO EN REGISTRO_PRODUCTO
+        if (principalOn.equals("mAddVenta") && me.getSource() == addVentaVista.tbRegistroP) {
+            int col = addVentaVista.tbRegistroP.getSelectedColumn();
+            try {
+                if (col == 4) {
+                    int fila = addVentaVista.tbRegistroP.getSelectedRow();
+                    String desc = addVentaVista.tbRegistroP.getValueAt(fila, 0).toString();
 
+                    Producto obj = daoProducto.selectAllTo("descripcion_producto", desc).toArray().get(0);
+                    RegistroProducto registro = new RegistroProducto(obj);
+                    
+                    RegistroProducto encontrado = (RegistroProducto) registrosProductos.buscar(registro).getDato();
+                    
+                    registrosProductos.eliminar(encontrado);
+                   // RegistroProducto registro = daoRegistroP.selectAllTo("fk_cod_producto", String.valueOf(obj.getCodigo())).toArray().get(0);
+                    
+                    DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                    DesktopNotify.showDesktopMessage("Producto eliminado del registro", "El producto se ha eliminado correctamente del registro.", DesktopNotify.SUCCESS, 8000);
+                    mostrarTablaRP(registrosProductos, addVentaVista.tbRegistroP);
+                }
+            } catch (SQLException e) {
+                System.out.println("ERROR en el mouse clicked del tipo > " + e);
+            }
+        }
+        
         if (principalOn.equals("mUsuarios") && me.getSource() == usuarioVista.tbUsuarios) {
 
             int columna = usuarioVista.tbUsuarios.getSelectedColumn();
@@ -1613,14 +2173,14 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                 if (columna == 8) {
                     int fila = usuarioVista.tbUsuarios.getSelectedRow();
                     String nick = usuarioVista.tbUsuarios.getValueAt(fila, 5).toString();
-                    ListaSimple<Usuario> lista = daoUsuario.buscar(nick);
+                    ListaSimple<Usuario> lista = daoUsuario.selectAllTo("nick_usuario", nick);
                     usuarioSelected = lista.toArray().get(0);
                     claveAcceso.setClave("");
                     mostrarModals("editarUsuario");
                 } else if (columna == 9) {
                     int fila = usuarioVista.tbUsuarios.getSelectedRow();
                     String nick = usuarioVista.tbUsuarios.getValueAt(fila, 5).toString();
-                    ListaSimple<Usuario> lista = daoUsuario.buscar(nick);
+                    ListaSimple<Usuario> lista = daoUsuario.selectAllTo("nick_usuario", nick);
                     usuarioSelected = lista.toArray().get(0);
                     mostrarModals("eliminarUsuario");
                 }
@@ -1696,8 +2256,30 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                 } catch (SQLException e) {
                     System.out.println("ERROR en el mouse clicked del tipo > " + e);
                 } catch (IOException ex) {
-                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
+            
+            if (principalOn.equals("mListRegistro") && me.getSource() == listadoRegisVista.tablaListaRegistros) {
+                int col = listadoRegisVista.tablaListaRegistros.getSelectedColumn();
+                try {
+
+                    if(col == 10){
+ 
+                        int fila = listadoRegisVista.tablaListaRegistros.getSelectedRow();
+                        String numHab = listadoRegisVista.tablaListaRegistros.getValueAt(fila, 0).toString();
+                 
+                        ListaSimple<Registro> habL  = daoRegistro.selectAllTo("id_registro", numHab);
+
+                        registroSelected = habL.toArray().get(0);
+
+                        eventosBotones("Factura");
+                    }
+                } catch (SQLException e) {
+                    System.out.println("ERROR en el mouse clicked del tipo > " + e);
+                } catch (IOException ex) {
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
     
     }
@@ -1722,6 +2304,23 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             }
         }
 
+        //P
+        try {
+            if (principalOn.equals("mVentas")) {
+                registroSelected = new Registro();
+                recepcionSelected = new Habitacion();
+                recepcionSelected.setNumHabitacion(Integer.parseInt(me.getComponent().getName()));
+                registroSelected.setHabitacion(recepcionSelected);
+                try {
+                    mostrarModulos("mAddVenta");
+                } catch (SQLException ex) {
+                    System.out.println(ex);
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        } catch(Exception e){
+            System.out.println(e);
+        }
 
         try {
             if (me.getSource().equals(login.lbNuevaCuenta)) {
@@ -1781,6 +2380,169 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                 eventoLabel("btnEliminarHabitacion");
             
             }
+        }
+    }
+    
+    public void generarHabitacionesOcupadas() throws SQLException {
+
+        ListaSimple<Habitacion> listaHab = this.daoHabitacion.selectAll();
+        ListaSimple<Registro> regi = this.daoRegistro.selectAll();
+        for (Habitacion x : listaHab.toArray()) {
+            
+            for(Registro r : regi.toArray()){
+                if(r.getEstado() == 1 && x.getNumHabitacion() == r.getHabitacion().getNumHabitacion()){
+                    if (x.getDisposicion().equals("OCUPADA")) {
+                        GridBagConstraints gridBagConstraints;
+                        JPanel panel = new javax.swing.JPanel();
+                        JLabel lbNoHab = new JLabel();
+                        JLabel lbDispo = new JLabel();
+                        JLabel lbTipo = new JLabel();
+                        JLabel lbIcono = new JLabel();
+                        JScrollPane scroll = new JScrollPane();
+
+                        panel.setBackground(new java.awt.Color(54, 173, 122));
+                        lbDispo.setBackground(new java.awt.Color(33, 138, 93));
+
+                        panel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+                        panel.setName(String.valueOf(x.getNumHabitacion()));
+                        panel.setLayout(new java.awt.GridBagLayout());
+
+                        lbNoHab.setFont(new java.awt.Font("Calibri", 1, 16));
+                        lbNoHab.setForeground(new java.awt.Color(255, 255, 255));
+                        lbNoHab.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+                        lbNoHab.setText("N° DE HABITACIÓN: " + x.getNumHabitacion());
+                        gridBagConstraints = new java.awt.GridBagConstraints();
+                        gridBagConstraints.gridx = 1;
+                        gridBagConstraints.gridy = 0;
+                        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+                        gridBagConstraints.ipadx = 20;
+                        gridBagConstraints.ipady = 25;
+                        panel.add(lbNoHab, gridBagConstraints);
+
+                        lbDispo.setFont(new java.awt.Font("Calibri", 1, 16));
+                        lbDispo.setForeground(new java.awt.Color(255, 255, 255));
+                        lbDispo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+                        lbDispo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/arrow.png")));
+                        lbDispo.setText("GENERAR VENTA");
+                        lbDispo.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+                        lbDispo.setOpaque(true);
+                        gridBagConstraints = new java.awt.GridBagConstraints();
+                        gridBagConstraints.gridx = 0;
+                        gridBagConstraints.gridy = 2;
+                        gridBagConstraints.gridwidth = 2;
+                        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+                        gridBagConstraints.ipady = 5;
+                        gridBagConstraints.weightx = 1.0;
+                        gridBagConstraints.insets = new java.awt.Insets(20, 0, 0, 0);
+                        panel.add(lbDispo, gridBagConstraints);
+
+                        lbTipo.setFont(new java.awt.Font("Calibri", 1, 14));
+                        lbTipo.setForeground(new java.awt.Color(255, 255, 255));
+                        lbTipo.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+                        lbTipo.setText("TIPO: " + x.getTipoHabitacion().getNombre());
+                        gridBagConstraints = new java.awt.GridBagConstraints();
+                        gridBagConstraints.gridx = 1;
+                        gridBagConstraints.gridy = 1;
+                        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+                        panel.add(lbTipo, gridBagConstraints);
+
+                        lbIcono.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+                        lbIcono.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/bed.png")));
+                        gridBagConstraints = new java.awt.GridBagConstraints();
+                        gridBagConstraints.gridx = 0;
+                        gridBagConstraints.gridy = 0;
+                        gridBagConstraints.gridheight = 3;
+                        gridBagConstraints.ipadx = 15;
+                        panel.add(lbIcono, gridBagConstraints);
+                        panel.addMouseListener(this);
+
+                        scroll.setViewportView(panel);
+                        scroll.setBorder((javax.swing.border.Border) Border.NO_BORDER);
+                        ventasVista.ventasPanel.add(scroll);
+        //            recepVista.habPanel.add(scroll);
+                    }
+                }
+            }
+
+        }
+//    }
+
+    }
+    
+    public void mostrarTablaRP(ListaSimple<RegistroProducto> lista, JTable tabla) throws SQLException {
+        DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
+            simbolos.setDecimalSeparator('.');
+            DecimalFormat formateador = new DecimalFormat("0.00",simbolos);
+        modelo = (DefaultTableModel) tabla.getModel();
+        DefaultTableCellRenderer d = (DefaultTableCellRenderer) tabla.getCellRenderer(0, 0);
+        modelo.setRowCount(0);
+
+        tabla.getColumnModel().getColumn(0).setCellRenderer(d);
+        tabla.getColumnModel().getColumn(1).setCellRenderer(d);
+        tabla.getColumnModel().getColumn(2).setCellRenderer(d);
+        tabla.getColumnModel().getColumn(3).setCellRenderer(d);
+
+        tabla.setDefaultRenderer(Object.class, new ImgTabla());
+
+        for (RegistroProducto x : lista.toArray()) {
+            try {
+
+                ImageIcon img_edit = new ImageIcon(getClass().getResource("/img/delete.png"));
+                JLabel lbImgEdit = new JLabel(new ImageIcon(img_edit.getImage()));
+
+                if (x.getRegistro().getHabitacion().getNumHabitacion() == registroSelected.getHabitacion().getNumHabitacion()) {
+                    modelo.addRow(new Object[]{x.getProducto().getDescripcion(), x.getCantidad(),
+                        "$ "+ formateador.format(x.getProducto().getPrecio()), "$ " + formateador.format(x.getSubtotal()), lbImgEdit});
+
+                    tabla.setRowHeight(40);
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+
+        if (modelo.getRowCount() < 1) {
+            modelo.addRow(new Object[]{"", "No se encontraron resultados", "", ""});
+        }
+        tabla.setModel(modelo);
+//        }
+    }
+    
+    public void mostrarTablaM(JTable tablaM) throws SQLException {
+
+        modelo = (DefaultTableModel) tablaM.getModel();
+        modelo.setRowCount(0);
+
+        for (Producto x : daoProducto.selectAll().toArray()) {
+            try {
+
+                modelo.addRow(new Object[]{x.getCodigo(), x.getDescripcion(), "$ " + formatoDecimal(x.getPrecio())});
+
+            } catch (Exception ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+        if (modelo.getRowCount() < 1) {
+            modelo.addRow(new Object[]{"No se encontraron resultados"});
+        }
+
+        tablaM.setModel(modelo);
+    }
+    
+    public void llenarComboProducto() throws SQLException {
+        ListaSimple<Producto> comboProducto = daoProducto.selectAll();
+        int tLista = 0;
+//        addVentaVista.cbProducto.removeAllItems();
+        try {
+            tLista = daoProducto.selectAll().toArray().size();
+            for (int i = 0; i <= (tLista - 1); i++) {
+                addVentaVista.cbProducto.addItem(comboProducto.toArray().get(i).getDescripcion());
+//                addVentaVista.tfPrecio.setText(String.valueOf(comboProducto.toArray().get(i).getPrecio()));
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, e);
         }
     }
 
@@ -1846,16 +2608,69 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
 
     @Override
     public void keyTyped(KeyEvent ke) {
-        System.out.print("");
+
     }
 
     @Override
     public void keyPressed(KeyEvent ke) {
-        System.out.print("");
+
+        /* RECEPCION */
+        if (principalOn.equals("mListRegistro")) {
+            try {
+                ListaSimple<Registro> lista = daoRegistro.buscar(listadoRegisVista.tfBusqueda.getText() + ke.getKeyChar());
+                
+                if (!lista.isEmpty()) {
+                    mostrarBusqueda(lista, listadoRegisVista.tablaListaRegistros);
+                } else {
+                    mostrarDatos(listadoRegisVista.tablaListaRegistros);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        /* CONTROL DE USUARIOS */
+        if (principalOn.equals("mUsuarios")) {
+            ListaSimple<Usuario> lista = daoUsuario.buscar(usuarioVista.tfBusqueda.getText() + ke.getKeyChar());
+            
+            if (lista.isEmpty()) {
+                try {
+                    mostrarDatos(usuarioVista.tbUsuarios);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                mostrarBusqueda(lista, usuarioVista.tbUsuarios);
+            }
+        }
+
     }
 
     @Override
     public void keyReleased(KeyEvent ke) {
+
+        if (principalOn.equals("mAddVenta")) {
+            DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
+            simbolos.setDecimalSeparator('.');
+            DecimalFormat formateador = new DecimalFormat("0.00",simbolos);
+            try {
+                if (!addVentaVista.tfCantidad.getText().isEmpty()) {
+                    Producto producto = daoProducto.selectAllTo("descripcion_producto", addVentaVista.cbProducto.getSelectedItem().toString()).toArray().get(0);
+                
+                    int cantidad = Integer.parseInt(addVentaVista.tfCantidad.getText());
+                    double precioProducto = producto.getPrecio();
+                    
+                    if (cantidad > 0) {
+                        addVentaVista.tfPrecio.setText("$ " + String.valueOf(formateador.format(cantidad * precioProducto)));
+                    }
+                }else {
+                    addVentaVista.tfPrecio.setText("");
+                }
+            } catch (SQLException ex) {
+                System.out.println(ex);
+            }
+        }
+            
         if (principalOn.equals("mRegistro")) {
             Date fechaE = registroVista.fechaEntrada.getDate();
             String fechaEntrada = f.format(fechaE);    
@@ -1870,12 +2685,15 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                     registroVista.txtTotalConDescuento.setText(String.valueOf((obtenerDias(fechaEntrada, fechaSalida) * Double.parseDouble(registroVista.lbPrecio.getText().substring(1))) - Double.parseDouble(registroVista.txtDescuento.getText())));
                     
                 }
+
             }
         }
+
     }
 
     @Override
     public void itemStateChanged(ItemEvent e) {
+
         if (registroVista.cbEstado.getSelectedItem().equals("HOSPEDAJE")) {
             registroVista.fechaEntrada.setEnabled(false);
         }

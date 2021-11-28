@@ -8,7 +8,7 @@ public class VistaUsuario extends javax.swing.JPanel {
 
     public VistaUsuario() {
         initComponents();
-        new TextPrompt("Buscar usuario", tfBusqueda);
+        new TextPrompt("Buscar por usuario, nombre o apellido", tfBusqueda);
     }
     
     public void setControlador(Controlador control){
@@ -44,13 +44,13 @@ public class VistaUsuario extends javax.swing.JPanel {
         jPanel3.setOpaque(false);
         jPanel3.setLayout(new java.awt.GridBagLayout());
 
-        btnNuevo.setBackground(new java.awt.Color(8, 89, 165));
-        btnNuevo.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        btnNuevo.setBackground(new java.awt.Color(61, 137, 248));
+        btnNuevo.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         btnNuevo.setForeground(new java.awt.Color(255, 255, 255));
         btnNuevo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         btnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/add_22px.png"))); // NOI18N
         btnNuevo.setText("Nuevo usuario");
-        btnNuevo.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(8, 89, 165), 1, true));
+        btnNuevo.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(61, 137, 248), 1, true));
         btnNuevo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnNuevo.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         btnNuevo.setIconTextGap(1);
@@ -106,7 +106,7 @@ public class VistaUsuario extends javax.swing.JPanel {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 18;
-        gridBagConstraints.ipady = 9;
+        gridBagConstraints.ipady = 11;
         jPanel3.add(jLabel1, gridBagConstraints);
 
         add(jPanel3, java.awt.BorderLayout.PAGE_START);

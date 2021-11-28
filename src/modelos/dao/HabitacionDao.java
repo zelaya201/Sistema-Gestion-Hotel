@@ -34,7 +34,7 @@ public class HabitacionDao {
     }
     
     public ListaSimple<Habitacion> buscar(String dato) throws SQLException{
-        String sql = "select * from habitacion where id_habitacion like '" + dato + "%' or  num_habitacion like '" + dato + "%'";
+        String sql = "select * from habitacion where num_habitacion like '" + dato + "%' or descripcion_habitacion like '" + dato + "%'";
         return select(sql);
     }
     
