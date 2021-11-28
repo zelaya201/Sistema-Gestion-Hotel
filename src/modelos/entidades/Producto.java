@@ -23,6 +23,12 @@ public class Producto implements Comparable<Producto>{
     public Producto() {
     }
 
+    public Producto(String codigo, String descripcion, double precio) {
+        this.codigo = codigo;
+        this.descripcion = descripcion;
+        this.precio = precio;
+    }
+
     public Producto(String codigo) {
         this.codigo = codigo;
     }

@@ -11,8 +11,6 @@ import modelos.conexion.Conexion;
 import modelos.entidades.Cliente;
 import modelos.entidades.Habitacion;
 import modelos.entidades.Registro;
-import modelos.entidades.Usuario;
-
 import utilidades.ListaSimple;
 
 /**
@@ -49,7 +47,7 @@ public class RegistroDao {
     }
     
     public ListaSimple<Registro> selectId(int id) throws SQLException{
-        String sql = "select * from regsitro where id_registro =" + id;
+        String sql = "select * from regsitro where id_registro" + id;
         return select(sql);
     }
     
@@ -74,13 +72,11 @@ public class RegistroDao {
                 obj.setMora(rs.getDouble("mora_registro"));
                 obj.setCliente(new Cliente (rs.getString("fk_dui_cliente")));
                 obj.setHabitacion(new Habitacion(rs.getInt("fk_num_habitacion")));
-                obj.setUsuario(new Usuario(rs.getInt("fk_id_usuario")));
-
                 
                 lista.insertar(obj);
             }
-        } catch(SQLException e) {
-             System.out.println(e);
+        } catch(Exception e) {
+             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, e);
         }finally{
             try {
                 ps.close();

@@ -13,9 +13,7 @@ import controlador.Controlador;
  */
 public class Run {
     public static void main(String[] args) {
-//        Menu menu = new Menu();
-//        new Controlador(menu);
-        Login login = new Login();
-        new Controlador(login);
+        Menu menu = new Menu();
+        new Controlador(menu);
     }
 }

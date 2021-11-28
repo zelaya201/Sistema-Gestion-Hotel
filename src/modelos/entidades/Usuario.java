@@ -24,6 +24,10 @@ public class Usuario implements Comparable<Usuario>{
 
     public Usuario() {
     }    
+
+    public Usuario(int idUsuario) {
+        this.idUsuario = idUsuario;
+    }
     
     public Usuario(String nick, String clave, int estado) {
         this.nick = nick;
@@ -43,10 +47,6 @@ public class Usuario implements Comparable<Usuario>{
         this.estado = estado;
     }
 
-    public Usuario(int idUsuario) {
-        this.idUsuario = idUsuario;
-    }
- 
     public int getIdUsuario() {
         return idUsuario;
     }

@@ -4,8 +4,6 @@
  */
 package modelos.entidades;
 
-import utilidades.ListaSimple;
-
 /**
  *
  * @author Mario Zelaya
@@ -16,7 +14,6 @@ public class Cliente implements Comparable<Cliente>{
     private String apellido;
     private String telefono;
     private String email;
-    private ListaSimple<Habitacion> habitaciones;
 
     public Cliente() {
     }
@@ -71,14 +68,6 @@ public class Cliente implements Comparable<Cliente>{
 
     public void setEmail(String email) {
         this.email = email;
-    }
-    
-    public ListaSimple<Habitacion> getHabitaciones() {
-        return habitaciones;
-    }
-
-    public void setHabitaciones(ListaSimple<Habitacion> habitaciones) {
-        this.habitaciones = habitaciones;
     }
 
     @Override

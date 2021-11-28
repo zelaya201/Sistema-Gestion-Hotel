@@ -36,7 +36,7 @@ public class RegistroProductoDao {
     }
     
     public ListaSimple<RegistroProducto> selectAllTo(String atributo, String condicion) throws SQLException{
-        String sql = "select * from registro_producto where " + atributo + "=" + condicion + "";
+        String sql = "select * from registro_producto where " + atributo + "='" + condicion + "'";
         return select(sql);
     }
     
@@ -46,12 +46,12 @@ public class RegistroProductoDao {
     }
     
     public ListaSimple<RegistroProducto> selectIdRegistro(int id) throws SQLException {
-        String sql = "SELECT * FROM registro_producto WHERE fk_id_registro = ";
+        String sql = "SELECT * FROM registro_producto WHERE id_registro_producto = ";
         return select(sql);
     }
     
     public boolean insertar(RegistroProducto obj) throws SQLException{
-        String sql = "insert into registro_producto(subtotal_registro_producto, cant_registro_producto, fk_id_registro, fk_id_producto) values(?,?,?,?)";
+        String sql = "INSERT INTO registro_producto(subtotal_registro_producto, cant_registro_producto, fk_id_registro, fk_cod_producto) VALUES (?,?,?,?)";
         return alterarRegistro(sql, obj);
     }
     
@@ -69,6 +69,7 @@ public class RegistroProductoDao {
             while(rs.next()) {
                 obj = new RegistroProducto();
                 
+                obj.setId_registro_producto(rs.getInt("id_registro_producto"));
                 obj.setSubtotal(rs.getDouble("subtotal_registro_producto"));
                 obj.setCantidad(rs.getInt("cant_registro_producto"));
                 obj.setRegistro(new Registro(rs.getInt("fk_id_registro")));
@@ -102,6 +103,7 @@ public class RegistroProductoDao {
             ps.execute();
             return true;
         } catch(Exception e) {      
+            System.out.println(e + "ERROOOOOR");
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, e);
         } finally{
             try {

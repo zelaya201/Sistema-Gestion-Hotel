@@ -9,7 +9,7 @@ package utilidades;
  *
  * @author Julio
  */
-public class CodigoRecursivo {
+    public class CodigoRecursivo {
 
     public static String generarCodigo(String a, int n) {
 
@@ -27,3 +27,4 @@ public class CodigoRecursivo {
         return null;
     }
 }
+                            
