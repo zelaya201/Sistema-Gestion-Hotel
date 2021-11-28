@@ -12,6 +12,7 @@ public class VistaListadoRegistro extends javax.swing.JPanel {
     
     public void setControlador(Controlador control){
         this.tfBusqueda.addKeyListener(control);
+        this.tablaListaRegistros.addMouseListener(control);
     }
 
     /**
@@ -26,7 +27,7 @@ public class VistaListadoRegistro extends javax.swing.JPanel {
 
         habPanel = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        tablaHabitaciones = new rojerusan.RSTableMetro();
+        tablaListaRegistros = new rojerusan.RSTableMetro();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         tfBusqueda = new javax.swing.JTextField();
@@ -46,61 +47,62 @@ public class VistaListadoRegistro extends javax.swing.JPanel {
         jScrollPane2.setViewportBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         jScrollPane2.setOpaque(false);
 
-        tablaHabitaciones.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(249, 249, 249)));
-        tablaHabitaciones.setModel(new javax.swing.table.DefaultTableModel(
+        tablaListaRegistros.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(249, 249, 249)));
+        tablaListaRegistros.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Id de Registro", "N° de Habitación", "Descripción", "Cliente", "Recepcionista", "Tipo", "Estado", "Fecha de Entrada", "Fecha de Salida", "Total"
+                "Id de Registro", "N° de Habitación", "Descripción", "Cliente", "Recepcionista", "Tipo", "Estado", "Fecha de Entrada", "Fecha de Salida", "Total", "Reporte"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        tablaHabitaciones.setAltoHead(30);
-        tablaHabitaciones.setColorBackgoundHead(new java.awt.Color(249, 249, 249));
-        tablaHabitaciones.setColorBordeFilas(new java.awt.Color(255, 255, 255));
-        tablaHabitaciones.setColorBordeHead(new java.awt.Color(255, 255, 255));
-        tablaHabitaciones.setColorFilasBackgound2(new java.awt.Color(249, 249, 249));
-        tablaHabitaciones.setColorFilasForeground1(new java.awt.Color(51, 51, 51));
-        tablaHabitaciones.setColorFilasForeground2(new java.awt.Color(51, 51, 51));
-        tablaHabitaciones.setColorForegroundHead(new java.awt.Color(0, 0, 0));
-        tablaHabitaciones.setColorSelForeground(new java.awt.Color(51, 51, 51));
-        tablaHabitaciones.setFont(new java.awt.Font("Calibri Light", 0, 14)); // NOI18N
-        tablaHabitaciones.setFuenteFilas(new java.awt.Font("Calibri Light", 0, 14)); // NOI18N
-        tablaHabitaciones.setFuenteFilasSelect(new java.awt.Font("Calibri Light", 0, 14)); // NOI18N
-        tablaHabitaciones.setFuenteHead(new java.awt.Font("Calibri", 1, 14)); // NOI18N
-        tablaHabitaciones.setGridColor(new java.awt.Color(255, 255, 255));
-        tablaHabitaciones.setGrosorBordeFilas(0);
-        tablaHabitaciones.setGrosorBordeHead(0);
-        tablaHabitaciones.setMultipleSeleccion(false);
-        tablaHabitaciones.setRowHeight(40);
-        tablaHabitaciones.getTableHeader().setResizingAllowed(false);
-        tablaHabitaciones.getTableHeader().setReorderingAllowed(false);
-        jScrollPane2.setViewportView(tablaHabitaciones);
-        if (tablaHabitaciones.getColumnModel().getColumnCount() > 0) {
-            tablaHabitaciones.getColumnModel().getColumn(0).setResizable(false);
-            tablaHabitaciones.getColumnModel().getColumn(0).setPreferredWidth(20);
-            tablaHabitaciones.getColumnModel().getColumn(1).setResizable(false);
-            tablaHabitaciones.getColumnModel().getColumn(1).setPreferredWidth(20);
-            tablaHabitaciones.getColumnModel().getColumn(2).setResizable(false);
-            tablaHabitaciones.getColumnModel().getColumn(3).setResizable(false);
-            tablaHabitaciones.getColumnModel().getColumn(4).setResizable(false);
-            tablaHabitaciones.getColumnModel().getColumn(5).setResizable(false);
-            tablaHabitaciones.getColumnModel().getColumn(5).setPreferredWidth(10);
-            tablaHabitaciones.getColumnModel().getColumn(6).setResizable(false);
-            tablaHabitaciones.getColumnModel().getColumn(6).setPreferredWidth(10);
-            tablaHabitaciones.getColumnModel().getColumn(7).setResizable(false);
-            tablaHabitaciones.getColumnModel().getColumn(7).setPreferredWidth(10);
-            tablaHabitaciones.getColumnModel().getColumn(8).setResizable(false);
-            tablaHabitaciones.getColumnModel().getColumn(8).setPreferredWidth(10);
-            tablaHabitaciones.getColumnModel().getColumn(9).setResizable(false);
+        tablaListaRegistros.setAltoHead(30);
+        tablaListaRegistros.setColorBackgoundHead(new java.awt.Color(249, 249, 249));
+        tablaListaRegistros.setColorBordeFilas(new java.awt.Color(255, 255, 255));
+        tablaListaRegistros.setColorBordeHead(new java.awt.Color(255, 255, 255));
+        tablaListaRegistros.setColorFilasBackgound2(new java.awt.Color(249, 249, 249));
+        tablaListaRegistros.setColorFilasForeground1(new java.awt.Color(51, 51, 51));
+        tablaListaRegistros.setColorFilasForeground2(new java.awt.Color(51, 51, 51));
+        tablaListaRegistros.setColorForegroundHead(new java.awt.Color(0, 0, 0));
+        tablaListaRegistros.setColorSelForeground(new java.awt.Color(51, 51, 51));
+        tablaListaRegistros.setFont(new java.awt.Font("Calibri Light", 0, 14)); // NOI18N
+        tablaListaRegistros.setFuenteFilas(new java.awt.Font("Calibri Light", 0, 14)); // NOI18N
+        tablaListaRegistros.setFuenteFilasSelect(new java.awt.Font("Calibri Light", 0, 14)); // NOI18N
+        tablaListaRegistros.setFuenteHead(new java.awt.Font("Calibri", 1, 14)); // NOI18N
+        tablaListaRegistros.setGridColor(new java.awt.Color(255, 255, 255));
+        tablaListaRegistros.setGrosorBordeFilas(0);
+        tablaListaRegistros.setGrosorBordeHead(0);
+        tablaListaRegistros.setMultipleSeleccion(false);
+        tablaListaRegistros.setRowHeight(40);
+        tablaListaRegistros.getTableHeader().setResizingAllowed(false);
+        tablaListaRegistros.getTableHeader().setReorderingAllowed(false);
+        jScrollPane2.setViewportView(tablaListaRegistros);
+        if (tablaListaRegistros.getColumnModel().getColumnCount() > 0) {
+            tablaListaRegistros.getColumnModel().getColumn(0).setResizable(false);
+            tablaListaRegistros.getColumnModel().getColumn(0).setPreferredWidth(20);
+            tablaListaRegistros.getColumnModel().getColumn(1).setResizable(false);
+            tablaListaRegistros.getColumnModel().getColumn(1).setPreferredWidth(20);
+            tablaListaRegistros.getColumnModel().getColumn(2).setResizable(false);
+            tablaListaRegistros.getColumnModel().getColumn(3).setResizable(false);
+            tablaListaRegistros.getColumnModel().getColumn(4).setResizable(false);
+            tablaListaRegistros.getColumnModel().getColumn(5).setResizable(false);
+            tablaListaRegistros.getColumnModel().getColumn(5).setPreferredWidth(10);
+            tablaListaRegistros.getColumnModel().getColumn(6).setResizable(false);
+            tablaListaRegistros.getColumnModel().getColumn(6).setPreferredWidth(10);
+            tablaListaRegistros.getColumnModel().getColumn(7).setResizable(false);
+            tablaListaRegistros.getColumnModel().getColumn(7).setPreferredWidth(10);
+            tablaListaRegistros.getColumnModel().getColumn(8).setResizable(false);
+            tablaListaRegistros.getColumnModel().getColumn(8).setPreferredWidth(10);
+            tablaListaRegistros.getColumnModel().getColumn(9).setResizable(false);
+            tablaListaRegistros.getColumnModel().getColumn(10).setResizable(false);
         }
 
         habPanel.add(jScrollPane2, java.awt.BorderLayout.CENTER);
@@ -172,7 +174,7 @@ public class VistaListadoRegistro extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane2;
-    public rojerusan.RSTableMetro tablaHabitaciones;
+    public rojerusan.RSTableMetro tablaListaRegistros;
     public javax.swing.JTextField tfBusqueda;
     // End of variables declaration//GEN-END:variables
 }

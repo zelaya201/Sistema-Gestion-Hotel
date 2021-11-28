@@ -75,6 +75,112 @@ public class ExportPDF {
         this.hotel = hotel;
     }
     
+     public void crearFacturaProducto() throws FileNotFoundException, IOException{
+        //Creación del Archivo
+        String ruta = path + "\\" + "Factura de Venta 00" +ListaRegistro.toArray().get(0).getIdRegistro()+ " " + getFecha(2) + ".pdf"; //Ruta donde se guardar el archivo
+        PdfWriter writer = new PdfWriter(ruta);
+        PdfDocument pdf = new PdfDocument(writer);
+        
+        //Fuentes
+        PdfFont font1 = PdfFontFactory.createFont(StandardFonts.HELVETICA_OBLIQUE);
+        PdfFont font2 = PdfFontFactory.createRegisteredFont(StandardFonts.HELVETICA);
+        
+        //Propiedades del archivo
+        Document documento = new Document(pdf, PageSize.LETTER.rotate());
+        documento.setMargins(40, 20, 40, 20);
+        
+        //Cabecera del Archivo
+     
+        Table encabezado = new Table(1).useAllAvailableWidth();
+        encabezado.setHorizontalAlignment(HorizontalAlignment.CENTER);
+        encabezado.addCell(new Cell().setBorder(Border.NO_BORDER).setFont(font1).setFontColor(new DeviceRgb(90, 90, 90)).add(new Paragraph(getFecha(1)).setVerticalAlignment(VerticalAlignment.MIDDLE).setTextAlignment(TextAlignment.RIGHT).setFontSize(10f)));
+        encabezado.addCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).add(new Paragraph("Hotel " + hotel.getNombre()).setVerticalAlignment(VerticalAlignment.MIDDLE).setTextAlignment(TextAlignment.CENTER).setFontSize(16f)));
+        encabezado.addCell(new Cell().setBorder(Border.NO_BORDER).setFont(font1).add(new Paragraph("Dirección: " + hotel.getDireccion()).setVerticalAlignment(VerticalAlignment.MIDDLE).setTextAlignment(TextAlignment.CENTER).setFontSize(11f)));
+        encabezado.addCell(new Cell().setBorder(Border.NO_BORDER).setFont(font1).add(new Paragraph("Teléfono: " + hotel.getTelefono()).setVerticalAlignment(VerticalAlignment.MIDDLE).setTextAlignment(TextAlignment.CENTER).setFontSize(11f)));
+        encabezado.addCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).add(new Paragraph("Número de Factura:" + " " + facturaId(ListaRegistro.toArray().get(0).getIdRegistro())).setVerticalAlignment(VerticalAlignment.MIDDLE).setTextAlignment(TextAlignment.CENTER).setFontSize(14f)));
+        
+        Paragraph saltoDeLinea = new Paragraph(""); 
+        //Cuerpo de Primera Tabla  
+        
+        Table huespedDetalles = new Table(4).useAllAvailableWidth();
+        huespedDetalles.setHorizontalAlignment(HorizontalAlignment.CENTER);
+        huespedDetalles.addCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).add(new Paragraph(String.valueOf("DUI: " + ListaRegistro.toArray().get(0).getCliente().getDui())).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+        huespedDetalles.addCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).add(new Paragraph(String.valueOf("Huésped: " + ListaRegistro.toArray().get(0).getCliente().getNombre() + " " + ListaRegistro.toArray().get(0).getCliente().getApellido())).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+        huespedDetalles.addCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).add(new Paragraph(String.valueOf("Teléfono: " + ListaRegistro.toArray().get(0).getCliente().getTelefono())).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+       
+        //Cuerpo de Segunda Tabla
+        Table detalleRegistro = new Table(6).useAllAvailableWidth();
+        detalleRegistro.setHorizontalAlignment(HorizontalAlignment.CENTER);
+        detalleRegistro.addHeaderCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).setBackgroundColor(new DeviceRgb(221,221,221)).add(new Paragraph("N° Habitación").setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+        detalleRegistro.addHeaderCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).setBackgroundColor(new DeviceRgb(221,221,221)).add(new Paragraph("Tipo").setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+        detalleRegistro.addHeaderCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).setBackgroundColor(new DeviceRgb(221,221,221)).add(new Paragraph("Fecha de Entrada").setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+        detalleRegistro.addHeaderCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).setBackgroundColor(new DeviceRgb(221,221,221)).add(new Paragraph("Fecha de Salida").setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+        detalleRegistro.addHeaderCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).setBackgroundColor(new DeviceRgb(221,221,221)).add(new Paragraph("Precio").setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+        detalleRegistro.addHeaderCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).setBackgroundColor(new DeviceRgb(221,221,221)).add(new Paragraph("Mora").setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+        
+             detalleRegistro.addCell(new Cell().setFont(font2).add(new Paragraph(String.valueOf(ListaRegistro.toArray().get(0).getHabitacion().getNumHabitacion())).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+             detalleRegistro.addCell(new Cell().setFont(font2).add(new Paragraph(String.valueOf(ListaRegistro.toArray().get(0).getTipo())).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+             detalleRegistro.addCell(new Cell().setFont(font2).add(new Paragraph(String.valueOf(ListaRegistro.toArray().get(0).getFechaEntrada())).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+             detalleRegistro.addCell(new Cell().setFont(font2).add(new Paragraph(String.valueOf(ListaRegistro.toArray().get(0).getFechaSalida())).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+             detalleRegistro.addCell(new Cell().setFont(font2).add(new Paragraph(String.valueOf("$" + formatoDecimal(ListaRegistro.toArray().get(0).getHabitacion().getPrecio()))).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+             detalleRegistro.addCell(new Cell().setFont(font2).add(new Paragraph(String.valueOf("$" + formatoDecimal(ListaRegistro.toArray().get(0).getMora()))).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+        
+        //Cuerpo de Tercera Tabla 
+        Table producCons = new Table(1).useAllAvailableWidth();
+        producCons.setHorizontalAlignment(HorizontalAlignment.CENTER);
+        producCons.addCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).add(new Paragraph(String.valueOf("Productos Consumidos")).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+        
+        Table detalleproducto = new Table(5).useAllAvailableWidth();
+        detalleproducto.setHorizontalAlignment(HorizontalAlignment.CENTER);
+        detalleproducto.addHeaderCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).setBackgroundColor(new DeviceRgb(221,221,221)).add(new Paragraph("Código Producto").setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+        detalleproducto.addHeaderCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).setBackgroundColor(new DeviceRgb(221,221,221)).add(new Paragraph("Producto").setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+        detalleproducto.addHeaderCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).setBackgroundColor(new DeviceRgb(221,221,221)).add(new Paragraph("Cantidad").setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+        detalleproducto.addHeaderCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).setBackgroundColor(new DeviceRgb(221,221,221)).add(new Paragraph("Precio Unitario").setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+        detalleproducto.addHeaderCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).setBackgroundColor(new DeviceRgb(221,221,221)).add(new Paragraph("Subtotal").setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+       
+        double stotal = 0;
+        
+        for (RegistroProducto x : ListaRegistro.toArray().get(0).getRegistrosProductos().toArray()) {
+             detalleproducto.addCell(new Cell().setFont(font2).add(new Paragraph(String.valueOf(x.getProducto().getCodigo())).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+             detalleproducto.addCell(new Cell().setFont(font2).add(new Paragraph(String.valueOf(x.getProducto().getDescripcion())).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+             detalleproducto.addCell(new Cell().setFont(font2).add(new Paragraph(String.valueOf(x.getCantidad())).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+             detalleproducto.addCell(new Cell().setFont(font2).add(new Paragraph(String.valueOf("$" + formatoDecimal(x.getProducto().getPrecio()))).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+             detalleproducto.addCell(new Cell().setFont(font2).add(new Paragraph(String.valueOf("$" + formatoDecimal(x.getSubtotal()))).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+             
+             stotal = stotal + x.getSubtotal();
+        }
+        
+        double costoTotal = stotal + ListaRegistro.toArray().get(0).getTotal() + ListaRegistro.toArray().get(0).getMora();
+        
+        Paragraph deposit = new Paragraph("Déposito: $ " + formatoDecimal(ListaRegistro.toArray().get(0).getDeposito())).setTextAlignment(TextAlignment.RIGHT);
+        Paragraph costtotal = new Paragraph("Costo Total: $ " + formatoDecimal(costoTotal)).setTextAlignment(TextAlignment.RIGHT);
+        Paragraph totalpag = new Paragraph("Total a Pagar: $ " + formatoDecimal(costoTotal - ListaRegistro.toArray().get(0).getDeposito())).setTextAlignment(TextAlignment.RIGHT);
+        
+        //Agregamos todos los objetos al documento
+        documento.add(encabezado);
+        documento.add(saltoDeLinea);
+        documento.add(huespedDetalles);
+        documento.add(saltoDeLinea);
+        documento.add(detalleRegistro);
+        documento.add(saltoDeLinea);
+        documento.add(producCons);
+        documento.add(saltoDeLinea);
+        documento.add(detalleproducto);
+        documento.add(saltoDeLinea);
+        documento.add(deposit);
+        documento.add(costtotal);
+        documento.add(totalpag);
+        documento.close();
+        
+        //Creamos el archivo en la ruta especificada
+        try {
+            File objetofile = new File(ruta);
+            Desktop.getDesktop().open(objetofile);
+        }catch (IOException ex) {
+            System.out.println(ex);
+        }
+    }
+    
     public void crearDetalleProducto() throws FileNotFoundException, IOException{
         //Creación del Archivo
         String ruta = path + "\\" + "Detalle de Venta " + getFecha(2) + ".pdf"; //Ruta donde se guardar el archivo
@@ -358,6 +464,10 @@ public class ExportPDF {
         return formateador.format(precio);
     }
     
+    public String facturaId(int idRegistro){
+        DecimalFormat id = new DecimalFormat("000000");
+        DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
+        return id.format(idRegistro);
+    }
     
 }
-

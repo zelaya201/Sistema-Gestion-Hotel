@@ -112,6 +112,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
 
     /* REGISTRO HABITACIÓN */
     private RegistroDao daoRegistro = new RegistroDao();
+    private Registro registroSelected = null;
 
     /* REGISTRO PRODUCTO */
     private RegistroProductoDao daoRegistroProducto = new RegistroProductoDao();
@@ -224,7 +225,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
             this.listadoRegisVista = new VistaListadoRegistro();
             listadoRegisVista.setControlador(this);
             principalOn = "mListRegistro";
-            mostrarDatos(listadoRegisVista.tablaHabitaciones);
+            mostrarDatos(listadoRegisVista.tablaListaRegistros);
             new CambiaPanel(menu.body, listadoRegisVista);
         }
     }
@@ -514,7 +515,8 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
                     (x.getEstado() != 0) ? lbImg_estado1 : lbImg_estado0,
                     x.getFechaEntrada(),
                     x.getFechaSalida(),
-                    "$ " + formatoDecimal(x.getTotal())
+                    "$ " + formatoDecimal(x.getTotal()),
+                    lbImg_edit
                 });
                 i++;
                 
@@ -1279,7 +1281,31 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
                     Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        }  
+        }
+        
+        if (btn.equals("Factura")) {
+
+            String path = "";
+
+            JFileChooser file = new JFileChooser();
+            file.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int request = file.showSaveDialog(menu);
+
+            if (request == JFileChooser.APPROVE_OPTION) {
+                path = file.getSelectedFile().getPath();
+                ListaSimple<Registro> registro = daoRegistro.selectAllTo("id_registro", String.valueOf(registroSelected.getIdRegistro()));
+                ListaSimple<Hotel> hotel = daoHotel.selectAll();
+
+                ExportPDF exporPdf = new ExportPDF();
+                exporPdf.setHotel(hotel.toArray().get(0));
+                exporPdf.setListaRegistro(registro);
+                exporPdf.setPath(path);
+                exporPdf.crearFacturaProducto();
+                DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                DesktopNotify.showDesktopMessage("Reporte generado", "Ruta: " + path, DesktopNotify.INFORMATION, 10000);
+            }
+
+        }
         
         if (btn.equals("ReporteReg")) {
 
@@ -1841,8 +1867,30 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
                 } catch (SQLException e) {
                     System.out.println("ERROR en el mouse clicked del tipo > " + e);
                 } catch (IOException ex) {
-                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
+            
+            if (principalOn.equals("mListRegistro") && me.getSource() == listadoRegisVista.tablaListaRegistros) {
+                int col = listadoRegisVista.tablaListaRegistros.getSelectedColumn();
+                try {
+
+                    if(col == 10){
+ 
+                        int fila = listadoRegisVista.tablaListaRegistros.getSelectedRow();
+                        String numHab = listadoRegisVista.tablaListaRegistros.getValueAt(fila, 0).toString();
+                 
+                        ListaSimple<Registro> habL  = daoRegistro.selectAllTo("id_registro", numHab);
+
+                        registroSelected = habL.toArray().get(0);
+
+                        eventosBotones("Factura");
+                    }
+                } catch (SQLException e) {
+                    System.out.println("ERROR en el mouse clicked del tipo > " + e);
+                } catch (IOException ex) {
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
     
     }
@@ -1994,9 +2042,9 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
                 ListaSimple<Registro> lista = daoRegistro.buscar(listadoRegisVista.tfBusqueda.getText() + ke.getKeyChar());
                 
                 if (!lista.isEmpty()) {
-                    mostrarBusqueda(lista, listadoRegisVista.tablaHabitaciones);
+                    mostrarBusqueda(lista, listadoRegisVista.tablaListaRegistros);
                 } else {
-                    mostrarDatos(listadoRegisVista.tablaHabitaciones);
+                    mostrarDatos(listadoRegisVista.tablaListaRegistros);
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);

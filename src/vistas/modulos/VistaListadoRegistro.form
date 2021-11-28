@@ -75,7 +75,7 @@
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
           <SubComponents>
-            <Component class="rojerusan.RSTableMetro" name="tablaHabitaciones">
+            <Component class="rojerusan.RSTableMetro" name="tablaListaRegistros">
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
@@ -85,7 +85,7 @@
                   </Border>
                 </Property>
                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                  <Table columnCount="10" rowCount="0">
+                  <Table columnCount="11" rowCount="0">
                     <Column editable="false" title="Id de Registro" type="java.lang.Object"/>
                     <Column editable="false" title="N&#xb0; de Habitaci&#xf3;n" type="java.lang.Object"/>
                     <Column editable="false" title="Descripci&#xf3;n" type="java.lang.Object"/>
@@ -96,6 +96,7 @@
                     <Column editable="false" title="Fecha de Entrada" type="java.lang.Object"/>
                     <Column editable="false" title="Fecha de Salida" type="java.lang.Object"/>
                     <Column editable="false" title="Total" type="java.lang.Object"/>
+                    <Column editable="false" title="Reporte" type="java.lang.Object"/>
                   </Table>
                 </Property>
                 <Property name="altoHead" type="int" value="30"/>
@@ -166,6 +167,11 @@
                       <Renderer/>
                     </Column>
                     <Column maxWidth="-1" minWidth="-1" prefWidth="10" resizable="false">
+                      <Title/>
+                      <Editor/>
+                      <Renderer/>
+                    </Column>
+                    <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="false">
                       <Title/>
                       <Editor/>
                       <Renderer/>
