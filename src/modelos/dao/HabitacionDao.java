@@ -169,4 +169,26 @@ public class HabitacionDao {
 
         return false;
     }
+
+    public boolean updateEstado(Habitacion obj) {
+        String sql = "UPDATE habitacion SET disposicion_habitacion = ? WHERE num_habitacion = '" + obj.getNumHabitacion() + "'";
+        try {
+            con = Conexion.getConexion();
+            ps = con.prepareStatement(sql);
+            
+            ps.setString(1, obj.getDisposicion());
+            
+            ps.execute();
+            return true;
+        } catch (SQLException e) {
+            try {
+                ps.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(HabitacionDao.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }finally {
+            Conexion.closeConexion(con);
+        }
+        return false;
+    }
 }

@@ -5,12 +5,17 @@ import controlador.Controlador;
 public class VistaRegistro extends javax.swing.JPanel {
 
     public VistaRegistro() {
-        initComponents();  
+        initComponents();
         btnGuardarRegistro.setActionCommand("guardarRegistro");
+        btnVerificarRegistro.setActionCommand("verificarRegistro");
+        btnGuardarRegistro.setEnabled(false);
     }
-    
-    public void setControlador(Controlador control){
+
+    public void setControlador(Controlador control) {
         this.btnGuardarRegistro.addActionListener(control);
+        this.cbEstado.addItemListener(control);
+        this.btnVerificarRegistro.addActionListener(control);
+        this.txtDescuento.addKeyListener(control);
     }
 
     /**
@@ -55,6 +60,7 @@ public class VistaRegistro extends javax.swing.JPanel {
         jLabel15 = new javax.swing.JLabel();
         txtTotalConDescuento = new RSMaterialComponent.RSTextFieldOne();
         btnGuardarRegistro = new newscomponents.RSButtonIcon_new();
+        btnVerificarRegistro = new newscomponents.RSButtonIcon_new();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
 
@@ -287,8 +293,15 @@ public class VistaRegistro extends javax.swing.JPanel {
 
         fechaEntrada.setBackground(new java.awt.Color(153, 153, 153));
         fechaEntrada.setBgColor(new java.awt.Color(153, 153, 153));
+        fechaEntrada.setEnabled(false);
         fechaEntrada.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         fechaEntrada.setFormatDate("dd/MM/yyyy\n");
+        fechaEntrada.setRequestFocusEnabled(false);
+        fechaEntrada.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                fechaEntradaMousePressed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
@@ -325,6 +338,11 @@ public class VistaRegistro extends javax.swing.JPanel {
         txtDescuento.setColorIcon(new java.awt.Color(153, 153, 153));
         txtDescuento.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.MONETIZATION_ON);
         txtDescuento.setPlaceholder("");
+        txtDescuento.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtDescuentoKeyTyped(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 5;
@@ -341,6 +359,11 @@ public class VistaRegistro extends javax.swing.JPanel {
         txtAdelanto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtAdelantoActionPerformed(evt);
+            }
+        });
+        txtAdelanto.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtAdelantoKeyTyped(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -370,12 +393,17 @@ public class VistaRegistro extends javax.swing.JPanel {
         jPanel2.add(rSButtonIconOne1, gridBagConstraints);
 
         cbEstado.setForeground(new java.awt.Color(0, 0, 0));
-        cbEstado.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccione", "Hospedaje", "Reserva" }));
+        cbEstado.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccione", "HOSPEDAJE", "RESERVACION" }));
         cbEstado.setColorArrow(new java.awt.Color(61, 137, 248));
         cbEstado.setColorBorde(new java.awt.Color(255, 255, 255));
         cbEstado.setColorFondo(new java.awt.Color(255, 255, 255));
         cbEstado.setColorSeleccion(new java.awt.Color(61, 137, 248));
         cbEstado.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        cbEstado.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbEstadoItemStateChanged(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 1;
@@ -387,7 +415,7 @@ public class VistaRegistro extends javax.swing.JPanel {
         jPanel2.add(cbEstado, gridBagConstraints);
 
         jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel13.setText("FEHCA DE SALIDA");
+        jLabel13.setText("FECHA DE SALIDA");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 2;
@@ -453,6 +481,11 @@ public class VistaRegistro extends javax.swing.JPanel {
         txtTotalConDescuento.setFocusable(false);
         txtTotalConDescuento.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         txtTotalConDescuento.setPlaceholder("");
+        txtTotalConDescuento.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtTotalConDescuentoActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 5;
@@ -481,6 +514,24 @@ public class VistaRegistro extends javax.swing.JPanel {
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(20, 40, 100, 40);
         jPanel2.add(btnGuardarRegistro, gridBagConstraints);
+
+        btnVerificarRegistro.setBackground(new java.awt.Color(61, 137, 248));
+        btnVerificarRegistro.setText("Verificar Datos");
+        btnVerificarRegistro.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnVerificarRegistro.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.CHECK);
+        btnVerificarRegistro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVerificarRegistroActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(20, 40, 100, 40);
+        jPanel2.add(btnVerificarRegistro, gridBagConstraints);
 
         habPanel.add(jPanel2, java.awt.BorderLayout.CENTER);
 
@@ -519,10 +570,41 @@ public class VistaRegistro extends javax.swing.JPanel {
     private void btnGuardarRegistroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarRegistroActionPerformed
 
     }//GEN-LAST:event_btnGuardarRegistroActionPerformed
-       
+
+    private void txtTotalConDescuentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTotalConDescuentoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtTotalConDescuentoActionPerformed
+
+    private void cbEstadoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbEstadoItemStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbEstadoItemStateChanged
+
+    private void fechaEntradaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fechaEntradaMousePressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_fechaEntradaMousePressed
+
+    private void btnVerificarRegistroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerificarRegistroActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnVerificarRegistroActionPerformed
+
+    private void txtDescuentoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDescuentoKeyTyped
+        char val = evt.getKeyChar();
+        if ((val < '0' || val > '9') && (val != '.')) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtDescuentoKeyTyped
+
+    private void txtAdelantoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtAdelantoKeyTyped
+        char val = evt.getKeyChar();
+        if ((val < '0' || val > '9') && (val != '.')) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtAdelantoKeyTyped
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public newscomponents.RSButtonIcon_new btnGuardarRegistro;
+    private newscomponents.RSButtonIcon_new btnVerificarRegistro;
     public RSMaterialComponent.RSComboBox cbEstado;
     public RSMaterialComponent.RSComboBox cbHuesped;
     public newscomponents.RSDateChooser fechaEntrada;
@@ -552,9 +634,9 @@ public class VistaRegistro extends javax.swing.JPanel {
     public javax.swing.JLabel lbPrecio;
     public javax.swing.JLabel lbTipoHab;
     private RSMaterialComponent.RSButtonIconOne rSButtonIconOne1;
-    private RSMaterialComponent.RSTextFieldIconOne txtAdelanto;
-    private RSMaterialComponent.RSTextFieldIconOne txtDescuento;
-    private RSMaterialComponent.RSTextFieldOne txtTotalConDescuento;
-    private RSMaterialComponent.RSTextFieldOne txtTotalPagar;
+    public RSMaterialComponent.RSTextFieldIconOne txtAdelanto;
+    public RSMaterialComponent.RSTextFieldIconOne txtDescuento;
+    public RSMaterialComponent.RSTextFieldOne txtTotalConDescuento;
+    public RSMaterialComponent.RSTextFieldOne txtTotalPagar;
     // End of variables declaration//GEN-END:variables
 }
