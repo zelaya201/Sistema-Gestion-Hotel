@@ -1,75 +1,91 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package modelos.entidades;
 
+import utilidades.ListaSimple;
+
 /**
  *
- * @author Luis Vaquerano
+ * @author Mario Zelaya
  */
 public class Cliente implements Comparable<Cliente>{
-    private String dui_cliente;
-    private String nom_cliente;
-    private String ape_cliente;
-    private String tel_cliente;
-    private String email_cliente;
+    private String dui;
+    private String nombre;
+    private String apellido;
+    private String telefono;
+    private String email;
+    private ListaSimple<Habitacion> habitaciones;
 
     public Cliente() {
     }
 
-    public Cliente(String dui_cliente, String nom_cliente, String ape_cliente, String tel_cliente, String email_cliente) {
-        this.dui_cliente = dui_cliente;
-        this.nom_cliente = nom_cliente;
-        this.ape_cliente = ape_cliente;
-        this.tel_cliente = tel_cliente;
-        this.email_cliente = email_cliente;
+    public Cliente(String dui) {
+        this.dui = dui;
     }
 
-    public String getDui_cliente() {
-        return dui_cliente;
+    public Cliente(String dui, String nombre, String apellido, String telefono, String email) {
+        this.dui = dui;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.telefono = telefono;
+        this.email = email;
     }
 
-    public void setDui_cliente(String dui_cliente) {
-        this.dui_cliente = dui_cliente;
+    public String getDui() {
+        return dui;
     }
 
-    public String getNom_cliente() {
-        return nom_cliente;
+    public void setDui(String dui) {
+        this.dui = dui;
     }
 
-    public void setNom_cliente(String nom_cliente) {
-        this.nom_cliente = nom_cliente;
+    public String getNombre() {
+        return nombre;
     }
 
-    public String getApe_cliente() {
-        return ape_cliente;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    public void setApe_cliente(String ape_cliente) {
-        this.ape_cliente = ape_cliente;
+    public String getApellido() {
+        return apellido;
     }
 
-    public String getTel_cliente() {
-        return tel_cliente;
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
     }
 
-    public void setTel_cliente(String tel_cliente) {
-        this.tel_cliente = tel_cliente;
+    public String getTelefono() {
+        return telefono;
     }
 
-    public String getEmail_cliente() {
-        return email_cliente;
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
     }
 
-    public void setEmail_cliente(String email_cliente) {
-        this.email_cliente = email_cliente;
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
     
-    @Override
-    public int compareTo(Cliente o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public ListaSimple<Habitacion> getHabitaciones() {
+        return habitaciones;
     }
+
+    public void setHabitaciones(ListaSimple<Habitacion> habitaciones) {
+        this.habitaciones = habitaciones;
+    }
+
+    @Override
+    public int compareTo(Cliente t) {
+        Cliente actual = this;
+        return (actual.getNombre().compareToIgnoreCase(t.getNombre()));
+    }
+    
     
 }
