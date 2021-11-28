@@ -1707,8 +1707,16 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
         if (principalOn.equals("mRecepcion")) {
             recepcionSelected = new Habitacion();
             recepcionSelected.setNumHabitacion(Integer.parseInt(me.getComponent().getName()));
+            
             try {
-                mostrarModulos("mRegistro");
+                ListaSimple<Habitacion> th = daoHabitacion.selectAllTo("num_habitacion", me.getComponent().getName());
+                recepcionSelected = th.toArray().get(0);
+                if (recepcionSelected.getDisposicion().equals("DISPONIBLE")) {
+                    mostrarModulos("mRegistro");
+                } else if (recepcionSelected.getDisposicion().equals("OCUPADA")){
+                    mostrarModulos("mFinalizar");
+                    System.out.println("ENTRAMOS A OCUPADA");
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
             }

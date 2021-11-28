@@ -15,6 +15,7 @@ public class modalHabitacion extends javax.swing.JDialog {
 
     /**
      * Creates new form modalHabitacion
+     *
      * @param parent
      * @param modal
      */
@@ -24,15 +25,15 @@ public class modalHabitacion extends javax.swing.JDialog {
         setLocationRelativeTo(null);
         btnHabitacionReg.setActionCommand("RegistrarHabitacion");
         btnCancelarReg.setActionCommand("CancelarHabitacion");
-        
+
     }
-    
-    public void setControlador(Controlador control){
+
+    public void setControlador(Controlador control) {
         this.btnHabitacionReg.addActionListener(control);
         this.btnCancelarReg.addActionListener(control);
     }
-    
-    public void iniciar(){
+
+    public void iniciar() {
         this.setVisible(true);
     }
 
@@ -147,6 +148,11 @@ public class modalHabitacion extends javax.swing.JDialog {
         txtNumHabitacion.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         txtNumHabitacion.setPhColor(new java.awt.Color(0, 0, 0));
         txtNumHabitacion.setPlaceholder("-");
+        txtNumHabitacion.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNumHabitacionKeyTyped(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -175,6 +181,11 @@ public class modalHabitacion extends javax.swing.JDialog {
         txtPrecioHab.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         txtPrecioHab.setPhColor(new java.awt.Color(0, 0, 0));
         txtPrecioHab.setPlaceholder("$");
+        txtPrecioHab.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtPrecioHabKeyTyped(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 2;
@@ -254,6 +265,22 @@ public class modalHabitacion extends javax.swing.JDialog {
     private void btnHabitacionRegActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHabitacionRegActionPerformed
 
     }//GEN-LAST:event_btnHabitacionRegActionPerformed
+
+    private void txtNumHabitacionKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNumHabitacionKeyTyped
+        // TODO add your handling code here:
+        char val = evt.getKeyChar();
+        if ((val < '0' || val > '9')) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtNumHabitacionKeyTyped
+
+    private void txtPrecioHabKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPrecioHabKeyTyped
+        // TODO add your handling code here:
+        char val = evt.getKeyChar();
+        if ((val < '0' || val > '9') && (val != '.')) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtPrecioHabKeyTyped
 
     /**
      * @param args the command line arguments
