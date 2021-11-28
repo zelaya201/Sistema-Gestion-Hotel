@@ -44,7 +44,7 @@ public class RegistroDao {
     }
     
     public ListaSimple<Registro> buscar(String dato) throws SQLException{
-        String sql = "select * from registro where id_regsitro like '" + dato + "'";
+        String sql = "select * from registro where fentrada_registro like '" + dato + "%' or fsalida_registro like '" + dato + "%'";
         return select(sql);
     }
     
