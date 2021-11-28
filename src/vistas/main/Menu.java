@@ -18,7 +18,9 @@ public class Menu extends javax.swing.JFrame {
         this.btnTipoHab.setVisible(false);
         this.btnDash.setActionCommand("Dashboard");
         this.btnProducto.setActionCommand("Productos");
-        this.btnTipoHab.setActionCommand("Movimientos");
+        this.btnTipoHab.setActionCommand("Tipo");
+        this.btnHab.setActionCommand("Habitacion");
+        this.btnListRegistro.setActionCommand("Registro");
         this.btnConfig.setActionCommand("Configuracion");
         this.btnRecepcion.setActionCommand("Recepcion");
         this.btnUsuario.setActionCommand("Usuarios");
@@ -29,7 +31,9 @@ public class Menu extends javax.swing.JFrame {
     public void setControlador(Controlador control){
         this.btnDash.addActionListener(control);
         this.btnProducto.addActionListener(control);
-        this.btnTipoHab.addActionListener(control);
+        this.btnTipoHab.addActionListener(control);    
+        this.btnHab.addActionListener(control);
+        this.btnListRegistro.addActionListener(control);
         this.btnConfig.addActionListener(control);
         this.btnRecepcion.addActionListener(control);
         this.btnUsuario.addActionListener(control);
@@ -60,7 +64,6 @@ public class Menu extends javax.swing.JFrame {
         btnRecepcion = new newscomponents.RSButtonIcon_new();
         btnHab = new newscomponents.RSButtonIcon_new();
         btbHabitacion = new newscomponents.RSButtonIcon_new();
-        btnReportes = new newscomponents.RSButtonIcon_new();
         btnUsuario = new newscomponents.RSButtonIcon_new();
         btnListRegistro = new newscomponents.RSButtonIcon_new();
         lbUserName = new javax.swing.JLabel();
@@ -144,13 +147,13 @@ public class Menu extends javax.swing.JFrame {
         modulos.add(btnTipoHab, gridBagConstraints);
 
         btnProducto.setBackground(new java.awt.Color(42, 53, 66));
-        btnProducto.setText("Productos");
+        btnProducto.setText("Ventas");
         btnProducto.setBackgroundHover(new java.awt.Color(61, 137, 248));
         btnProducto.setFocusPainted(false);
         btnProducto.setFont(new java.awt.Font("Bahnschrift", 0, 16)); // NOI18N
         btnProducto.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
         btnProducto.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnProducto.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.ARCHIVE);
+        btnProducto.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.SHOPPING_CART);
         btnProducto.setSizeIcon(25.0F);
         btnProducto.setVerifyInputWhenFocusTarget(false);
         btnProducto.addActionListener(new java.awt.event.ActionListener() {
@@ -229,28 +232,6 @@ public class Menu extends javax.swing.JFrame {
         gridBagConstraints.gridy = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         modulos.add(btbHabitacion, gridBagConstraints);
-
-        btnReportes.setBackground(new java.awt.Color(42, 53, 66));
-        btnReportes.setText("Reportes");
-        btnReportes.setActionCommand("Kardex");
-        btnReportes.setBackgroundHover(new java.awt.Color(61, 137, 248));
-        btnReportes.setFocusPainted(false);
-        btnReportes.setFont(new java.awt.Font("Bahnschrift", 0, 16)); // NOI18N
-        btnReportes.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
-        btnReportes.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnReportes.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.ASSIGNMENT);
-        btnReportes.setSizeIcon(25.0F);
-        btnReportes.setVerifyInputWhenFocusTarget(false);
-        btnReportes.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnReportesActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 11;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        modulos.add(btnReportes, gridBagConstraints);
 
         btnUsuario.setBackground(new java.awt.Color(42, 53, 66));
         btnUsuario.setText("Usuarios");
@@ -414,6 +395,7 @@ public class Menu extends javax.swing.JFrame {
     public void resetMenu(){
         this.btnDash.setBackground(new Color(42,53,66));
         this.btnProducto.setBackground(new Color(42,53,66));
+        this.btnHab.setBackground(new Color(42,53,66));
         this.btnTipoHab.setBackground(new Color(42,53,66));
         this.btnRecepcion.setBackground(new Color(42,53,66));
         this.btnUsuario.setBackground(new Color(42,53,66));
@@ -435,7 +417,8 @@ public class Menu extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRecepcionActionPerformed
 
     private void btnHabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHabActionPerformed
-        // TODO add your handling code here:
+        resetMenu();
+        this.btnHab.setBackground(new Color(241,123,55));
     }//GEN-LAST:event_btnHabActionPerformed
 
     private void btbHabitacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btbHabitacionActionPerformed
@@ -452,10 +435,6 @@ public class Menu extends javax.swing.JFrame {
         }
         
     }//GEN-LAST:event_btbHabitacionActionPerformed
-
-    private void btnReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportesActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnReportesActionPerformed
 
     private void btnUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsuarioActionPerformed
         resetMenu();
@@ -519,7 +498,6 @@ public class Menu extends javax.swing.JFrame {
     public RSMaterialComponent.RSButtonIconOne btnModiUser;
     public newscomponents.RSButtonIcon_new btnProducto;
     public newscomponents.RSButtonIcon_new btnRecepcion;
-    public newscomponents.RSButtonIcon_new btnReportes;
     public RSMaterialComponent.RSButtonIconOne btnSalir;
     private newscomponents.RSButtonIcon_new btnTipoHab;
     public newscomponents.RSButtonIcon_new btnUsuario;

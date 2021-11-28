@@ -17,6 +17,7 @@ public class HabitacionDao {
     Connection con;
     PreparedStatement ps;
     ResultSet rs;
+    String on = "";
    
     public HabitacionDao(){
         
@@ -43,7 +44,13 @@ public class HabitacionDao {
     } 
     
     public boolean insert(Habitacion obj) throws SQLException{
-        String sql = "insert into habitacion(id_habitacion, num_habitacion, descripcion_habitacion, precio_habitacion, estado_habitacion, disposicion_habitacion, fk_id_tipo, fk_id_hotel)values(?,?,?,?,?,?,?,?)";
+        String sql = "insert into habitacion(num_habitacion, descripcion_habitacion, precio_habitacion, estado_habitacion, disposicion_habitacion, fk_id_tipo, fk_id_hotel)values(?,?,?,?,?,?,?)";
+        on = "insert";
+        return alterarRegistro(sql, obj);
+    }
+    public boolean update(Habitacion obj) throws SQLException{
+        String sql = "UPDATE habitacion SET descripcion_habitacion = ?, precio_habitacion = ?, estado_habitacion = ?, disposicion_habitacion = ?, fk_id_tipo = ?, fk_id_hotel = ? WHERE num_habitacion = '" + obj.getNumHabitacion() + "'";
+        on = "update";
         return alterarRegistro(sql, obj);
     }
 
@@ -51,7 +58,7 @@ public class HabitacionDao {
         ListaSimple<Habitacion> lista = new ListaSimple();
         Habitacion obj = null;
         try {
-            con = conectar.getConexion();
+            con = Conexion.getConexion();
             ps = con.prepareStatement(sql);
             rs = ps.executeQuery();
             
@@ -84,18 +91,47 @@ public class HabitacionDao {
         return lista;
     }
     
+    public boolean validarNumeroHabitacion(String c) throws SQLException{
+        boolean existe = false;
+        try {
+            con = Conexion.getConexion();
+            String sql = "SELECT num_habitacion FROM habitacion WHERE num_habitacion = '" + c +"'";
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                existe = true;
+            }
+            return existe;
+        } catch (SQLException e) {
+            System.out.println("ERROR EN validarNumeroHabitacion " + e);
+            return false;
+        }finally {
+            Conexion.closeConexion(con);
+        }
+    }
+    
     private boolean alterarRegistro(String sql, Habitacion obj) throws SQLException{
         try {
             con = conectar.getConexion();
             ps = con.prepareStatement(sql);
             
-            ps.setInt(1, obj.getNumHabitacion());
-            ps.setString(2, obj.getDescripcion());
-            ps.setDouble(3, obj.getPrecio());
-            ps.setInt(4, obj.getEstado());
-            ps.setString(5, obj.getDisposicion());
-            ps.setInt(6, obj.getTipoHabitacion().getIdTipo());
-            ps.setInt(7, obj.getHotel().getIdHotel());
+            if (on.equals("insert")) {
+                ps.setInt(1, obj.getNumHabitacion());
+                ps.setString(2, obj.getDescripcion());
+                ps.setDouble(3, obj.getPrecio());
+                ps.setInt(4, obj.getEstado());
+                ps.setString(5, obj.getDisposicion());
+                ps.setInt(6, obj.getTipoHabitacion().getIdTipo());
+                ps.setInt(7, obj.getHotel().getIdHotel());
+            } else if(on.equals("update")){
+//                ps.setInt(1, obj.getNumHabitacion());
+                ps.setString(1, obj.getDescripcion());
+                ps.setDouble(2, obj.getPrecio());
+                ps.setInt(3, obj.getEstado());
+                ps.setString(4, obj.getDisposicion());
+                ps.setInt(5, obj.getTipoHabitacion().getIdTipo());
+                ps.setInt(6, obj.getHotel().getIdHotel());
+            }
             
             ps.execute();
             
@@ -114,7 +150,7 @@ public class HabitacionDao {
     }
     
     public boolean delete(Habitacion obj) throws SQLException{
-        String sql = "delete from habitacion where id_habitacion='" + obj.getNumHabitacion() + "'";
+        String sql = "delete from habitacion where num_habitacion ='" + obj.getNumHabitacion() + "'";
         
         try {
             con = conectar.getConexion();
