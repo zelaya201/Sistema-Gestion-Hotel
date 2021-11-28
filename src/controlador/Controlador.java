@@ -639,6 +639,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                                     }else {
                                         DesktopNotify.setDefaultTheme(NotifyTheme.Red);
                                         DesktopNotify.showDesktopMessage("Usuario no modificado", "No se ha modificado ningún campo.", DesktopNotify.FAIL, 8000);
+                                        usuarioModal.dispose();
                                     }
                                 }else{
                                     //Campos incompletos
