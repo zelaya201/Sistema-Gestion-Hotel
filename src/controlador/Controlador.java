@@ -245,6 +245,29 @@ public class Controlador implements ActionListener, MouseListener{
             }
 
         }
+        if (btn.getActionCommand().equals("Factura")) {
+
+            String path = "";
+
+            JFileChooser file = new JFileChooser();
+            file.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int request = file.showSaveDialog(menu);
+
+            if (request == JFileChooser.APPROVE_OPTION) {
+                path = file.getSelectedFile().getPath();
+                ListaSimple<Registro> registro = daoRegistro.selectAllTo("id_registro", "1");
+                ListaSimple<Hotel> hotel = daoHotel.selectAll();
+
+                ExportPDF exporPdf = new ExportPDF();
+                exporPdf.setHotel(hotel.toArray().get(0));
+                exporPdf.setListaRegistro(registro);
+                exporPdf.setPath(path);
+                exporPdf.crearFacturaProducto();
+                DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                DesktopNotify.showDesktopMessage("Reporte generado", "Ruta: " + path, DesktopNotify.INFORMATION, 10000);
+            }
+
+        }
     }
     
     public void mostrarInfoHotel() throws SQLException{
@@ -526,6 +549,15 @@ public class Controlador implements ActionListener, MouseListener{
             }
         }
         if(btn.getActionCommand().equals("ReporteHabPro")){
+            try {
+                accionesDeBotones(btn);
+            } catch (SQLException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        if(btn.getActionCommand().equals("Factura")){
             try {
                 accionesDeBotones(btn);
             } catch (SQLException ex) {
