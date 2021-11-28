@@ -27,6 +27,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import javax.swing.JFileChooser;
@@ -76,6 +77,7 @@ import vistas.modulos.ConfirmDialog;
 import vistas.modulos.ConfirmDialogTipo;
 import vistas.modulos.Dashboard;
 import vistas.modulos.ModalAddProducto;
+import vistas.modulos.ModalCliente;
 import vistas.modulos.ModalConfig;
 import vistas.modulos.ModalEditConfig;
 import vistas.modulos.ModalModProducto;
@@ -105,6 +107,9 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
     private String principalOn = "";
     private String modalOn = "";
     private String modalConfig = "";
+    SimpleDateFormat f = new SimpleDateFormat("dd/MM/yyyy");
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    String fechaActual = dtf.format(LocalDateTime.now());
 
     /* CONTROL DE USUARIOS */
     private Usuario usuario = new Usuario();
@@ -161,6 +166,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
     private Habitacion recepcionSelected = null;
 
     /* CLIENTE */
+    private ModalCliente huespedModal;
     private ClienteDao daoCliente = new ClienteDao();
 
     /* CONFIGURACIÓN */
@@ -220,6 +226,8 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             mostrarInfoHab();
             llenarComboRegistro();
             principalOn = "mRegistro";
+            registroVista.txtDescuento.setText("0");
+            registroVista.txtAdelanto.setText("0");
             new CambiaPanel(menu.body, registroVista);
         } else if (mod.equals("mAddVenta")) {
             addVentaVista = new VistaAddVenta();
@@ -472,6 +480,11 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             modalHab.txtPrecioHab.setText(String.valueOf(habitacionSelected.getPrecio()));
             llenarComboBox();
             modalHab.iniciar();
+        }else if(modals.equals("agregarHuesped")) {
+            huespedModal = new ModalCliente(new JFrame(), true);
+            huespedModal.setControlador(this);
+            modalOn = "huespedModal";
+            huespedModal.iniciar();
         }
     }
 
@@ -1049,6 +1062,103 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             }
             
         }
+        if (principalOn.equals("mRegistro")) {
+            
+            if (btn.getActionCommand().equals("verificarRegistro") ) {
+                
+                try {
+                    Date actual = f.parse(fechaActual);
+                
+                    Date fechaE = registroVista.fechaEntrada.getDate();
+                    String fechaEntrada = f.format(fechaE);
+                    Date fechaEntradaCompare = f.parse(fechaEntrada);
+                
+                
+                    Date fechaS = registroVista.fechaSalida.getDate();
+                    String fechaSalida = f.format(fechaS);
+                    Date fechaSalidaCompare = f.parse(fechaSalida);
+                    if ((registroVista.cbHuesped.getSelectedIndex() > 0) && (registroVista.cbEstado.getSelectedIndex() > 0)) {
+                        
+                        
+                        
+                        if (fechaEntradaCompare.before(actual)) {
+                            DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                            DesktopNotify.showDesktopMessage("Error en la fecha", "Fecha de entrada es anterior a la actual", DesktopNotify.WARNING, 8000);
+                            
+                        }else {
+                            if (fechaEntradaCompare.after(fechaSalidaCompare)){
+                                DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                                DesktopNotify.showDesktopMessage("Error en la fecha", "Fecha de salida es anterior a la fecha de entrada seleccionada", DesktopNotify.WARNING, 8000);
+                                
+                            }else{
+                                registroVista.txtTotalPagar.setText(String.valueOf(obtenerDias(fechaEntrada, fechaSalida) * Double.parseDouble((registroVista.lbPrecio.getText().substring(1)))));
+                                registroVista.txtTotalConDescuento.setText(registroVista.txtTotalPagar.getText());
+                                registroVista.btnGuardarRegistro.setEnabled(true);
+                            }
+                        }
+                    }else{
+                        DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                        DesktopNotify.showDesktopMessage("Verifique los datos", "Falta que llene informacion", DesktopNotify.WARNING, 8000);
+                                
+                    }
+                } catch (NumberFormatException e) {
+                        
+                } catch (ParseException ex) {
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+            }
+
+            if (btn.getActionCommand().equals("guardarRegistro") ) {
+                String huespedC = registroVista.cbHuesped.getSelectedItem().toString().substring(0, 10);
+                String tipoRegistro = registroVista.cbEstado.getSelectedItem().toString();
+                Date fechaE = registroVista.fechaEntrada.getDate();
+                String fechaEntrada = f.format(fechaE);                               
+                Date fechaS = registroVista.fechaSalida.getDate();
+                String fechaSalida = f.format(fechaS);
+//                double descuento = Double.parseDouble(registroVista.txtDescuento.getText());
+                double adelanto = Double.parseDouble(registroVista.txtAdelanto.getText());
+                double totalPagar = Double.parseDouble(registroVista.txtTotalConDescuento.getText());
+                
+                Cliente cliente = new Cliente();
+                cliente.setDui(huespedC);
+                
+                Habitacion habitacion = new Habitacion();
+                habitacion.setNumHabitacion(Integer.parseInt(registroVista.lbNumHab.getText()));
+                if (registroVista.cbEstado.getSelectedItem().toString().equals("HOSPEDAJE")) {
+                    habitacion.setDisposicion("OCUPADA");
+                }else{
+                    habitacion.setDisposicion(registroVista.cbEstado.getSelectedItem().toString());
+                }
+                
+                Usuario user = new Usuario();
+                user.setIdUsuario(usuario.getIdUsuario());
+                
+                Registro registro = new Registro(fechaEntrada, fechaSalida, tipoRegistro, 1, totalPagar, adelanto, 0, cliente, habitacion, user);
+                if (daoRegistro.insert(registro)) {
+                    
+                    DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                    DesktopNotify.showDesktopMessage("Registro Satisfactorio", "Hospedaje o Reserva satisfactorio", DesktopNotify.SUCCESS, 8000);
+                    
+                    if (daoHabitacion.updateEstado(habitacion)) {
+                        System.out.println("disposicion actualizada");
+                    }
+                    mostrarModulos("mRecepcion");
+                }
+            }
+        }
+    }
+    public static long obtenerDias(String inicio, String fin){
+        SimpleDateFormat f = new SimpleDateFormat("dd/MM/yyyy");
+        long diff = -1;
+        try {
+            Date dateInicio = f.parse(inicio);
+            Date dateFin = f.parse(fin);
+            
+            diff = Math.round((dateFin.getTime() - dateInicio.getTime()) / (double) 86400000);
+        } catch (ParseException e) {
+        }
+        return diff;
     }
     
     public String formatoDecimal(Double precio) {
@@ -1080,7 +1190,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             
             ListaSimple<Cliente> huesped = daoCliente.selectAll();
             for (Cliente x : huesped.toArray()) {
-                dato = x.getDui() + " | " + x.getNombre();
+                dato = x.getDui() + " | " + x.getNombre() + " " + x.getApellido();
                 this.registroVista.cbHuesped.addItem(dato);
             }
         
@@ -1442,6 +1552,56 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             }
         }
         
+        if (modalOn.equals("huespedModal")) {
+            if (btn.equals("Agregar")) {
+                if (!huespedModal.tfDui.getText().isEmpty() && !huespedModal.tfNom.getText().isEmpty() && !huespedModal.tfApe.getText().isEmpty()
+                        && !huespedModal.tfTel.getText().isEmpty() && !huespedModal.tfEmail.getText().isEmpty()) {
+                    String dui = huespedModal.tfDui.getText().trim();
+                    String nom = huespedModal.tfNom.getText().trim().toUpperCase();
+                    String ape = huespedModal.tfApe.getText().trim().toUpperCase();
+                    String tel = huespedModal.tfTel.getText().trim();
+                    String email = huespedModal.tfEmail.getText().trim();
+                    
+                    if (validarNombre(nom) && validarNombre(ape)) {
+                        if (validarEmail(email)) {
+                            ListaSimple<Cliente> existeHuesped = daoCliente.selectAllTo("dui_cliente", dui);
+
+                            if(existeHuesped.isEmpty()){
+                                Cliente cliente = new Cliente(dui,nom, ape, tel, email);
+
+                                if(daoCliente.insert(cliente)){
+                                    //Mensaje de guardado
+                                    DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                                    DesktopNotify.showDesktopMessage("Huesped guardado", "El huesped ha sido alamcenado exitosamente.", DesktopNotify.SUCCESS, 8000);
+                                }
+
+                                modalOn = "";
+                                huespedModal.dispose();
+                            }else {
+                                String n[] = nom.split(" ");
+                                String a[] = ape.split(" ");
+                                DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                                DesktopNotify.showDesktopMessage("Huesped " + n[0] + " " + a[0] +  " ya existe", "El huesped que intenta ingresar ya se encuentra registrado.", DesktopNotify.WARNING, 10000); 
+                            }
+                        }else {
+                            DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                            DesktopNotify.showDesktopMessage("Email inválido", "El email ingresado no cumple con el formato requerido.", DesktopNotify.WARNING, 8000); //8 seg
+                        }
+                    }else {
+                        DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                        DesktopNotify.showDesktopMessage("Nombre o Apellido Inválido", "El nombre o apellido ingresado es inválido.", DesktopNotify.WARNING, 8000); //8 seg
+                    }
+                }else {
+                    DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                    DesktopNotify.showDesktopMessage("Campos vacíos", "Por favor rellene todos los campos.", DesktopNotify.WARNING, 8000);
+                }
+                
+                llenarComboRegistro();
+            }
+            
+            
+        }
+        
         if (btn.equals("Factura")) {
 
             String path = "";
@@ -1637,6 +1797,13 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
         Matcher matcher = pattern.matcher(txt);
         return matcher.find();
     }
+    
+    public boolean validarEmail(String txt) {
+        String regx = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$"; 
+        Pattern pattern = Pattern.compile(regx,Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(txt);
+        return matcher.find();
+    }
 
     public void cargarDashboard() throws SQLException {
 
@@ -1785,17 +1952,14 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                     Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-//
-//            if(btn.getActionCommand().equals("ReporteHabPro")){
-//                try {
-//                    accionesDeBotones(btn);
-//                } catch (SQLException ex) {
-//                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
-//                } catch (IOException ex) {
-//                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//            }
-            
+
+            if(btn.getActionCommand().equals("AgregarHuesped")){
+                try {
+                    mostrarModals("agregarHuesped");
+                } catch (SQLException ex) {
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
             
             if(btn.getActionCommand().equals("Configuracion")){
                 try {
@@ -1810,6 +1974,19 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                     mostrarModulos("mRecepcion");
                 } catch (SQLException ex) {
                     Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (btn.getActionCommand().equals("guardarRegistro")) {
+                try {
+                    accionesDeBotones(btn);
+                } catch (IOException | SQLException e) {
+                    System.out.println(e);
+                }
+            }
+            if (btn.getActionCommand().equals("verificarRegistro")) {
+                try {
+                    accionesDeBotones(btn);
+                } catch (IOException | SQLException e) {
                 }
             }
             
@@ -1949,9 +2126,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
         if (btn.getActionCommand().equals("GuardarTipo")) {
             try {
                 accionesDeBotones(btn);
-            } catch (SQLException ex) {
-                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
+            } catch (SQLException | IOException ex) {
                 Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -2181,8 +2356,16 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
         if (principalOn.equals("mRecepcion")) {
             recepcionSelected = new Habitacion();
             recepcionSelected.setNumHabitacion(Integer.parseInt(me.getComponent().getName()));
+            
             try {
-                mostrarModulos("mRegistro");
+                ListaSimple<Habitacion> th = daoHabitacion.selectAllTo("num_habitacion", me.getComponent().getName());
+                recepcionSelected = th.toArray().get(0);
+                if (recepcionSelected.getDisposicion().equals("DISPONIBLE")) {
+                    mostrarModulos("mRegistro");
+                } else if (recepcionSelected.getDisposicion().equals("OCUPADA")){
+                    mostrarModulos("mFinalizar");
+                    System.out.println("ENTRAMOS A OCUPADA");
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -2246,6 +2429,14 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             }
         } catch (Exception e) {
 
+        }
+        
+        try {
+            if (me.getSource().equals(huespedModal.btnGuardar)) {
+                eventosBotones("Agregar");
+            }
+        }catch (Exception e) {
+            
         }
 
         try {
@@ -2492,11 +2683,12 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
 
     @Override
     public void keyTyped(KeyEvent ke) {
-        
+
     }
 
     @Override
     public void keyPressed(KeyEvent ke) {
+
         /* RECEPCION */
         if (principalOn.equals("mListRegistro")) {
             try {
@@ -2526,10 +2718,12 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                 mostrarBusqueda(lista, usuarioVista.tbUsuarios);
             }
         }
+
     }
 
     @Override
     public void keyReleased(KeyEvent ke) {
+
         if (principalOn.equals("mAddVenta")) {
             DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
             simbolos.setDecimalSeparator('.');
@@ -2551,11 +2745,33 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                 System.out.println(ex);
             }
         }
+            
+        if (principalOn.equals("mRegistro")) {
+            Date fechaE = registroVista.fechaEntrada.getDate();
+            String fechaEntrada = f.format(fechaE);    
+            Date fechaS = registroVista.fechaSalida.getDate();
+            String fechaSalida = f.format(fechaS);
+            
+            if (ke.getSource().equals(registroVista.txtDescuento)) {
+                if (registroVista.txtDescuento.getText().isEmpty() && !registroVista.txtDescuento.getText().equals(".")) {
+                    
+                    registroVista.txtTotalConDescuento.setText(String.valueOf(obtenerDias(fechaEntrada, fechaSalida) * Double.parseDouble((registroVista.lbPrecio.getText().substring(1)))));
+                }else{
+                    registroVista.txtTotalConDescuento.setText(String.valueOf((obtenerDias(fechaEntrada, fechaSalida) * Double.parseDouble(registroVista.lbPrecio.getText().substring(1))) - Double.parseDouble(registroVista.txtDescuento.getText())));
+                    
+                }
+
+            }
+        }
+
     }
 
     @Override
     public void itemStateChanged(ItemEvent e) {
-        
+
+        if (registroVista.cbEstado.getSelectedItem().equals("HOSPEDAJE")) {
+            registroVista.fechaEntrada.setEnabled(false);
+        }
     }
     
 }

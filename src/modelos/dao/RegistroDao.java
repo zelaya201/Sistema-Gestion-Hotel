@@ -1,4 +1,3 @@
-
 package modelos.dao;
 
 import java.sql.Connection;
@@ -20,6 +19,7 @@ import utilidades.ListaSimple;
  * @author Luis Vaquerano
  */
 public class RegistroDao {
+
     Conexion conectar = new Conexion();
     Connection con;
     PreparedStatement ps;
@@ -27,18 +27,18 @@ public class RegistroDao {
 
     public RegistroDao() {
     }
-    
-    public ListaSimple<Registro> selectAll() throws SQLException{
+
+    public ListaSimple<Registro> selectAll() throws SQLException {
         String sql = "select * from registro";
         return select(sql);
     }
-    
-    public ListaSimple<Registro> selectAllOrder() throws SQLException{
+
+    public ListaSimple<Registro> selectAllOrder() throws SQLException {
         String sql = "select * from registro ORDER BY fsalida_registro DESC LIMIT 10";
         return select(sql);
     }
- 
-    public ListaSimple<Registro> selectAllTo(String atributo, String condicion) throws SQLException{
+
+    public ListaSimple<Registro> selectAllTo(String atributo, String condicion) throws SQLException {
         String sql = "select * from registro where " + atributo + "=" + condicion + "";
         return select(sql);
     }
@@ -52,18 +52,23 @@ public class RegistroDao {
         String sql = "select * from registro where id_registro =" + id;
         return select(sql);
     }
-    
-    private ListaSimple<Registro> select(String sql) throws SQLException{
+
+    public boolean insert(Registro obj) throws SQLException {
+        String sql = "INSERT INTO registro(fentrada_registro, fsalida_registro, tipo_registro, estado_registro, total_registro, deposito_registro, mora_registro, fk_dui_cliente, fk_num_habitacion, fk_id_usuario) VALUES (?,?,?,?,?,?,?,?,?,?)";
+        return alterarRegistro(sql, obj);
+    }
+
+    private ListaSimple<Registro> select(String sql) throws SQLException {
         ListaSimple<Registro> lista = new ListaSimple();
         Registro obj = null;
         try {
             con = conectar.getConexion();
             ps = con.prepareStatement(sql);
             rs = ps.executeQuery();
-            
-            while(rs.next()) {
+
+            while (rs.next()) {
                 obj = new Registro();
-                
+
                 obj.setIdRegistro(rs.getInt("id_registro"));
                 obj.setFechaEntrada(rs.getString("fentrada_registro"));
                 obj.setFechaSalida(rs.getString("fsalida_registro"));
@@ -72,44 +77,74 @@ public class RegistroDao {
                 obj.setTotal(rs.getDouble("total_registro"));
                 obj.setDeposito(rs.getDouble("deposito_registro"));
                 obj.setMora(rs.getDouble("mora_registro"));
-                obj.setCliente(new Cliente (rs.getString("fk_dui_cliente")));
+                obj.setCliente(new Cliente(rs.getString("fk_dui_cliente")));
                 obj.setHabitacion(new Habitacion(rs.getInt("fk_num_habitacion")));
                 obj.setUsuario(new Usuario(rs.getInt("fk_id_usuario")));
 
-                
                 lista.insertar(obj);
             }
-        } catch(SQLException e) {
-             System.out.println(e);
-        }finally{
+        } catch (SQLException e) {
+            System.out.println(e);
+        } finally {
             try {
                 ps.close();
             } catch (Exception ex) {
-                
+
             }
             conectar.closeConexion(con);
         }
         return lista;
     }
-    
-    public boolean delete(Registro obj) throws SQLException{
+
+    public boolean delete(Registro obj) throws SQLException {
         String sql = "delete from registro where id_registro=" + obj.getIdRegistro();
-        
+
         try {
-            con = conectar.getConexion();
+            con = Conexion.getConexion();
             ps = con.prepareStatement(sql);
             ps.execute();
             return true;
-        }catch(Exception e) {
-            
-        }finally{
+        } catch (SQLException e) {
+
+        } finally {
             try {
                 ps.close();
-                conectar.closeConexion(con);
-            } catch (Exception ex) {
+                Conexion.closeConexion(con);
+            } catch (SQLException ex) {
             }
         }
 
+        return false;
+    }
+
+    private boolean alterarRegistro(String sql, Registro obj) {
+        try {
+            con = Conexion.getConexion();
+            ps = con.prepareStatement(sql);
+
+            ps.setString(1, obj.getFechaEntrada());
+            ps.setString(2, obj.getFechaSalida());
+            ps.setString(3, obj.getTipo());
+            ps.setInt(4, obj.getEstado());
+            ps.setDouble(5, obj.getTotal());
+            ps.setDouble(6, obj.getDeposito());
+            ps.setDouble(7, obj.getMora());
+            ps.setString(8, obj.getCliente().getDui());
+            ps.setInt(9, obj.getHabitacion().getNumHabitacion());
+            ps.setInt(10, obj.getUsuario().getIdUsuario());
+
+            ps.execute();
+            return true;
+        } catch (SQLException e) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            try {
+                ps.close();
+            } catch (Exception e) {
+
+            }
+            Conexion.closeConexion(con);
+        }
         return false;
     }
 }

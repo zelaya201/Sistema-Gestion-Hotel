@@ -5,12 +5,19 @@ import controlador.Controlador;
 public class VistaRegistro extends javax.swing.JPanel {
 
     public VistaRegistro() {
-        initComponents();  
+        initComponents();
         btnGuardarRegistro.setActionCommand("guardarRegistro");
+        btnVerificarRegistro.setActionCommand("verificarRegistro");
+        btnAddHuesped.setActionCommand("AgregarHuesped");
+        btnGuardarRegistro.setEnabled(false);
     }
-    
-    public void setControlador(Controlador control){
+
+    public void setControlador(Controlador control) {
         this.btnGuardarRegistro.addActionListener(control);
+        this.cbEstado.addItemListener(control);
+        this.btnVerificarRegistro.addActionListener(control);
+        this.txtDescuento.addKeyListener(control);
+        this.btnAddHuesped.addActionListener(control);
     }
 
     /**
@@ -46,7 +53,7 @@ public class VistaRegistro extends javax.swing.JPanel {
         jLabel12 = new javax.swing.JLabel();
         txtDescuento = new RSMaterialComponent.RSTextFieldIconOne();
         txtAdelanto = new RSMaterialComponent.RSTextFieldIconOne();
-        rSButtonIconOne1 = new RSMaterialComponent.RSButtonIconOne();
+        btnAddHuesped = new RSMaterialComponent.RSButtonIconOne();
         cbEstado = new RSMaterialComponent.RSComboBox();
         jLabel13 = new javax.swing.JLabel();
         fechaSalida = new newscomponents.RSDateChooser();
@@ -55,6 +62,8 @@ public class VistaRegistro extends javax.swing.JPanel {
         jLabel15 = new javax.swing.JLabel();
         txtTotalConDescuento = new RSMaterialComponent.RSTextFieldOne();
         btnGuardarRegistro = new newscomponents.RSButtonIcon_new();
+        btnCulminarRegistro = new newscomponents.RSButtonIcon_new();
+        btnVerificarRegistro = new newscomponents.RSButtonIcon_new();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
 
@@ -255,7 +264,7 @@ public class VistaRegistro extends javax.swing.JPanel {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 30, 5, 10);
@@ -287,8 +296,15 @@ public class VistaRegistro extends javax.swing.JPanel {
 
         fechaEntrada.setBackground(new java.awt.Color(153, 153, 153));
         fechaEntrada.setBgColor(new java.awt.Color(153, 153, 153));
+        fechaEntrada.setEnabled(false);
         fechaEntrada.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         fechaEntrada.setFormatDate("dd/MM/yyyy\n");
+        fechaEntrada.setRequestFocusEnabled(false);
+        fechaEntrada.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                fechaEntradaMousePressed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
@@ -325,6 +341,11 @@ public class VistaRegistro extends javax.swing.JPanel {
         txtDescuento.setColorIcon(new java.awt.Color(153, 153, 153));
         txtDescuento.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.MONETIZATION_ON);
         txtDescuento.setPlaceholder("");
+        txtDescuento.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtDescuentoKeyTyped(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 5;
@@ -343,6 +364,11 @@ public class VistaRegistro extends javax.swing.JPanel {
                 txtAdelantoActionPerformed(evt);
             }
         });
+        txtAdelanto.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtAdelantoKeyTyped(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 5;
@@ -351,13 +377,13 @@ public class VistaRegistro extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 10);
         jPanel2.add(txtAdelanto, gridBagConstraints);
 
-        rSButtonIconOne1.setBackground(new java.awt.Color(61, 137, 248));
-        rSButtonIconOne1.setText("addHuesped");
-        rSButtonIconOne1.setActionCommand("nuevoHuesped");
-        rSButtonIconOne1.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.PERSON_ADD);
-        rSButtonIconOne1.addActionListener(new java.awt.event.ActionListener() {
+        btnAddHuesped.setBackground(new java.awt.Color(61, 137, 248));
+        btnAddHuesped.setText("addHuesped");
+        btnAddHuesped.setActionCommand("nuevoHuesped");
+        btnAddHuesped.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.PERSON_ADD);
+        btnAddHuesped.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rSButtonIconOne1ActionPerformed(evt);
+                btnAddHuespedActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -367,27 +393,32 @@ public class VistaRegistro extends javax.swing.JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, -10, 5, 5);
-        jPanel2.add(rSButtonIconOne1, gridBagConstraints);
+        jPanel2.add(btnAddHuesped, gridBagConstraints);
 
         cbEstado.setForeground(new java.awt.Color(0, 0, 0));
-        cbEstado.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccione", "Hospedaje", "Reserva" }));
+        cbEstado.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccione", "HOSPEDAJE", "RESERVACION" }));
         cbEstado.setColorArrow(new java.awt.Color(61, 137, 248));
         cbEstado.setColorBorde(new java.awt.Color(255, 255, 255));
         cbEstado.setColorFondo(new java.awt.Color(255, 255, 255));
         cbEstado.setColorSeleccion(new java.awt.Color(61, 137, 248));
         cbEstado.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        cbEstado.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbEstadoItemStateChanged(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 20);
         jPanel2.add(cbEstado, gridBagConstraints);
 
         jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel13.setText("FEHCA DE SALIDA");
+        jLabel13.setText("FECHA DE SALIDA");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 2;
@@ -453,6 +484,11 @@ public class VistaRegistro extends javax.swing.JPanel {
         txtTotalConDescuento.setFocusable(false);
         txtTotalConDescuento.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         txtTotalConDescuento.setPlaceholder("");
+        txtTotalConDescuento.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtTotalConDescuentoActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 5;
@@ -479,8 +515,47 @@ public class VistaRegistro extends javax.swing.JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(20, 40, 100, 40);
+        gridBagConstraints.insets = new java.awt.Insets(20, 30, 100, 40);
         jPanel2.add(btnGuardarRegistro, gridBagConstraints);
+
+        btnCulminarRegistro.setBackground(new java.awt.Color(241, 123, 55));
+        btnCulminarRegistro.setText("Culminar Registro");
+        btnCulminarRegistro.setBackgroundHover(new java.awt.Color(232, 100, 24));
+        btnCulminarRegistro.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnCulminarRegistro.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        btnCulminarRegistro.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.CLEAR_ALL);
+        btnCulminarRegistro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCulminarRegistroActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(20, 40, 100, 20);
+        jPanel2.add(btnCulminarRegistro, gridBagConstraints);
+
+        btnVerificarRegistro.setBackground(new java.awt.Color(61, 137, 248));
+        btnVerificarRegistro.setText("Verificar Datos");
+        btnVerificarRegistro.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnVerificarRegistro.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        btnVerificarRegistro.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.CHECK);
+        btnVerificarRegistro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVerificarRegistroActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(20, 28, 100, 4);
+        jPanel2.add(btnVerificarRegistro, gridBagConstraints);
 
         habPanel.add(jPanel2, java.awt.BorderLayout.CENTER);
 
@@ -508,9 +583,9 @@ public class VistaRegistro extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtAdelantoActionPerformed
 
-    private void rSButtonIconOne1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSButtonIconOne1ActionPerformed
+    private void btnAddHuespedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddHuespedActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_rSButtonIconOne1ActionPerformed
+    }//GEN-LAST:event_btnAddHuespedActionPerformed
 
     private void cbHuespedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbHuespedActionPerformed
         // TODO add your handling code here:
@@ -519,10 +594,47 @@ public class VistaRegistro extends javax.swing.JPanel {
     private void btnGuardarRegistroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarRegistroActionPerformed
 
     }//GEN-LAST:event_btnGuardarRegistroActionPerformed
-       
+
+    private void txtTotalConDescuentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTotalConDescuentoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtTotalConDescuentoActionPerformed
+
+    private void cbEstadoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbEstadoItemStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbEstadoItemStateChanged
+
+    private void fechaEntradaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fechaEntradaMousePressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_fechaEntradaMousePressed
+
+    private void btnCulminarRegistroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCulminarRegistroActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnCulminarRegistroActionPerformed
+
+    private void txtDescuentoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDescuentoKeyTyped
+        char val = evt.getKeyChar();
+        if ((val < '0' || val > '9') && (val != '.')) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtDescuentoKeyTyped
+
+    private void txtAdelantoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtAdelantoKeyTyped
+        char val = evt.getKeyChar();
+        if ((val < '0' || val > '9') && (val != '.')) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtAdelantoKeyTyped
+
+    private void btnVerificarRegistroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerificarRegistroActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnVerificarRegistroActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private RSMaterialComponent.RSButtonIconOne btnAddHuesped;
+    private newscomponents.RSButtonIcon_new btnCulminarRegistro;
     public newscomponents.RSButtonIcon_new btnGuardarRegistro;
+    private newscomponents.RSButtonIcon_new btnVerificarRegistro;
     public RSMaterialComponent.RSComboBox cbEstado;
     public RSMaterialComponent.RSComboBox cbHuesped;
     public newscomponents.RSDateChooser fechaEntrada;
@@ -551,10 +663,9 @@ public class VistaRegistro extends javax.swing.JPanel {
     public javax.swing.JLabel lbNumHab;
     public javax.swing.JLabel lbPrecio;
     public javax.swing.JLabel lbTipoHab;
-    private RSMaterialComponent.RSButtonIconOne rSButtonIconOne1;
-    private RSMaterialComponent.RSTextFieldIconOne txtAdelanto;
-    private RSMaterialComponent.RSTextFieldIconOne txtDescuento;
-    private RSMaterialComponent.RSTextFieldOne txtTotalConDescuento;
-    private RSMaterialComponent.RSTextFieldOne txtTotalPagar;
+    public RSMaterialComponent.RSTextFieldIconOne txtAdelanto;
+    public RSMaterialComponent.RSTextFieldIconOne txtDescuento;
+    public RSMaterialComponent.RSTextFieldOne txtTotalConDescuento;
+    public RSMaterialComponent.RSTextFieldOne txtTotalPagar;
     // End of variables declaration//GEN-END:variables
 }
