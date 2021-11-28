@@ -15,6 +15,7 @@ import modelos.dao.RegistroDao;
  * @author Mario Zelaya
  */
 public class RegistroProducto implements Comparable<RegistroProducto>{
+    private int id_registro_producto;
     private double subtotal;
     private int cantidad;
     private Registro registro;
@@ -23,11 +24,31 @@ public class RegistroProducto implements Comparable<RegistroProducto>{
     public RegistroProducto() {
     }
 
+    public RegistroProducto(Producto producto) {
+        this.producto = producto;
+    }
+
     public RegistroProducto(double subtotal, int cantidad, Registro registro, Producto producto) {
         this.subtotal = subtotal;
         this.cantidad = cantidad;
         this.registro = registro;
         this.producto = producto;
+    }
+
+    public RegistroProducto(int id_registro_producto, double subtotal, int cantidad, Registro registro, Producto producto) {
+        this.id_registro_producto = id_registro_producto;
+        this.subtotal = subtotal;
+        this.cantidad = cantidad;
+        this.registro = registro;
+        this.producto = producto;
+    }
+
+    public int getId_registro_producto() {
+        return id_registro_producto;
+    }
+
+    public void setId_registro_producto(int id_registro_producto) {
+        this.id_registro_producto = id_registro_producto;
     }
 
     public double getSubtotal() {

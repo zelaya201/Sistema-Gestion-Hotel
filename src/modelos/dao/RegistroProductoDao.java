@@ -51,7 +51,7 @@ public class RegistroProductoDao {
     }
     
     public boolean insertar(RegistroProducto obj) throws SQLException{
-        String sql = "insert into registro_producto(subtotal_registro_producto, cant_registro_producto, fk_id_registro, fk_id_producto) values(?,?,?,?)";
+        String sql = "insert into registro_producto(subtotal_registro_producto, cant_registro_producto, fk_id_registro, fk_cod_producto) values(?,?,?,?)";
         return alterarRegistro(sql, obj);
     }
     
@@ -102,6 +102,7 @@ public class RegistroProductoDao {
             ps.execute();
             return true;
         } catch(Exception e) {      
+            System.out.println(e + "ERROOOOOR");
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, e);
         } finally{
             try {

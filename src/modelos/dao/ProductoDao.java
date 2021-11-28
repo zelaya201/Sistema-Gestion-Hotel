@@ -73,7 +73,7 @@ public class ProductoDao {
         return select(sql);
     }
     
-    public ListaSimple<Producto> selectCod(int cod) throws SQLException{
+    public ListaSimple<Producto> selectCod(String cod) throws SQLException{
         String sql = "SELECT * FROM producto WHERE cod_producto ='" + cod + "'";
         return select(sql);
     }
@@ -83,11 +83,40 @@ public class ProductoDao {
         return alterarRegistro(sql, product);
     }
     
+    public boolean update(Producto obj) throws SQLException {
+        String sql = "update producto set descripcion_producto = ?, precio_producto = ?  where cod_producto = '" + obj.getCodigo() + "'";
+        return alterarRegistroUp(sql, obj);
+    }
+    
+    private boolean alterarRegistroUp (String sql, Producto product) throws SQLException {
+        try {
+            con = conectar.getConexion();
+            ps = con.prepareStatement(sql);
+
+            ps.setString(1, product.getDescripcion());
+            ps.setDouble(2, product.getPrecio());
+            
+            ps.execute();
+            return true;
+        } catch(Exception e) {      
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            try {
+                ps.close();
+            } catch (Exception e){
+                
+            }
+            conectar.closeConexion(con);
+        }
+        return false;
+    }
+    
     private boolean alterarRegistro (String sql, Producto product) throws SQLException {
         try {
             con = conectar.getConexion();
             ps = con.prepareStatement(sql);
 
+            ps.setString(1, product.getCodigo());
             ps.setString(2, product.getDescripcion());
             ps.setDouble(3, product.getPrecio());  
 
@@ -125,5 +154,29 @@ public class ProductoDao {
             
         }
         return false;
+    }
+    
+     public String getCodigo() throws SQLException {
+        String sql = "SELECT MAX(cod_producto) AS mayor FROM producto";
+        String cod = "";
+        try {
+            con = conectar.getConexion();
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+            
+            cod = rs.getString("mayor");
+            
+        } catch (SQLException e){
+            System.out.println(e);
+        } finally {
+            try {
+                ps.close();
+                conectar.closeConexion(con);
+            } catch (Exception e){
+                
+            }
+            
+        }
+        return cod;
     }
 }
