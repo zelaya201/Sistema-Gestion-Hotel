@@ -938,7 +938,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             String path = "";
 
             JFileChooser file = new JFileChooser();
-            file.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            file.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);   
             int request = file.showSaveDialog(menu);
 
             if (request == JFileChooser.APPROVE_OPTION) {
@@ -1642,13 +1642,14 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
 
         ListaSimple<Habitacion> habitacion = daoHabitacion.selectAll();
         ListaSimple<Producto> producto = daoProducto.selectAll();
-        ListaSimple<Usuario> usuario = daoUsuario.selectAll();
+        ListaSimple<Usuario> usuarios = daoUsuario.selectAll();
         ListaSimple<Registro> registro = daoRegistro.selectAll();
 
         int cantRegis = 0;
         int cantDispo = 0;
         int cantReserv = 0;
         int cantOcup = 0;
+        int cantUsuario = 0;
 
         for (Registro x : registro.toArray()) {
             if (x.getEstado() == 1) {
@@ -1659,7 +1660,12 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
         /*ALERTAS TOTALES*/
         dashVista.lbTotHab.setText(String.valueOf(habitacion.toArray().size()));
         dashVista.lbTotProd.setText(String.valueOf(producto.toArray().size()));
-        dashVista.lbTotUsu.setText(String.valueOf(usuario.toArray().size()));
+        for (Usuario x : usuarios.toArray()) {
+            if (x.getEstado() == 1) {
+                cantUsuario++;
+            } 
+        }
+        dashVista.lbTotUsu.setText(String.valueOf(cantUsuario));
         dashVista.lbTotFac.setText(String.valueOf(cantRegis));
 
         /*ALERTAS DE DISPONIBILIDAD*/

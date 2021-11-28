@@ -114,13 +114,13 @@
                   <Group type="102" attributes="0">
                       <EmptySpace min="-2" pref="223" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jLabel4" alignment="1" max="32767" attributes="0"/>
-                          <Component id="jLabel5" alignment="1" max="32767" attributes="0"/>
+                          <Component id="jLabel4" alignment="1" pref="0" max="32767" attributes="0"/>
+                          <Component id="jLabel5" alignment="1" pref="0" max="32767" attributes="0"/>
                           <Group type="102" alignment="1" attributes="0">
                               <EmptySpace min="180" pref="180" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="tfNomP" alignment="1" max="32767" attributes="0"/>
-                                  <Component id="tfPrecio" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="tfNomP" alignment="1" pref="0" max="32767" attributes="0"/>
+                                  <Component id="tfPrecio" alignment="1" pref="0" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -144,7 +144,7 @@
                               <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace pref="57" max="32767" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -266,7 +266,7 @@
                       <EmptySpace min="-2" pref="112" max="-2" attributes="0"/>
                       <Component id="btnModProducto" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="125" max="-2" attributes="0"/>
-                      <Component id="btnAddProducto1" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnGenerarRep" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
@@ -277,9 +277,9 @@
                       <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="btnModProducto" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="btnAddProducto1" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnGenerarRep" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="27" max="32767" attributes="0"/>
+                      <EmptySpace pref="24" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -314,7 +314,7 @@
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
               </AuxValues>
             </Component>
-            <Component class="newscomponents.RSButtonIcon_new" name="btnAddProducto1">
+            <Component class="newscomponents.RSButtonIcon_new" name="btnGenerarRep">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="f8" green="89" red="3d" type="rgb"/>
@@ -337,7 +337,7 @@
                 <Property name="verifyInputWhenFocusTarget" type="boolean" value="false"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddProducto1ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnGenerarRepActionPerformed"/>
               </Events>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
