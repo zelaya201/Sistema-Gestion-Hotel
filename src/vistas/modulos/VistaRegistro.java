@@ -7,10 +7,12 @@ public class VistaRegistro extends javax.swing.JPanel {
     public VistaRegistro() {
         initComponents();  
         btnGuardarRegistro.setActionCommand("guardarRegistro");
+        btnAddHuesped.setActionCommand("AgregarHuesped");
     }
     
     public void setControlador(Controlador control){
         this.btnGuardarRegistro.addActionListener(control);
+        this.btnAddHuesped.addActionListener(control);
     }
 
     /**
@@ -46,7 +48,7 @@ public class VistaRegistro extends javax.swing.JPanel {
         jLabel12 = new javax.swing.JLabel();
         txtDescuento = new RSMaterialComponent.RSTextFieldIconOne();
         txtAdelanto = new RSMaterialComponent.RSTextFieldIconOne();
-        rSButtonIconOne1 = new RSMaterialComponent.RSButtonIconOne();
+        btnAddHuesped = new RSMaterialComponent.RSButtonIconOne();
         cbEstado = new RSMaterialComponent.RSComboBox();
         jLabel13 = new javax.swing.JLabel();
         fechaSalida = new newscomponents.RSDateChooser();
@@ -351,13 +353,13 @@ public class VistaRegistro extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 10);
         jPanel2.add(txtAdelanto, gridBagConstraints);
 
-        rSButtonIconOne1.setBackground(new java.awt.Color(61, 137, 248));
-        rSButtonIconOne1.setText("addHuesped");
-        rSButtonIconOne1.setActionCommand("nuevoHuesped");
-        rSButtonIconOne1.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.PERSON_ADD);
-        rSButtonIconOne1.addActionListener(new java.awt.event.ActionListener() {
+        btnAddHuesped.setBackground(new java.awt.Color(61, 137, 248));
+        btnAddHuesped.setText("addHuesped");
+        btnAddHuesped.setActionCommand("nuevoHuesped");
+        btnAddHuesped.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.PERSON_ADD);
+        btnAddHuesped.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rSButtonIconOne1ActionPerformed(evt);
+                btnAddHuespedActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -367,7 +369,7 @@ public class VistaRegistro extends javax.swing.JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, -10, 5, 5);
-        jPanel2.add(rSButtonIconOne1, gridBagConstraints);
+        jPanel2.add(btnAddHuesped, gridBagConstraints);
 
         cbEstado.setForeground(new java.awt.Color(0, 0, 0));
         cbEstado.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccione", "Hospedaje", "Reserva" }));
@@ -387,7 +389,7 @@ public class VistaRegistro extends javax.swing.JPanel {
         jPanel2.add(cbEstado, gridBagConstraints);
 
         jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel13.setText("FEHCA DE SALIDA");
+        jLabel13.setText("FECHA DE SALIDA");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 2;
@@ -508,9 +510,9 @@ public class VistaRegistro extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtAdelantoActionPerformed
 
-    private void rSButtonIconOne1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSButtonIconOne1ActionPerformed
+    private void btnAddHuespedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddHuespedActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_rSButtonIconOne1ActionPerformed
+    }//GEN-LAST:event_btnAddHuespedActionPerformed
 
     private void cbHuespedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbHuespedActionPerformed
         // TODO add your handling code here:
@@ -522,6 +524,7 @@ public class VistaRegistro extends javax.swing.JPanel {
        
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private RSMaterialComponent.RSButtonIconOne btnAddHuesped;
     public newscomponents.RSButtonIcon_new btnGuardarRegistro;
     public RSMaterialComponent.RSComboBox cbEstado;
     public RSMaterialComponent.RSComboBox cbHuesped;
@@ -551,7 +554,6 @@ public class VistaRegistro extends javax.swing.JPanel {
     public javax.swing.JLabel lbNumHab;
     public javax.swing.JLabel lbPrecio;
     public javax.swing.JLabel lbTipoHab;
-    private RSMaterialComponent.RSButtonIconOne rSButtonIconOne1;
     private RSMaterialComponent.RSTextFieldIconOne txtAdelanto;
     private RSMaterialComponent.RSTextFieldIconOne txtDescuento;
     private RSMaterialComponent.RSTextFieldOne txtTotalConDescuento;

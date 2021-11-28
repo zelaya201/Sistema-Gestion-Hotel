@@ -73,6 +73,7 @@ import vistas.main.Menu;
 import vistas.modulos.ConfirmDialog;
 import vistas.modulos.ConfirmDialogTipo;
 import vistas.modulos.Dashboard;
+import vistas.modulos.ModalCliente;
 import vistas.modulos.ModalConfig;
 import vistas.modulos.ModalEditConfig;
 import vistas.modulos.ModalUsuario;
@@ -143,6 +144,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
     private ProductoDao daoProducto = new ProductoDao();
 
     /* CLIENTE */
+    private ModalCliente huespedModal;
     private ClienteDao daoCliente = new ClienteDao();
 
     /* CONFIGURACIÓN */
@@ -246,7 +248,6 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
             modalConfig = "";
         }
 
-        /* CONTROL DE USUARIOS */
         if (modals.equals("claveAcceso")) {
             usuarioModal = new ModalUsuario(new JFrame(), true);
             usuarioModal.setControlador(this);
@@ -420,6 +421,11 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
             modalHab.txtPrecioHab.setText(String.valueOf(habitacionSelected.getPrecio()));
             llenarComboBox();
             modalHab.iniciar();
+        }else if(modals.equals("agregarHuesped")) {
+            huespedModal = new ModalCliente(new JFrame(), true);
+            huespedModal.setControlador(this);
+            modalOn = "huespedModal";
+            huespedModal.iniciar();
         }
     }
 
@@ -913,15 +919,15 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
     }
     
     public void llenarComboRegistro() throws SQLException{
-            registroVista.cbHuesped.removeAllItems();
-            registroVista.cbHuesped.addItem("Seleccione");
-            String dato = "";
-            
-            ListaSimple<Cliente> huesped = daoCliente.selectAll();
-            for (Cliente x : huesped.toArray()) {
-                dato = x.getDui() + " | " + x.getNombre();
-                this.registroVista.cbHuesped.addItem(dato);
-            }
+        registroVista.cbHuesped.removeAllItems();
+        registroVista.cbHuesped.addItem("Seleccione");
+        String dato = "";
+
+        ListaSimple<Cliente> huesped = daoCliente.selectAll();
+        for (Cliente x : huesped.toArray()) {
+            dato = x.getDui() + " | " + x.getNombre();
+            this.registroVista.cbHuesped.addItem(dato);
+        }
         
     }
     
@@ -1279,7 +1285,57 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
                     Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        }  
+        }
+        
+        if (modalOn.equals("huespedModal")) {
+            if (btn.equals("Agregar")) {
+                if (!huespedModal.tfDui.getText().isEmpty() && !huespedModal.tfNom.getText().isEmpty() && !huespedModal.tfApe.getText().isEmpty()
+                        && !huespedModal.tfTel.getText().isEmpty() && !huespedModal.tfEmail.getText().isEmpty()) {
+                    String dui = huespedModal.tfDui.getText().trim();
+                    String nom = huespedModal.tfNom.getText().trim().toUpperCase();
+                    String ape = huespedModal.tfApe.getText().trim().toUpperCase();
+                    String tel = huespedModal.tfTel.getText().trim();
+                    String email = huespedModal.tfEmail.getText().trim();
+                    
+                    if (validarNombre(nom) && validarNombre(ape)) {
+                        if (validarEmail(email)) {
+                            ListaSimple<Cliente> existeHuesped = daoCliente.selectAllTo("dui_cliente", dui);
+
+                            if(existeHuesped.isEmpty()){
+                                Cliente cliente = new Cliente(dui,nom, ape, tel, email);
+
+                                if(daoCliente.insert(cliente)){
+                                    //Mensaje de guardado
+                                    DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                                    DesktopNotify.showDesktopMessage("Huesped guardado", "El huesped ha sido alamcenado exitosamente.", DesktopNotify.SUCCESS, 8000);
+                                }
+
+                                modalOn = "";
+                                huespedModal.dispose();
+                            }else {
+                                String n[] = nom.split(" ");
+                                String a[] = ape.split(" ");
+                                DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                                DesktopNotify.showDesktopMessage("Huesped " + n[0] + " " + a[0] +  " ya existe", "El huesped que intenta ingresar ya se encuentra registrado.", DesktopNotify.WARNING, 10000); 
+                            }
+                        }else {
+                            DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                            DesktopNotify.showDesktopMessage("Email inválido", "El email ingresado no cumple con el formato requerido.", DesktopNotify.WARNING, 8000); //8 seg
+                        }
+                    }else {
+                        DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                        DesktopNotify.showDesktopMessage("Nombre o Apellido Inválido", "El nombre o apellido ingresado es inválido.", DesktopNotify.WARNING, 8000); //8 seg
+                    }
+                }else {
+                    DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                    DesktopNotify.showDesktopMessage("Campos vacíos", "Por favor rellene todos los campos.", DesktopNotify.WARNING, 8000);
+                }
+                
+                llenarComboRegistro();
+            }
+            
+            
+        }
         
         if (btn.equals("ReporteReg")) {
 
@@ -1436,6 +1492,13 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
         Matcher matcher = pattern.matcher(txt);
         return matcher.find();
     }
+    
+    public boolean validarEmail(String txt) {
+        String regx = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$"; 
+        Pattern pattern = Pattern.compile(regx,Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(txt);
+        return matcher.find();
+    }
 
     public void cargarDashboard() throws SQLException {
 
@@ -1586,16 +1649,14 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
                     Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-//
-//            if(btn.getActionCommand().equals("ReporteHabPro")){
-//                try {
-//                    accionesDeBotones(btn);
-//                } catch (SQLException ex) {
-//                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
-//                } catch (IOException ex) {
-//                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//            }
+
+            if(btn.getActionCommand().equals("AgregarHuesped")){
+                try {
+                    mostrarModals("agregarHuesped");
+                } catch (SQLException ex) {
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
             
             
             if(btn.getActionCommand().equals("Configuracion")){
@@ -1901,22 +1962,26 @@ public class Controlador implements ActionListener, MouseListener, KeyListener {
         } catch (Exception e) {
 
         }
+        
+        try {
+            if (me.getSource().equals(huespedModal.btnGuardar)) {
+                eventosBotones("Agregar");
+            }
+        }catch (Exception e) {
+            
+        }
 
         try {
             if (me.getSource().equals(confirmDialog.btnEliminar)) {
                 eventosBotones("Eliminar");
             }
         } catch (Exception e) {
-
-
             if(modalOn.equals("mEliminarTipo") && me.getSource().equals(modalEliminar.btnEliminar)){
                eventoLabel("btnEliminarTipo");
             }
 
             if(modalOn.equals("modalEliminarHab") && me.getSource().equals(modalEliminar.btnEliminar)){
-              
                 eventoLabel("btnEliminarHabitacion");
-            
             }
         }
     }
