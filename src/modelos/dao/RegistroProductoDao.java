@@ -12,7 +12,6 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import modelos.conexion.Conexion;
-import modelos.entidades.Cliente;
 import modelos.entidades.Habitacion;
 import modelos.entidades.Producto;
 import modelos.entidades.Registro;
@@ -140,7 +139,7 @@ public class RegistroProductoDao {
     }
     
     public ListaSimple<RegistroProducto> selectAllFinal(Habitacion obj){
-        String sql = "SELECT p.cod_producto, r.id_registro, p.descripcion_producto, p.precio_producto, rp.cant_registro_producto, rp.subtotal_registro_producto FROM registro_producto rp INNER JOIN producto p ON rp.fk_cod_producto = p.cod_producto INNER JOIN registro r ON rp.fk_id_registro = r.id_registro WHERE r.fk_num_habitacion = '" + obj.getNumHabitacion() + "'";
+        String sql = "SELECT p.cod_producto, r.id_registro, p.descripcion_producto, p.precio_producto, rp.cant_registro_producto, rp.subtotal_registro_producto FROM registro_producto rp INNER JOIN producto p ON rp.fk_cod_producto = p.cod_producto INNER JOIN registro r ON rp.fk_id_registro = r.id_registro WHERE r.fk_num_habitacion = '" + obj.getNumHabitacion() + "' && r.estado_registro = 1";
         ListaSimple<RegistroProducto> lista = new ListaSimple<>();
         try {
             con = Conexion.getConexion();
