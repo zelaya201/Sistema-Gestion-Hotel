@@ -208,7 +208,7 @@ public class Login extends javax.swing.JFrame {
             tfPass.setEchoChar((char)0);
         }else if (lbIcon.getIcons().equals(rojeru_san.efectos.ValoresEnum.ICONS.VISIBILITY_OFF)) {
             lbIcon.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.VISIBILITY);
-            tfPass.setEchoChar('*');
+            tfPass.setEchoChar('\u25cf');
         } 
     }//GEN-LAST:event_lbIconMouseClicked
 
