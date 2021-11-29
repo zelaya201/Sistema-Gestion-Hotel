@@ -83,6 +83,7 @@ import vistas.modulos.ModalEditConfig;
 import vistas.modulos.ModalModProducto;
 import vistas.modulos.ModalUsuario;
 import vistas.modulos.VistaAddVenta;
+import vistas.modulos.VistaFinalizar;
 import vistas.modulos.VistaHabitacion;
 import vistas.modulos.VistaListadoRegistro;
 import vistas.modulos.VistaRecepcion;
@@ -164,10 +165,12 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
     /* RECEPCIÓN */
     private VistaRecepcion recepVista;
     private Habitacion recepcionSelected = null;
+    private VistaFinalizar vistaFin;
 
     /* CLIENTE */
     private ModalCliente huespedModal;
     private ClienteDao daoCliente = new ClienteDao();
+    private Cliente clienteCulminado = null;
 
     /* CONFIGURACIÓN */
     private ModalConfig configModal;
@@ -226,8 +229,6 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             mostrarInfoHab();
             llenarComboRegistro();
             principalOn = "mRegistro";
-            registroVista.txtDescuento.setText("0");
-            registroVista.txtAdelanto.setText("0");
             new CambiaPanel(menu.body, registroVista);
         } else if (mod.equals("mAddVenta")) {
             addVentaVista = new VistaAddVenta();
@@ -267,6 +268,13 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             principalOn = "mListRegistro";
             mostrarDatos(listadoRegisVista.tablaListaRegistros);
             new CambiaPanel(menu.body, listadoRegisVista);
+        }else if(mod.equals("mFinalizar")){
+            this.vistaFin = new VistaFinalizar();
+            vistaFin.setControlador(this);
+            principalOn = "mFinal";
+            
+            mostrarInfoFinal();
+            new CambiaPanel(menu.body, vistaFin);
         }
     }
 
@@ -986,7 +994,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             }
 
         }
-        
+        /* Guardar y modificar el tipo de habitacion */
         if (principalOn.equals("mTipo")) {
             if (btn.getActionCommand().equals("GuardarTipo")) {
                 if (!tipoVista.tfNombreTipo.getText().isEmpty() && !tipoVista.tfCantidadTipo.getText().isEmpty()) {
@@ -1016,6 +1024,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                 }
             }
         }
+        /*modal para guardar nueva habitacion*/
         if (principalOn.equals("mHabitacion")) {
             if (btn.getActionCommand().equals("RegistrarHabitacion") && modalOn.equals("modalNewHabitacion")) {
 //              
@@ -1023,7 +1032,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                         !modalHab.txtPrecioHab.getText().isEmpty() && modalHab.cbTiposHabitacion.getSelectedIndex() > 0) {
                     if (this.daoHabitacion.validarNumeroHabitacion(modalHab.txtNumHabitacion.getText()) == true) {
                         DesktopNotify.setDefaultTheme(NotifyTheme.Red);
-                        DesktopNotify.showDesktopMessage("Número de Habitacion Duplicado", "El número de habitación ya existe", DesktopNotify.SUCCESS, 8000);
+                        DesktopNotify.showDesktopMessage("Número de Habitacion Duplicado", "El número de habitación ya existe", DesktopNotify.WARNING, 8000);
                         modalHab.dispose();
 //                        mostrarModulos("mHabitacion");
                     } else {
@@ -1037,8 +1046,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                         }
                     }
                 }
-                
-            } 
+            }
             if (btn.getActionCommand().equals("ModificarHabitacion") && modalOn.equals("modalModHab")) {
                 
                 if (!modalHab.txtNumHabitacion.getText().isEmpty() && !modalHab.txtDescripcionHab.getText().isEmpty() &&
@@ -1093,6 +1101,9 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                             }else{
                                 registroVista.txtTotalPagar.setText(String.valueOf(obtenerDias(fechaEntrada, fechaSalida) * Double.parseDouble((registroVista.lbPrecio.getText().substring(1)))));
                                 registroVista.txtTotalConDescuento.setText(registroVista.txtTotalPagar.getText());
+                                if (registroVista.txtDescuento.getText().isEmpty()) {
+                                    
+                                }
                                 registroVista.btnGuardarRegistro.setEnabled(true);
                             }
                         }
@@ -1116,7 +1127,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                 String fechaEntrada = f.format(fechaE);                               
                 Date fechaS = registroVista.fechaSalida.getDate();
                 String fechaSalida = f.format(fechaS);
-//                double descuento = Double.parseDouble(registroVista.txtDescuento.getText());
+                double descuento = Double.parseDouble(registroVista.txtDescuento.getText());
                 double adelanto = Double.parseDouble(registroVista.txtAdelanto.getText());
                 double totalPagar = Double.parseDouble(registroVista.txtTotalConDescuento.getText());
                 
@@ -1134,7 +1145,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                 Usuario user = new Usuario();
                 user.setIdUsuario(usuario.getIdUsuario());
                 
-                Registro registro = new Registro(fechaEntrada, fechaSalida, tipoRegistro, 1, totalPagar, adelanto, 0, cliente, habitacion, user);
+                Registro registro = new Registro(fechaEntrada, fechaSalida, tipoRegistro, 1, totalPagar, descuento, adelanto, 0, cliente, habitacion, user);
                 if (daoRegistro.insert(registro)) {
                     
                     DesktopNotify.setDefaultTheme(NotifyTheme.Green);
@@ -1146,6 +1157,39 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                     mostrarModulos("mRecepcion");
                 }
             }
+        }
+        if (principalOn.equals("mFinal") && btn.getActionCommand().equals("btnCulminar")) {
+            double mora;
+            
+            recepcionSelected.setDisposicion("DISPONIBLE");
+//            recepcionSelected.setEstado(0);
+            
+            if (vistaFin.txtMoraFinal.getText().isEmpty()) {
+                mora = 0;
+            }else{
+                mora = Double.parseDouble(vistaFin.txtMoraFinal.getText());
+            }
+            registroSelected.setHabitacion(recepcionSelected);
+            registroSelected.setMora(mora);
+            registroSelected.setEstado(0);
+            if (daoRegistro.cargarMora(registroSelected) && mora != 0) {
+                DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                DesktopNotify.showDesktopMessage("Se ha aplicado mora", "Has sido acreedor de un saldo de mora", DesktopNotify.WARNING, 8000);
+                    
+            }
+            
+            if (daoHabitacion.updateEstado(recepcionSelected)) {
+//                DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+//                DesktopNotify.showDesktopMessage("Gracias por visitarnos", "Vuelve Pronto", DesktopNotify.SUCCESS, 8000);
+                    
+            }
+            if (daoRegistro.FinRegistro(registroSelected)) {
+//                System.out.println("FUNCIONA FIN REGISTRO O SEA CAMBIAR EL ESTADO???");
+            }
+            DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+            DesktopNotify.showDesktopMessage("Gracias por visitarnos", "Vuelve Pronto", DesktopNotify.SUCCESS, 8000);
+            mostrarModulos("mRecepcion");
+//            METODO PARA GENERAR EL REPORTE
         }
     }
     public static long obtenerDias(String inicio, String fin){
@@ -1835,7 +1879,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                 cantDispo++;
             } else if (x.getDisposicion().equals("OCUPADA")) {
                 cantOcup++;
-            } else if (x.getDisposicion().equals("RESERVADA")) {
+            } else if (x.getDisposicion().equals("RESERVACION")) {
                 cantReserv++;
             }
         }
@@ -2178,6 +2222,12 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                 Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        if (btn.getActionCommand().equals("btnCulminar")) {
+            try {
+                accionesDeBotones(btn);
+            } catch (IOException | SQLException e) {
+            }
+        }
     }
 
     @Override
@@ -2349,18 +2399,31 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
     public void mousePressed(MouseEvent me) {
         if (principalOn.equals("mRecepcion")) {
             recepcionSelected = new Habitacion();
+            registroSelected = new Registro();
             recepcionSelected.setNumHabitacion(Integer.parseInt(me.getComponent().getName()));
             
             try {
                 ListaSimple<Habitacion> th = daoHabitacion.selectAllTo("num_habitacion", me.getComponent().getName());
                 recepcionSelected = th.toArray().get(0);
-                if (recepcionSelected.getDisposicion().equals("DISPONIBLE")) {
-                    mostrarModulos("mRegistro");
-                } else if (recepcionSelected.getDisposicion().equals("OCUPADA")){
-                    mostrarModulos("mFinalizar");
-                    System.out.println("ENTRAMOS A OCUPADA");
-                } else if(recepcionSelected.getDisposicion().equals("RESERVACION")){
-                    System.out.println("ENTRAMOS A RESERVACION");
+                registroSelected.setHabitacion(recepcionSelected);
+                
+                
+                switch (recepcionSelected.getDisposicion()) {
+                    case "DISPONIBLE":
+                        mostrarModulos("mRegistro");
+                        break;
+                    case "OCUPADA":
+                        registroSelected = daoRegistro.selectHuesped(registroSelected);
+                        ListaSimple<Cliente> cl = daoCliente.selectAllTo("dui_cliente", registroSelected.getCliente().getDui());
+                        clienteCulminado = cl.toArray().get(0);
+                        mostrarModulos("mFinalizar");
+                       
+                        break;
+                    case "RESERVACION":
+                        
+                        break;
+                    default:
+                        break;
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
@@ -2602,6 +2665,30 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
         tablaM.setModel(modelo);
     }
     
+    public void mostrarTablaFinal(JTable tablaFinal) throws SQLException {
+
+        modelo = (DefaultTableModel) tablaFinal.getModel();
+        modelo.setRowCount(0);
+
+        for (RegistroProducto x : daoRegistroP.selectAllFinal(recepcionSelected).toArray()) {
+            try {
+
+                modelo.addRow(new Object[]{x.getProducto().getDescripcion(),
+                    x.getCantidad(), 
+                    "$ " + formatoDecimal(x.getProducto().getPrecio()),
+                    x.getSubtotal()});
+
+            } catch (Exception ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        if (modelo.getRowCount() < 1) {
+            modelo.addRow(new Object[]{"No se encontraron resultados"});
+        }
+
+        tablaFinal.setModel(modelo);
+    }
+    
     public void llenarComboProducto() throws SQLException {
         ListaSimple<Producto> comboProducto = daoProducto.selectAll();
         int tLista = 0;
@@ -2714,7 +2801,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                 mostrarBusqueda(lista, usuarioVista.tbUsuarios);
             }
         }
-
+        
     }
 
     @Override
@@ -2759,7 +2846,17 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
 
             }
         }
-
+        if (principalOn.equals("mFinal")) {
+            if (ke.getSource().equals(vistaFin.txtMoraFinal)) {
+                if (Double.parseDouble(vistaFin.txtMoraFinal.getText()) > 10000) {
+                    DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                    DesktopNotify.showDesktopMessage("Mora demasiado alta", "Se establecio un limite de $10,000", DesktopNotify.INFORMATION, 8000); 
+                    vistaFin.btnCulminarRegistro.setEnabled(false);
+                }else if(vistaFin.txtMoraFinal.getText().isEmpty()){
+                    vistaFin.txtMoraFinal.setText("0");
+                }
+            }
+        }
     }
 
     @Override
@@ -2768,6 +2865,32 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
         if (registroVista.cbEstado.getSelectedItem().equals("HOSPEDAJE")) {
             registroVista.fechaEntrada.setEnabled(false);
         }
+    }
+
+    private void mostrarInfoFinal() {
+        vistaFin.lbNumHabFinal.setText(String.valueOf(recepcionSelected.getNumHabitacion()));
+        vistaFin.lbTipoHabFinal.setText(recepcionSelected.getTipoHabitacion().getNombre());
+        vistaFin.lbPrecioHabFinal.setText(String.valueOf(recepcionSelected.getPrecio()));
+        
+        vistaFin.lbDuiHuespedFinal.setText(clienteCulminado.getDui());
+        vistaFin.lbNombreHuespedFinal.setText(clienteCulminado.getNombre()+ " " + clienteCulminado.getApellido());
+        vistaFin.lbFechaEntradaFinal.setText(registroSelected.getFechaEntrada());
+        vistaFin.lbFechaSalidaFinal.setText(registroSelected.getFechaSalida());
+        vistaFin.lbCorreoFinal.setText(clienteCulminado.getEmail());
+        
+        vistaFin.lbTotalFinal.setText(String.valueOf(obtenerDias(vistaFin.lbFechaEntradaFinal.getText(), vistaFin.lbFechaSalidaFinal.getText()) * Double.parseDouble(vistaFin.lbPrecioHabFinal.getText())));
+        vistaFin.lbDescuentoFinal.setText(String.valueOf(registroSelected.getDescuento()));
+        vistaFin.lbAdelantoFinal.setText(String.valueOf(registroSelected.getDeposito()));
+//        vistaFin.txtMoraFinal.setText("");
+        vistaFin.lbTotalSinConsumo.setText(String.valueOf(Double.parseDouble(vistaFin.lbTotalFinal.getText()) - 
+                        Double.parseDouble(vistaFin.lbDescuentoFinal.getText()) -
+                        Double.parseDouble(vistaFin.lbAdelantoFinal.getText())));
+        try {
+                mostrarTablaFinal(vistaFin.tblProductosFinal);
+            } catch (SQLException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        vistaFin.lbTotalConProductos.setText(String.valueOf(daoRegistroP.subTotalCompleto(recepcionSelected) + Double.parseDouble(vistaFin.lbTotalSinConsumo.getText())));
     }
     
 }

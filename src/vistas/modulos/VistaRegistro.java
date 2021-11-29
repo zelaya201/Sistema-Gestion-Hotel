@@ -62,7 +62,6 @@ public class VistaRegistro extends javax.swing.JPanel {
         jLabel15 = new javax.swing.JLabel();
         txtTotalConDescuento = new RSMaterialComponent.RSTextFieldOne();
         btnGuardarRegistro = new newscomponents.RSButtonIcon_new();
-        btnCulminarRegistro = new newscomponents.RSButtonIcon_new();
         btnVerificarRegistro = new newscomponents.RSButtonIcon_new();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
@@ -518,26 +517,6 @@ public class VistaRegistro extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(20, 30, 100, 40);
         jPanel2.add(btnGuardarRegistro, gridBagConstraints);
 
-        btnCulminarRegistro.setBackground(new java.awt.Color(241, 123, 55));
-        btnCulminarRegistro.setText("Culminar Registro");
-        btnCulminarRegistro.setBackgroundHover(new java.awt.Color(232, 100, 24));
-        btnCulminarRegistro.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        btnCulminarRegistro.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        btnCulminarRegistro.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.CLEAR_ALL);
-        btnCulminarRegistro.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCulminarRegistroActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridy = 6;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(20, 40, 100, 20);
-        jPanel2.add(btnCulminarRegistro, gridBagConstraints);
-
         btnVerificarRegistro.setBackground(new java.awt.Color(61, 137, 248));
         btnVerificarRegistro.setText("Verificar Datos");
         btnVerificarRegistro.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -607,10 +586,6 @@ public class VistaRegistro extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_fechaEntradaMousePressed
 
-    private void btnCulminarRegistroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCulminarRegistroActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnCulminarRegistroActionPerformed
-
     private void txtDescuentoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDescuentoKeyTyped
         char val = evt.getKeyChar();
         if ((val < '0' || val > '9') && (val != '.')) {
@@ -632,7 +607,6 @@ public class VistaRegistro extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private RSMaterialComponent.RSButtonIconOne btnAddHuesped;
-    private newscomponents.RSButtonIcon_new btnCulminarRegistro;
     public newscomponents.RSButtonIcon_new btnGuardarRegistro;
     private newscomponents.RSButtonIcon_new btnVerificarRegistro;
     public RSMaterialComponent.RSComboBox cbEstado;

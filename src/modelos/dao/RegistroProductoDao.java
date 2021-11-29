@@ -12,6 +12,8 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import modelos.conexion.Conexion;
+import modelos.entidades.Cliente;
+import modelos.entidades.Habitacion;
 import modelos.entidades.Producto;
 import modelos.entidades.Registro;
 import modelos.entidades.RegistroProducto;
@@ -113,5 +115,66 @@ public class RegistroProductoDao {
             conectar.closeConexion(con);
         }
         return false; 
+    }
+    public double subTotalCompleto(Habitacion obj){
+        String sql = "SELECT SUM( rp.subtotal_registro_producto ) AS subtotalCompleto FROM registro r INNER JOIN registro_producto rp ON r.id_registro = rp.fk_id_registro WHERE r.fk_num_habitacion = '"+ obj.getNumHabitacion() +"' GROUP BY fk_dui_cliente";
+        double subtotal = 0;
+        try {
+            con = Conexion.getConexion();
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+            
+            while (rs.next()) {
+               subtotal = rs.getDouble("subtotalCompleto");
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }finally {
+            try {
+                ps.close();
+            } catch (SQLException e) {
+            }
+            Conexion.closeConexion(con);
+        }
+        return subtotal;
+    }
+    
+    public ListaSimple<RegistroProducto> selectAllFinal(Habitacion obj){
+        String sql = "SELECT p.cod_producto, r.id_registro, p.descripcion_producto, p.precio_producto, rp.cant_registro_producto, rp.subtotal_registro_producto FROM registro_producto rp INNER JOIN producto p ON rp.fk_cod_producto = p.cod_producto INNER JOIN registro r ON rp.fk_id_registro = r.id_registro WHERE r.fk_num_habitacion = '" + obj.getNumHabitacion() + "'";
+        ListaSimple<RegistroProducto> lista = new ListaSimple<>();
+        try {
+            con = Conexion.getConexion();
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+            
+            while (rs.next()) {
+                RegistroProducto re = new RegistroProducto();
+                Registro registro = new Registro();
+                Producto prod = new Producto();
+                
+                registro.setIdRegistro(rs.getInt("id_registro"));
+                
+                prod.setCodigo(rs.getString("cod_producto"));
+                prod.setDescripcion(rs.getString("descripcion_producto"));
+                prod.setPrecio(rs.getDouble("precio_producto"));
+                
+                re.setCantidad(rs.getInt("cant_registro_producto"));
+                re.setSubtotal(rs.getDouble("subtotal_registro_producto"));
+                
+                re.setProducto(prod);
+                re.setRegistro(registro);
+                
+                lista.insertar(re);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }finally {
+            try {
+                ps.close();
+            } catch (SQLException e) {
+            }
+            Conexion.closeConexion(con);
+        }
+        return lista;
     }
 }

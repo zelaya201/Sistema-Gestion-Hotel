@@ -24,6 +24,7 @@ public class Registro implements Comparable<Registro>{
     private String tipo;
     private int estado;
     private double total;
+    private double descuento;
     private double deposito;
     private double mora;
     private Cliente cliente;
@@ -38,12 +39,13 @@ public class Registro implements Comparable<Registro>{
         this.idRegistro = idRegistro;
     }
 
-    public Registro(String fechaEntrada, String fechaSalida, String tipo, int estado, double total, double deposito, double mora, Cliente cliente, Habitacion habitacion, Usuario usuario) {
+    public Registro(String fechaEntrada, String fechaSalida, String tipo, int estado, double total, double descuento, double deposito, double mora, Cliente cliente, Habitacion habitacion, Usuario usuario) {
         this.fechaEntrada = fechaEntrada;
         this.fechaSalida = fechaSalida;
         this.tipo = tipo;
         this.estado = estado;
         this.total = total;
+        this.descuento = descuento;
         this.deposito = deposito;
         this.mora = mora;
         this.cliente = cliente;
@@ -108,6 +110,16 @@ public class Registro implements Comparable<Registro>{
     public void setTotal(double total) {
         this.total = total;
     }
+
+    public double getDescuento() {
+        return descuento;
+    }
+
+    public void setDescuento(double descuento) {
+        this.descuento = descuento;
+    }
+    
+    
 
     public double getDeposito() {
         return deposito;

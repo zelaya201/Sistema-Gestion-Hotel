@@ -54,7 +54,7 @@ public class RegistroDao {
     }
 
     public boolean insert(Registro obj) throws SQLException {
-        String sql = "INSERT INTO registro(fentrada_registro, fsalida_registro, tipo_registro, estado_registro, total_registro, deposito_registro, mora_registro, fk_dui_cliente, fk_num_habitacion, fk_id_usuario) VALUES (?,?,?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO registro(fentrada_registro, fsalida_registro, tipo_registro, estado_registro, total_registro, descuento_registro, deposito_registro, mora_registro, fk_dui_cliente, fk_num_habitacion, fk_id_usuario) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
         return alterarRegistro(sql, obj);
     }
 
@@ -127,11 +127,12 @@ public class RegistroDao {
             ps.setString(3, obj.getTipo());
             ps.setInt(4, obj.getEstado());
             ps.setDouble(5, obj.getTotal());
-            ps.setDouble(6, obj.getDeposito());
-            ps.setDouble(7, obj.getMora());
-            ps.setString(8, obj.getCliente().getDui());
-            ps.setInt(9, obj.getHabitacion().getNumHabitacion());
-            ps.setInt(10, obj.getUsuario().getIdUsuario());
+            ps.setDouble(6, obj.getDescuento());
+            ps.setDouble(7, obj.getDeposito());
+            ps.setDouble(8, obj.getMora());
+            ps.setString(9, obj.getCliente().getDui());
+            ps.setInt(10, obj.getHabitacion().getNumHabitacion());
+            ps.setInt(11, obj.getUsuario().getIdUsuario());
 
             ps.execute();
             return true;
@@ -143,6 +144,75 @@ public class RegistroDao {
             } catch (Exception e) {
 
             }
+            Conexion.closeConexion(con);
+        }
+        return false;
+    }
+    public Registro selectHuesped(Registro obj) throws SQLException{
+     String sql = "SELECT dui_cliente, email_cliente, fentrada_registro, fsalida_registro, descuento_registro, deposito_registro FROM registro r INNER JOIN cliente c ON r.fk_dui_cliente = c.dui_cliente WHERE fk_num_habitacion = " + obj.getHabitacion().getNumHabitacion();   
+     Registro re = null;
+        try {
+            con = Conexion.getConexion();
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+            
+            while (rs.next()) {
+                 re = new Registro();
+                Cliente h = new Cliente();
+                
+                h.setDui(rs.getString("dui_cliente"));
+                h.setEmail(rs.getString("email_cliente"));
+                re.setCliente(h);
+                re.setFechaEntrada(rs.getString("fentrada_registro"));
+                re.setFechaSalida(rs.getString("fsalida_registro"));
+                re.setDescuento(rs.getDouble("descuento_registro"));
+                re.setDeposito(rs.getDouble("deposito_registro"));
+                
+            }
+            Conexion.closeConexion(con);
+        } catch (SQLException e) {
+            System.out.println("ERROR " + e);
+        }
+        return re;
+    }
+        public boolean cargarMora(Registro obj) {
+        String sql = "UPDATE registro SET mora_registro = ? WHERE fk_num_habitacion = '" + obj.getHabitacion().getNumHabitacion() + "'";
+        try {
+            con = Conexion.getConexion();
+            ps = con.prepareStatement(sql);
+            
+            ps.setDouble(1, obj.getMora());
+            
+            ps.execute();
+            return true;
+        } catch (SQLException e) {
+            try {
+                ps.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(HabitacionDao.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }finally {
+            Conexion.closeConexion(con);
+        }
+        return false;
+    }
+    public boolean FinRegistro(Registro obj) {
+        String sql = "UPDATE registro SET estado_registro = ? WHERE id_registro = '" + obj.getIdRegistro() + "'";
+        try {
+            con = Conexion.getConexion();
+            ps = con.prepareStatement(sql);
+            
+            ps.setDouble(1, 0);
+            
+            ps.execute();
+            return true;
+        } catch (SQLException e) {
+            try {
+                ps.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(HabitacionDao.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }finally {
             Conexion.closeConexion(con);
         }
         return false;
