@@ -299,6 +299,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
         
         if (modals.equals("modiProducto") && principalOn.equals("mVentas")) {
             modalMProducto = new ModalModProducto(new JFrame(), true);
+            modalMProducto.btnModProducto.setEnabled(false);
             modalMProducto.setControlador(this);
             modalOn = "modiProducto";
             mostrarTablaM(modalMProducto.tbModP);
@@ -785,39 +786,51 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
 
         //DETALLES / MODIFICAR PRODUCTOS
         if (btn.getActionCommand().equals("btnModProducto") && modalOn == "modiProducto") {
-            if (!modalMProducto.tfNomP.getText().isEmpty() && !modalMProducto.tfPrecio.getText().isEmpty()) {
-                productoSelected.setDescripcion(modalMProducto.tfNomP.getText());
-                productoSelected.setPrecio(Double.parseDouble(modalMProducto.tfPrecio.getText()));
-                if(daoProducto.update(productoSelected)){
-                    DesktopNotify.setDefaultTheme(NotifyTheme.Green);
-                    DesktopNotify.showDesktopMessage("Información de producto modificada", "La información del Hotel se modificó correctamente.", DesktopNotify.SUCCESS, 8000);
-                    mostrarTablaM(modalMProducto.tbModP);
-                    modalMProducto.tfNomP.setText("");
-                    modalMProducto.tfPrecio.setText("");
-                }else{
-                    DesktopNotify.setDefaultTheme(NotifyTheme.Red);
-                    DesktopNotify.showDesktopMessage("Producto no actualizar", "La información no se actualizó correctamente.", DesktopNotify.FAIL, 8000);
+                if (!modalMProducto.tfNomP.getText().isEmpty() && !modalMProducto.tfPrecio.getText().isEmpty()) {
+                    if(Double.parseDouble(modalMProducto.tfPrecio.getText()) > 0){
+                        productoSelected.setDescripcion(modalMProducto.tfNomP.getText());
+                        productoSelected.setPrecio(Double.parseDouble(modalMProducto.tfPrecio.getText()));
+                        if(daoProducto.update(productoSelected)){
+                            DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                            DesktopNotify.showDesktopMessage("Información de producto modificada", "La información del producto se modificó correctamente.", DesktopNotify.SUCCESS, 8000);
+                            mostrarTablaM(modalMProducto.tbModP);
+                            modalMProducto.btnModProducto.setEnabled(false);
+                            modalMProducto.tfNomP.setText("");
+                            modalMProducto.tfPrecio.setText("");
+                            productoSelected = null;
+                        }else{
+                            DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                            DesktopNotify.showDesktopMessage("Producto no actualizar", "La información no se actualizó correctamente.", DesktopNotify.FAIL, 8000);
+                        }
+                    }else{
+                        DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                        DesktopNotify.showDesktopMessage("Precio inválido", "El precio debe ser mayor a 0.", DesktopNotify.FAIL, 8000);
+                    }   
                 }
-            }
+            
         }
         
         //GUARDAR NUEVO PRODUCTO
         if (btn.getActionCommand().equals("GuardarProducto") && principalOn == "mVentas") {
             
             if (!modalProducto.tfNomP.getText().isEmpty() && !modalProducto.tfPrecio.getText().isEmpty()) {
-                //wtf xd?
-                if (daoProducto.insertar(new Producto("PR00" + daoProducto.selectAll().toArray().size() + 1, modalProducto.tfNomP.getText(), Double.parseDouble(modalProducto.tfPrecio.getText())))) {
-                    DesktopNotify.setDefaultTheme(NotifyTheme.Green);
-                    DesktopNotify.showDesktopMessage("Nuevo producto ingresado", "La información del producto se guardó correctamente.", DesktopNotify.SUCCESS, 8000);
-                    modalProducto.dispose();
-                    modalOn = "";
-                    mostrarModulos("mVentas");
-                } else {
+                if(Double.parseDouble(modalProducto.tfPrecio.getText()) > 0){
+                    if (daoProducto.insertar(new Producto("PR00" + daoProducto.selectAll().toArray().size() + 1, modalProducto.tfNomP.getText(), Double.parseDouble(modalProducto.tfPrecio.getText())))) {
+                        DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                        DesktopNotify.showDesktopMessage("Nuevo producto ingresado", "La información del producto se guardó correctamente.", DesktopNotify.SUCCESS, 8000);
+                        modalProducto.dispose();
+                        modalOn = "";
+                        mostrarModulos("mVentas");
+                    } else {
+                        DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                        DesktopNotify.showDesktopMessage("Error al ingresar producto", "La información no se guardó correctamente.", DesktopNotify.FAIL, 8000);
+                        modalProducto.dispose();
+                        modalOn = "";
+                        mostrarModulos("mVentas");
+                    }
+                }else{
                     DesktopNotify.setDefaultTheme(NotifyTheme.Red);
-                    DesktopNotify.showDesktopMessage("Error al ingresar producto", "La información no se guardó correctamente.", DesktopNotify.FAIL, 8000);
-                    modalProducto.dispose();
-                    modalOn = "";
-                    mostrarModulos("mVentas");
+                    DesktopNotify.showDesktopMessage("Precio inválido", "El precio debe ser mayor a 0.", DesktopNotify.FAIL, 8000);
                 }
 
             } else {
@@ -2208,7 +2221,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             }
             
             this.productoSelected = producto.toArray().get(0);
-            
+            this.modalMProducto.btnModProducto.setEnabled(true);
             this.modalMProducto.tfNomP.setText(productoSelected.getDescripcion());
             this.modalMProducto.tfPrecio.setText(String.valueOf(productoSelected.getPrecio()));
         }
@@ -2224,7 +2237,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
 
                     Producto obj = daoProducto.selectAllTo("descripcion_producto", desc).toArray().get(0);
                     RegistroProducto registro = new RegistroProducto(obj);
-                    
+                    System.out.println(registro.getProducto().getDescripcion() + " " + registro.getProducto().getCodigo());
                     RegistroProducto encontrado = (RegistroProducto) registrosProductos.buscar(registro).getDato();
                     
                     registrosProductos.eliminar(encontrado);

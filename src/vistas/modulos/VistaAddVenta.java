@@ -283,12 +283,7 @@ public class VistaAddVenta extends javax.swing.JPanel {
         tbRegistroP.setForeground(new java.awt.Color(255, 255, 255));
         tbRegistroP.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+
             },
             new String [] {
                 "Producto", "Cantidad", "Precio Unitario", "Subtotal", "Eliminar"

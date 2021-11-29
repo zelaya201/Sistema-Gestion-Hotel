@@ -50,7 +50,7 @@ public class ModalModProducto extends javax.swing.JDialog {
         header.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
         header.setForeground(new java.awt.Color(51, 51, 51));
         header.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        header.setText("Modificar producto");
+        header.setText("Listado de Productos");
         header.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
 
         body.setBackground(new java.awt.Color(255, 255, 255));
@@ -58,11 +58,11 @@ public class ModalModProducto extends javax.swing.JDialog {
         jLabel5.setBackground(new java.awt.Color(204, 204, 204));
         jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel5.setText("PRECIO ($)");
+        jLabel5.setText("PRECIO: ($)");
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel4.setText("NOMBRE DE PRODUCTO");
+        jLabel4.setText("NOMBRE DE PRODUCTO:");
 
         tfNomP.setBackground(new java.awt.Color(255, 255, 255));
         tfNomP.setForeground(new java.awt.Color(0, 0, 0));
@@ -113,7 +113,7 @@ public class ModalModProducto extends javax.swing.JDialog {
         bodyLayout.setVerticalGroup(
             bodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(bodyLayout.createSequentialGroup()
-                .addGap(24, 24, 24)
+                .addGap(15, 15, 15)
                 .addGroup(bodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addGroup(bodyLayout.createSequentialGroup()
                         .addComponent(tfNomP, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -123,14 +123,14 @@ public class ModalModProducto extends javax.swing.JDialog {
                         .addComponent(jLabel4)
                         .addGap(26, 26, 26)
                         .addComponent(jLabel5)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, new java.awt.Color(204, 204, 204)));
 
         btnModProducto.setBackground(new java.awt.Color(61, 137, 248));
-        btnModProducto.setText("Guardar");
+        btnModProducto.setText("Guardar cambios");
         btnModProducto.setBackgroundHover(new java.awt.Color(39, 116, 229));
         btnModProducto.setFocusPainted(false);
         btnModProducto.setFont(new java.awt.Font("Bahnschrift", 0, 16)); // NOI18N
