@@ -11,6 +11,7 @@ import ds.desktop.notify.NotifyTheme;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
+import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -19,6 +20,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -99,7 +102,7 @@ import vistas.modulos.modalHabitacion;
  *
  * @author Adonay
  */
-public class Controlador implements ActionListener, MouseListener, KeyListener, ItemListener {
+public class Controlador implements ActionListener, MouseListener, KeyListener{
 
     private DefaultTableModel modelo;
     private Menu menu;
@@ -274,7 +277,6 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             this.vistaFin = new VistaFinalizar();
             vistaFin.setControlador(this);
             principalOn = "mFinal";
-            
             mostrarInfoFinal();
             new CambiaPanel(menu.body, vistaFin);
         }
@@ -1116,8 +1118,6 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                     Date fechaSalidaCompare = f.parse(fechaSalida);
                     if ((registroVista.cbHuesped.getSelectedIndex() > 0) && (registroVista.cbEstado.getSelectedIndex() > 0)) {
                         
-                        
-                        
                         if (fechaEntradaCompare.before(actual)) {
                             DesktopNotify.setDefaultTheme(NotifyTheme.Red);
                             DesktopNotify.showDesktopMessage("Error en la fecha", "Fecha de entrada es anterior a la actual", DesktopNotify.WARNING, 8000);
@@ -1128,11 +1128,17 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                                 DesktopNotify.showDesktopMessage("Error en la fecha", "Fecha de salida es anterior a la fecha de entrada seleccionada", DesktopNotify.WARNING, 8000);
                                 
                             }else{
+
                                 registroVista.txtTotalPagar.setText(String.valueOf(obtenerDias(fechaEntrada, fechaSalida) * Double.parseDouble((registroVista.lbPrecio.getText().substring(1)))));
                                 registroVista.txtTotalConDescuento.setText(registroVista.txtTotalPagar.getText());
+                                
                                 if (registroVista.txtDescuento.getText().isEmpty()) {
                                     
                                 }
+                                
+                                registroVista.fechaEntrada.setEnabled(false);
+                                registroVista.enableInputMethods(false);
+                                registroVista.enable(false);
                                 registroVista.btnGuardarRegistro.setEnabled(true);
                             }
                         }
@@ -1192,21 +1198,25 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                 }
             }
         }
+        
         if (principalOn.equals("mFinal") && btn.getActionCommand().equals("btnCulminar")) {
+            
             double mora;
             Registro estado = null;
             recepcionSelected.setDisposicion("DISPONIBLE");
-            estado = daoRegistro.selectId(recepcionSelected.getNumHabitacion()).toArray().get(0);
-//            recepcionSelected.setEstado(0);
+            
+            estado = daoRegistro.selectAllTo("id_registro", String.valueOf(registroSelected.getIdRegistro())).toArray().get(0);
             
             if (vistaFin.txtMoraFinal.getText().isEmpty()) {
                 mora = 0;
             }else{
                 mora = Double.parseDouble(vistaFin.txtMoraFinal.getText());
             }
+            
             registroSelected.setHabitacion(recepcionSelected);
             registroSelected.setMora(mora);
             registroSelected.setEstado(0);
+            
             if (daoRegistro.cargarMora(registroSelected) && mora != 0) {
                 DesktopNotify.setDefaultTheme(NotifyTheme.Green);
                 DesktopNotify.showDesktopMessage("Se ha aplicado mora", "Has sido acreedor de un saldo de mora", DesktopNotify.WARNING, 8000);
@@ -1218,13 +1228,16 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
 //                DesktopNotify.showDesktopMessage("Gracias por visitarnos", "Vuelve Pronto", DesktopNotify.SUCCESS, 8000);
                     
             }
+            
             if (daoRegistro.FinRegistro(estado)) {
 //                System.out.println("FUNCIONA FIN REGISTRO O SEA CAMBIAR EL ESTADO???");
             }
+            
             DesktopNotify.setDefaultTheme(NotifyTheme.Green);
-            DesktopNotify.showDesktopMessage("Gracias por visitarnos", "Vuelve Pronto", DesktopNotify.SUCCESS, 8000);
+            DesktopNotify.showDesktopMessage("Ruta de Factura", "Seleccione la ruta donde desea guardar la factura", DesktopNotify.SUCCESS, 12000);
+            eventosBotones("Factura");
             mostrarModulos("mRecepcion");
-//            METODO PARA GENERAR EL REPORTE
+
         }
     }
     
@@ -1235,9 +1248,17 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             Date dateInicio = f.parse(inicio);
             Date dateFin = f.parse(fin);
             
-            diff = Math.round((dateFin.getTime() - dateInicio.getTime()) / (double) 86400000);
+            if(!dateInicio.equals(dateFin)){
+                diff = Math.round((dateFin.getTime() - dateInicio.getTime()) / (double) 86400000);
+            }else{
+                diff = 1;
+            }
+            
+            
         } catch (ParseException e) {
+            
         }
+        
         return diff;
     }
     
@@ -3035,15 +3056,9 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
         }
     }
 
-    @Override
-    public void itemStateChanged(ItemEvent e) {
 
-//        if (registroVista.cbEstado.getSelectedItem().equals("HOSPEDAJE")) {
-//            registroVista.fechaEntrada.setEnabled(false);
-//        }
-    }
+    private void mostrarInfoFinal() throws SQLException {
 
-    private void mostrarInfoFinal() {
         vistaFin.lbNumHabFinal.setText(String.valueOf(recepcionSelected.getNumHabitacion()));
         vistaFin.lbTipoHabFinal.setText(recepcionSelected.getTipoHabitacion().getNombre());
         vistaFin.lbPrecioHabFinal.setText(String.valueOf(recepcionSelected.getPrecio()));
@@ -3057,16 +3072,17 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
         vistaFin.lbTotalFinal.setText(String.valueOf(obtenerDias(vistaFin.lbFechaEntradaFinal.getText(), vistaFin.lbFechaSalidaFinal.getText()) * Double.parseDouble(vistaFin.lbPrecioHabFinal.getText())));
         vistaFin.lbDescuentoFinal.setText(String.valueOf(registroSelected.getDescuento()));
         vistaFin.lbAdelantoFinal.setText(String.valueOf(registroSelected.getDeposito()));
-//        vistaFin.txtMoraFinal.setText("");
+
         vistaFin.lbTotalSinConsumo.setText(String.valueOf(Double.parseDouble(vistaFin.lbTotalFinal.getText()) - 
                         Double.parseDouble(vistaFin.lbDescuentoFinal.getText()) -
                         Double.parseDouble(vistaFin.lbAdelantoFinal.getText())));
         try {
-                mostrarTablaFinal(vistaFin.tblProductosFinal);
-            } catch (SQLException ex) {
-                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        vistaFin.lbTotalConProductos.setText(String.valueOf(daoRegistroP.subTotalCompleto(recepcionSelected) + Double.parseDouble(vistaFin.lbTotalSinConsumo.getText())));
+            mostrarTablaFinal(vistaFin.tblProductosFinal);
+        } catch (SQLException ex) {
+            Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        vistaFin.lbTotalConProductos.setText(String.valueOf(daoRegistroP.subTotalCompleto(registroSelected) + Double.parseDouble(vistaFin.lbTotalSinConsumo.getText())));
     }
-    
+
 }

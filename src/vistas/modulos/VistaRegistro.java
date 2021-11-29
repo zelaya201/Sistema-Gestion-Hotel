@@ -14,7 +14,6 @@ public class VistaRegistro extends javax.swing.JPanel {
 
     public void setControlador(Controlador control) {
         this.btnGuardarRegistro.addActionListener(control);
-        this.cbEstado.addItemListener(control);
         this.btnVerificarRegistro.addActionListener(control);
         this.txtDescuento.addKeyListener(control);
         this.btnAddHuesped.addActionListener(control);
@@ -295,13 +294,57 @@ public class VistaRegistro extends javax.swing.JPanel {
 
         fechaEntrada.setBackground(new java.awt.Color(153, 153, 153));
         fechaEntrada.setBgColor(new java.awt.Color(153, 153, 153));
-        fechaEntrada.setEnabled(false);
         fechaEntrada.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         fechaEntrada.setFormatDate("dd/MM/yyyy\n");
         fechaEntrada.setRequestFocusEnabled(false);
+        fechaEntrada.addContainerListener(new java.awt.event.ContainerAdapter() {
+            public void componentRemoved(java.awt.event.ContainerEvent evt) {
+                fechaEntradaComponentRemoved(evt);
+            }
+        });
+        fechaEntrada.addHierarchyListener(new java.awt.event.HierarchyListener() {
+            public void hierarchyChanged(java.awt.event.HierarchyEvent evt) {
+                fechaEntradaHierarchyChanged(evt);
+            }
+        });
+        fechaEntrada.addAncestorListener(new javax.swing.event.AncestorListener() {
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+            }
+            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
+                fechaEntradaAncestorAdded(evt);
+            }
+            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
+            }
+        });
+        fechaEntrada.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                fechaEntradaFocusGained(evt);
+            }
+        });
         fechaEntrada.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                fechaEntradaMouseClicked(evt);
+            }
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 fechaEntradaMousePressed(evt);
+            }
+        });
+        fechaEntrada.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
+                fechaEntradaInputMethodTextChanged(evt);
+            }
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+                fechaEntradaCaretPositionChanged(evt);
+            }
+        });
+        fechaEntrada.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                fechaEntradaPropertyChange(evt);
+            }
+        });
+        fechaEntrada.addVetoableChangeListener(new java.beans.VetoableChangeListener() {
+            public void vetoableChange(java.beans.PropertyChangeEvent evt)throws java.beans.PropertyVetoException {
+                fechaEntradaVetoableChange(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -583,7 +626,7 @@ public class VistaRegistro extends javax.swing.JPanel {
     }//GEN-LAST:event_cbEstadoItemStateChanged
 
     private void fechaEntradaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fechaEntradaMousePressed
-        // TODO add your handling code here:
+        System.out.println("HOALAASJAS");
     }//GEN-LAST:event_fechaEntradaMousePressed
 
     private void txtDescuentoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDescuentoKeyTyped
@@ -603,6 +646,42 @@ public class VistaRegistro extends javax.swing.JPanel {
     private void btnVerificarRegistroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerificarRegistroActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnVerificarRegistroActionPerformed
+
+    private void fechaEntradaPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_fechaEntradaPropertyChange
+        
+    }//GEN-LAST:event_fechaEntradaPropertyChange
+
+    private void fechaEntradaVetoableChange(java.beans.PropertyChangeEvent evt)throws java.beans.PropertyVetoException {//GEN-FIRST:event_fechaEntradaVetoableChange
+        
+    }//GEN-LAST:event_fechaEntradaVetoableChange
+
+    private void fechaEntradaHierarchyChanged(java.awt.event.HierarchyEvent evt) {//GEN-FIRST:event_fechaEntradaHierarchyChanged
+        
+    }//GEN-LAST:event_fechaEntradaHierarchyChanged
+
+    private void fechaEntradaComponentRemoved(java.awt.event.ContainerEvent evt) {//GEN-FIRST:event_fechaEntradaComponentRemoved
+        
+    }//GEN-LAST:event_fechaEntradaComponentRemoved
+
+    private void fechaEntradaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fechaEntradaMouseClicked
+       
+    }//GEN-LAST:event_fechaEntradaMouseClicked
+
+    private void fechaEntradaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_fechaEntradaFocusGained
+       
+    }//GEN-LAST:event_fechaEntradaFocusGained
+
+    private void fechaEntradaAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_fechaEntradaAncestorAdded
+       
+    }//GEN-LAST:event_fechaEntradaAncestorAdded
+
+    private void fechaEntradaCaretPositionChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_fechaEntradaCaretPositionChanged
+       
+    }//GEN-LAST:event_fechaEntradaCaretPositionChanged
+
+    private void fechaEntradaInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_fechaEntradaInputMethodTextChanged
+        System.out.println("DECIME QUE SI");
+    }//GEN-LAST:event_fechaEntradaInputMethodTextChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -630,7 +709,7 @@ public class VistaRegistro extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
+    public javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     public javax.swing.JLabel lbDescrip;
     public javax.swing.JLabel lbEstado;
