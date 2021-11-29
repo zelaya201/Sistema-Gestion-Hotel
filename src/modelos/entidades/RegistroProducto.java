@@ -98,12 +98,7 @@ public class RegistroProducto implements Comparable<RegistroProducto>{
 
     @Override
     public int compareTo(RegistroProducto t) {
-        if (registro.getIdRegistro() > t.getRegistro().getIdRegistro()){
-            return 1;
-        } else if (registro.getIdRegistro() < t.getRegistro().getIdRegistro()) {
-            return -1;
-        }else {
-            return 0;
-        }
+        RegistroProducto actual = this;
+        return (actual.getProducto().getCodigo().compareToIgnoreCase(t.getProducto().getCodigo()));
     }
 }

@@ -307,6 +307,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
         
         if (modals.equals("modiProducto") && principalOn.equals("mVentas")) {
             modalMProducto = new ModalModProducto(new JFrame(), true);
+            modalMProducto.btnModProducto.setEnabled(false);
             modalMProducto.setControlador(this);
             modalOn = "modiProducto";
             mostrarTablaM(modalMProducto.tbModP);
@@ -793,39 +794,51 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
 
         //DETALLES / MODIFICAR PRODUCTOS
         if (btn.getActionCommand().equals("btnModProducto") && modalOn == "modiProducto") {
-            if (!modalMProducto.tfNomP.getText().isEmpty() && !modalMProducto.tfPrecio.getText().isEmpty()) {
-                productoSelected.setDescripcion(modalMProducto.tfNomP.getText());
-                productoSelected.setPrecio(Double.parseDouble(modalMProducto.tfPrecio.getText()));
-                if(daoProducto.update(productoSelected)){
-                    DesktopNotify.setDefaultTheme(NotifyTheme.Green);
-                    DesktopNotify.showDesktopMessage("Información de producto modificada", "La información del Hotel se modificó correctamente.", DesktopNotify.SUCCESS, 8000);
-                    mostrarTablaM(modalMProducto.tbModP);
-                    modalMProducto.tfNomP.setText("");
-                    modalMProducto.tfPrecio.setText("");
-                }else{
-                    DesktopNotify.setDefaultTheme(NotifyTheme.Red);
-                    DesktopNotify.showDesktopMessage("Producto no actualizar", "La información no se actualizó correctamente.", DesktopNotify.FAIL, 8000);
+                if (!modalMProducto.tfNomP.getText().isEmpty() && !modalMProducto.tfPrecio.getText().isEmpty()) {
+                    if(Double.parseDouble(modalMProducto.tfPrecio.getText()) > 0){
+                        productoSelected.setDescripcion(modalMProducto.tfNomP.getText());
+                        productoSelected.setPrecio(Double.parseDouble(modalMProducto.tfPrecio.getText()));
+                        if(daoProducto.update(productoSelected)){
+                            DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                            DesktopNotify.showDesktopMessage("Información de producto modificada", "La información del producto se modificó correctamente.", DesktopNotify.SUCCESS, 8000);
+                            mostrarTablaM(modalMProducto.tbModP);
+                            modalMProducto.btnModProducto.setEnabled(false);
+                            modalMProducto.tfNomP.setText("");
+                            modalMProducto.tfPrecio.setText("");
+                            productoSelected = null;
+                        }else{
+                            DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                            DesktopNotify.showDesktopMessage("Producto no actualizar", "La información no se actualizó correctamente.", DesktopNotify.FAIL, 8000);
+                        }
+                    }else{
+                        DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                        DesktopNotify.showDesktopMessage("Precio inválido", "El precio debe ser mayor a 0.", DesktopNotify.FAIL, 8000);
+                    }   
                 }
-            }
+            
         }
         
         //GUARDAR NUEVO PRODUCTO
         if (btn.getActionCommand().equals("GuardarProducto") && principalOn == "mVentas") {
             
             if (!modalProducto.tfNomP.getText().isEmpty() && !modalProducto.tfPrecio.getText().isEmpty()) {
-                //wtf xd?
-                if (daoProducto.insertar(new Producto("PR00" + daoProducto.selectAll().toArray().size() + 1, modalProducto.tfNomP.getText(), Double.parseDouble(modalProducto.tfPrecio.getText())))) {
-                    DesktopNotify.setDefaultTheme(NotifyTheme.Green);
-                    DesktopNotify.showDesktopMessage("Nuevo producto ingresado", "La información del producto se guardó correctamente.", DesktopNotify.SUCCESS, 8000);
-                    modalProducto.dispose();
-                    modalOn = "";
-                    mostrarModulos("mVentas");
-                } else {
+                if(Double.parseDouble(modalProducto.tfPrecio.getText()) > 0){
+                    if (daoProducto.insertar(new Producto("PR00" + daoProducto.selectAll().toArray().size() + 1, modalProducto.tfNomP.getText(), Double.parseDouble(modalProducto.tfPrecio.getText())))) {
+                        DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                        DesktopNotify.showDesktopMessage("Nuevo producto ingresado", "La información del producto se guardó correctamente.", DesktopNotify.SUCCESS, 8000);
+                        modalProducto.dispose();
+                        modalOn = "";
+                        mostrarModulos("mVentas");
+                    } else {
+                        DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                        DesktopNotify.showDesktopMessage("Error al ingresar producto", "La información no se guardó correctamente.", DesktopNotify.FAIL, 8000);
+                        modalProducto.dispose();
+                        modalOn = "";
+                        mostrarModulos("mVentas");
+                    }
+                }else{
                     DesktopNotify.setDefaultTheme(NotifyTheme.Red);
-                    DesktopNotify.showDesktopMessage("Error al ingresar producto", "La información no se guardó correctamente.", DesktopNotify.FAIL, 8000);
-                    modalProducto.dispose();
-                    modalOn = "";
-                    mostrarModulos("mVentas");
+                    DesktopNotify.showDesktopMessage("Precio inválido", "El precio debe ser mayor a 0.", DesktopNotify.FAIL, 8000);
                 }
 
             } else {
@@ -959,7 +972,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             String path = "";
 
             JFileChooser file = new JFileChooser();
-            file.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            file.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);   
             int request = file.showSaveDialog(menu);
 
             if (request == JFileChooser.APPROVE_OPTION) {
@@ -1192,6 +1205,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
 //            METODO PARA GENERAR EL REPORTE
         }
     }
+    
     public static long obtenerDias(String inicio, String fin){
         SimpleDateFormat f = new SimpleDateFormat("dd/MM/yyyy");
         long diff = -1;
@@ -1331,9 +1345,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                         && usuarioModal.cbGenero.getSelectedIndex() > 0 && !usuarioModal.jtUser.getText().isEmpty()
                         && usuarioModal.cbRol.getSelectedIndex() > 0){                    
                     String nom = usuarioModal.jtNom.getText().trim().toUpperCase();
-                    //nom = nom.replace(" ", "");
                     String ape = usuarioModal.jtApe.getText().trim().toUpperCase();
-                    //ape = ape.replace(" ", "");
                     String tel = usuarioModal.jtTel.getText().trim();
 
                     Date fecha = usuarioModal.jDate.getDate();
@@ -1398,52 +1410,134 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                                             || !genero.equals(usuarioSelected.getGenero()) || !nick.equals(usuarioSelected.getNick())
                                             || !rol.equals(usuarioSelected.getRol())) {
                                         if(existeUser.isEmpty()){
-                                            usuarioSelected.setNombre(nom);
-                                            usuarioSelected.setApellido(ape);
+                                            if (usuarioModal.modiPassCheck.isSelected()) {
+                                                if (!usuarioModal.jtPass.getText().isEmpty() && !usuarioModal.jtPassRepet.getText().isEmpty()){
+                                                    usuarioSelected.setNombre(nom);
+                                                    usuarioSelected.setApellido(ape);
 
-                                            usuarioSelected.setfNacimiento(fechaNac);
-                                            usuarioSelected.setTelefono(tel);
-                                            usuarioSelected.setGenero(genero);
-                                            usuarioSelected.setNick(nick);
-                                            usuarioSelected.setRol(rol);
+                                                    usuarioSelected.setfNacimiento(fechaNac);
+                                                    usuarioSelected.setTelefono(tel);
+                                                    usuarioSelected.setGenero(genero);
+                                                    usuarioSelected.setNick(nick);
+                                                    usuarioSelected.setRol(rol);
+                                                    if(usuarioModal.jtPass.getText().trim().equals(usuarioModal.jtPassRepet.getText().trim())){
+                                                        String clave = Encriptacion.getStringMessageDigest(usuarioModal.jtPass.getText().trim(), Encriptacion.SHA256); //Encriptamos la clave
 
-                                            if(daoUsuario.update(usuarioSelected)){ //Guardado
-                                                //Mensaje de modificado
-                                                DesktopNotify.setDefaultTheme(NotifyTheme.Green);
-                                                DesktopNotify.showDesktopMessage("Usuario actualizado", "El usuario ha sido modificado exitosamente.", DesktopNotify.SUCCESS, 8000);
-                                                if (isLoged) {
-                                                    usuario.setNick(usuarioSelected.getNick());
-                                                    actualizarHeader(usuarioSelected);
+                                                        usuarioSelected.setClave(clave);
+
+                                                        if(daoUsuario.update(usuarioSelected)){ //Guardado
+                                                            //Mensaje de modificado
+                                                            DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                                                            DesktopNotify.showDesktopMessage("Usuario actualizado", "El usuario ha sido modificado exitosamente.", DesktopNotify.SUCCESS, 8000);
+                                                            if (isLoged) {
+                                                                usuario.setNick(usuarioSelected.getNick());
+                                                                actualizarHeader(usuarioSelected);
+                                                            }
+                                                            usuarioSelected = null;
+                                                            usuarioModal.dispose();
+                                                        }else{ //Ocurrio un error
+                                                            DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                                                            DesktopNotify.showDesktopMessage("Error", "Usuario no actualizado", DesktopNotify.FAIL, 8000);
+                                                        }
+                                                    }else{
+                                                        DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                                                        DesktopNotify.showDesktopMessage("Contraseñas diferentes", "Las contraseñas tienen que ser iguales.", DesktopNotify.WARNING, 8000);
+                                                    }
+                                                }else {
+                                                    //Campos incompletos
+                                                    DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                                                    DesktopNotify.showDesktopMessage("Campos vacíos", "Por favor rellene todos los campos.", DesktopNotify.WARNING, 8000); //8 seg
                                                 }
-                                                usuarioSelected = null;
-                                                usuarioModal.dispose();
-                                                isLoged = false;
-                                            }else{ //Ocurrio un error
-                                                DesktopNotify.setDefaultTheme(NotifyTheme.Red);
-                                                DesktopNotify.showDesktopMessage("Error", "Usuario no actualizado", DesktopNotify.FAIL, 8000);
-                                            }
-                                        }else {
-                                            usuarioSelected.setNombre(nom);
-                                            usuarioSelected.setApellido(ape);
+                                            }else {
+                                                usuarioSelected.setNombre(nom);
+                                                usuarioSelected.setApellido(ape);
 
-                                            usuarioSelected.setfNacimiento(fechaNac);
-                                            usuarioSelected.setTelefono(tel);
-                                            usuarioSelected.setGenero(genero);
-                                            usuarioSelected.setRol(rol);
-
-                                            if(existeUser.toArray().get(0).getNick().equals(usuarioSelected.getNick())){ 
-                                                if(daoUsuario.update(usuarioSelected)){
+                                                usuarioSelected.setfNacimiento(fechaNac);
+                                                usuarioSelected.setTelefono(tel);
+                                                usuarioSelected.setGenero(genero);
+                                                usuarioSelected.setNick(nick);
+                                                usuarioSelected.setRol(rol);
+                                                
+                                                if(daoUsuario.update(usuarioSelected)){ //Guardado
+                                                    //Mensaje de modificado
                                                     DesktopNotify.setDefaultTheme(NotifyTheme.Green);
                                                     DesktopNotify.showDesktopMessage("Usuario actualizado", "El usuario ha sido modificado exitosamente.", DesktopNotify.SUCCESS, 8000);
                                                     if (isLoged) {
+                                                        usuario.setNick(usuarioSelected.getNick());
                                                         actualizarHeader(usuarioSelected);
-                                                    }   
+                                                    }
                                                     usuarioSelected = null;
                                                     usuarioModal.dispose();
                                                     isLoged = false;
                                                 }else{ //Ocurrio un error
                                                     DesktopNotify.setDefaultTheme(NotifyTheme.Red);
                                                     DesktopNotify.showDesktopMessage("Error", "Usuario no actualizado", DesktopNotify.FAIL, 8000);
+                                                }
+                                            } 
+                                        }else {
+                                            if(existeUser.toArray().get(0).getNick().equals(usuarioSelected.getNick())){ 
+                                                if (usuarioModal.modiPassCheck.isSelected()) {
+                                                    if (!usuarioModal.jtPass.getText().isEmpty() && !usuarioModal.jtPassRepet.getText().isEmpty()){
+                                                        usuarioSelected.setNombre(nom);
+                                                        usuarioSelected.setApellido(ape);
+
+                                                        usuarioSelected.setfNacimiento(fechaNac);
+                                                        usuarioSelected.setTelefono(tel);
+                                                        usuarioSelected.setGenero(genero);
+                                                        usuarioSelected.setRol(rol);
+                                                        
+                                                        if(usuarioModal.jtPass.getText().trim().equals(usuarioModal.jtPassRepet.getText().trim())){
+                                                            String clave = Encriptacion.getStringMessageDigest(usuarioModal.jtPass.getText().trim(), Encriptacion.SHA256); //Encriptamos la clave
+
+                                                            usuarioSelected.setClave(clave);
+
+                                                            if(daoUsuario.update(usuarioSelected)){ //Guardado
+                                                                //Mensaje de modificado
+                                                                DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                                                                DesktopNotify.showDesktopMessage("Usuario actualizado", "El usuario ha sido modificado exitosamente.", DesktopNotify.SUCCESS, 8000);
+                                                                if (isLoged) {
+                                                                    usuario.setNick(usuarioSelected.getNick());
+                                                                    actualizarHeader(usuarioSelected);
+                                                                }
+                                                                usuarioSelected = null;
+                                                                usuarioModal.dispose();
+                                                            }else{ //Ocurrio un error
+                                                                DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                                                                DesktopNotify.showDesktopMessage("Error", "Usuario no actualizado", DesktopNotify.FAIL, 8000);
+                                                            }
+                                                        }else{
+                                                            DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                                                            DesktopNotify.showDesktopMessage("Contraseñas diferentes", "Las contraseñas tienen que ser iguales.", DesktopNotify.WARNING, 8000);
+                                                        }
+                                                    }else {
+                                                        //Campos incompletos
+                                                        DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                                                        DesktopNotify.showDesktopMessage("Campos vacíos", "Por favor rellene todos los campos.", DesktopNotify.WARNING, 8000); //8 seg
+                                                    }
+                                                }else {
+                                                    usuarioSelected.setNombre(nom);
+                                                    usuarioSelected.setApellido(ape);
+
+                                                    usuarioSelected.setfNacimiento(fechaNac);
+                                                    usuarioSelected.setTelefono(tel);
+                                                    usuarioSelected.setGenero(genero);
+                                                    usuarioSelected.setRol(rol);
+                                                    
+                                                    if(daoUsuario.update(usuarioSelected)){ //Guardado
+                                                        //Mensaje de modificado
+                                                        DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                                                        DesktopNotify.showDesktopMessage("Usuario actualizado", "El usuario ha sido modificado exitosamente.", DesktopNotify.SUCCESS, 8000);
+                                                        if (isLoged) {
+                                                            usuario.setNick(usuarioSelected.getNick());
+                                                            actualizarHeader(usuarioSelected);
+                                                        }
+                                                        usuarioSelected = null;
+                                                        usuarioModal.dispose();
+                                                        isLoged = false;
+                                                    }else{ //Ocurrio un error
+                                                        DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                                                        DesktopNotify.showDesktopMessage("Error", "Usuario no actualizado", DesktopNotify.FAIL, 8000);
+                                                    }
                                                 }
 
                                             }else if (existeUser.toArray().get(0).getEstado() == 0){
@@ -1474,7 +1568,10 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                                                     //Mensaje de modificado
                                                     DesktopNotify.setDefaultTheme(NotifyTheme.Green);
                                                     DesktopNotify.showDesktopMessage("Usuario actualizado", "El usuario ha sido modificado exitosamente.", DesktopNotify.SUCCESS, 8000);
-                                                    actualizarHeader(usuarioSelected);
+                                                    if (isLoged) {
+                                                        usuario.setNick(usuarioSelected.getNick());
+                                                        actualizarHeader(usuarioSelected);
+                                                    }
                                                     usuarioSelected = null;
                                                     usuarioModal.dispose();
                                                 }else{ //Ocurrio un error
@@ -1647,26 +1744,33 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
         }
         
         if (btn.equals("Factura")) {
+            
+            if (registroSelected.getEstado() == 0) {
+                String path = "";
 
-            String path = "";
+                JFileChooser file = new JFileChooser();
+                file.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                int request = file.showSaveDialog(menu);
 
-            JFileChooser file = new JFileChooser();
-            file.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            int request = file.showSaveDialog(menu);
+                if (request == JFileChooser.APPROVE_OPTION) {
+                    path = file.getSelectedFile().getPath();
+                    ListaSimple<Registro> registro = daoRegistro.selectAllTo("id_registro", String.valueOf(registroSelected.getIdRegistro()));
+                    ListaSimple<Hotel> hotel = daoHotel.selectAll();
 
-            if (request == JFileChooser.APPROVE_OPTION) {
-                path = file.getSelectedFile().getPath();
-                ListaSimple<Registro> registro = daoRegistro.selectAllTo("id_registro", String.valueOf(registroSelected.getIdRegistro()));
-                ListaSimple<Hotel> hotel = daoHotel.selectAll();
-
-                ExportPDF exporPdf = new ExportPDF();
-                exporPdf.setHotel(hotel.toArray().get(0));
-                exporPdf.setListaRegistro(registro);
-                exporPdf.setPath(path);
-                exporPdf.crearFacturaProducto();
-                DesktopNotify.setDefaultTheme(NotifyTheme.Green);
-                DesktopNotify.showDesktopMessage("Reporte generado", "Ruta: " + path, DesktopNotify.INFORMATION, 10000);
+                    ExportPDF exporPdf = new ExportPDF();
+                    exporPdf.setHotel(hotel.toArray().get(0));
+                    exporPdf.setListaRegistro(registro);
+                    exporPdf.setPath(path);
+                    exporPdf.crearFacturaProducto();
+                    DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                    DesktopNotify.showDesktopMessage("Reporte generado", "Ruta: " + path, DesktopNotify.INFORMATION, 10000);
+                }
+            }else {
+                DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                DesktopNotify.showDesktopMessage("Registro no culminado", "El registro seleccionado aun no ha sido facturado.", DesktopNotify.INFORMATION, 10000);
             }
+
+            
 
         }
         
@@ -1853,13 +1957,14 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
 
         ListaSimple<Habitacion> habitacion = daoHabitacion.selectAll();
         ListaSimple<Producto> producto = daoProducto.selectAll();
-        ListaSimple<Usuario> usuario = daoUsuario.selectAll();
+        ListaSimple<Usuario> usuarios = daoUsuario.selectAll();
         ListaSimple<Registro> registro = daoRegistro.selectAll();
 
         int cantRegis = 0;
         int cantDispo = 0;
         int cantReserv = 0;
         int cantOcup = 0;
+        int cantUsuario = 0;
 
         for (Registro x : registro.toArray()) {
             if (x.getEstado() == 1) {
@@ -1870,7 +1975,12 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
         /*ALERTAS TOTALES*/
         dashVista.lbTotHab.setText(String.valueOf(habitacion.toArray().size()));
         dashVista.lbTotProd.setText(String.valueOf(producto.toArray().size()));
-        dashVista.lbTotUsu.setText(String.valueOf(usuario.toArray().size()));
+        for (Usuario x : usuarios.toArray()) {
+            if (x.getEstado() == 1) {
+                cantUsuario++;
+            } 
+        }
+        dashVista.lbTotUsu.setText(String.valueOf(cantUsuario));
         dashVista.lbTotFac.setText(String.valueOf(cantRegis));
 
         /*ALERTAS DE DISPONIBILIDAD*/
@@ -2245,7 +2355,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             }
             
             this.productoSelected = producto.toArray().get(0);
-            
+            this.modalMProducto.btnModProducto.setEnabled(true);
             this.modalMProducto.tfNomP.setText(productoSelected.getDescripcion());
             this.modalMProducto.tfPrecio.setText(String.valueOf(productoSelected.getPrecio()));
         }
@@ -2261,7 +2371,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
 
                     Producto obj = daoProducto.selectAllTo("descripcion_producto", desc).toArray().get(0);
                     RegistroProducto registro = new RegistroProducto(obj);
-                    
+                    System.out.println(registro.getProducto().getDescripcion() + " " + registro.getProducto().getCodigo());
                     RegistroProducto encontrado = (RegistroProducto) registrosProductos.buscar(registro).getDato();
                     
                     registrosProductos.eliminar(encontrado);
@@ -2862,9 +2972,9 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
     @Override
     public void itemStateChanged(ItemEvent e) {
 
-        if (registroVista.cbEstado.getSelectedItem().equals("HOSPEDAJE")) {
-            registroVista.fechaEntrada.setEnabled(false);
-        }
+//        if (registroVista.cbEstado.getSelectedItem().equals("HOSPEDAJE")) {
+//            registroVista.fechaEntrada.setEnabled(false);
+//        }
     }
 
     private void mostrarInfoFinal() {

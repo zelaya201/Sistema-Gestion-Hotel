@@ -10,11 +10,13 @@ public class ModalModProducto extends javax.swing.JDialog {
         initComponents();
         setLocationRelativeTo(null);
         btnModProducto.setActionCommand("btnModProducto");
+        btnGenerarRep.setActionCommand("ReportePro");
     }
     
     public void setControlador(Controlador control){
         btnModProducto.addActionListener(control);
         this.tbModP.addMouseListener(control);
+        this.btnGenerarRep.addActionListener(control);
     }
     
     public void iniciar(){
@@ -35,7 +37,7 @@ public class ModalModProducto extends javax.swing.JDialog {
         tfPrecio = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         btnModProducto = new newscomponents.RSButtonIcon_new();
-        btnAddProducto1 = new newscomponents.RSButtonIcon_new();
+        btnGenerarRep = new newscomponents.RSButtonIcon_new();
         body1 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tbModP = new rojerusan.RSTableMetro();
@@ -48,7 +50,7 @@ public class ModalModProducto extends javax.swing.JDialog {
         header.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
         header.setForeground(new java.awt.Color(51, 51, 51));
         header.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        header.setText("Modificar producto");
+        header.setText("Listado de Productos");
         header.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
 
         body.setBackground(new java.awt.Color(255, 255, 255));
@@ -56,11 +58,11 @@ public class ModalModProducto extends javax.swing.JDialog {
         jLabel5.setBackground(new java.awt.Color(204, 204, 204));
         jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel5.setText("PRECIO ($)");
+        jLabel5.setText("PRECIO: ($)");
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel4.setText("NOMBRE DE PRODUCTO");
+        jLabel4.setText("NOMBRE DE PRODUCTO:");
 
         tfNomP.setBackground(new java.awt.Color(255, 255, 255));
         tfNomP.setForeground(new java.awt.Color(0, 0, 0));
@@ -99,19 +101,19 @@ public class ModalModProducto extends javax.swing.JDialog {
             .addGroup(bodyLayout.createSequentialGroup()
                 .addGap(223, 223, 223)
                 .addGroup(bodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bodyLayout.createSequentialGroup()
                         .addGap(180, 180, 180)
                         .addGroup(bodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(tfNomP, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(tfPrecio, javax.swing.GroupLayout.Alignment.TRAILING))))
+                            .addComponent(tfNomP, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addComponent(tfPrecio, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))))
                 .addGap(184, 184, 184))
         );
         bodyLayout.setVerticalGroup(
             bodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(bodyLayout.createSequentialGroup()
-                .addGap(24, 24, 24)
+                .addGap(15, 15, 15)
                 .addGroup(bodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addGroup(bodyLayout.createSequentialGroup()
                         .addComponent(tfNomP, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -121,14 +123,14 @@ public class ModalModProducto extends javax.swing.JDialog {
                         .addComponent(jLabel4)
                         .addGap(26, 26, 26)
                         .addComponent(jLabel5)))
-                .addContainerGap(57, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, new java.awt.Color(204, 204, 204)));
 
         btnModProducto.setBackground(new java.awt.Color(61, 137, 248));
-        btnModProducto.setText("Guardar");
+        btnModProducto.setText("Guardar cambios");
         btnModProducto.setBackgroundHover(new java.awt.Color(39, 116, 229));
         btnModProducto.setFocusPainted(false);
         btnModProducto.setFont(new java.awt.Font("Bahnschrift", 0, 16)); // NOI18N
@@ -144,20 +146,20 @@ public class ModalModProducto extends javax.swing.JDialog {
             }
         });
 
-        btnAddProducto1.setBackground(new java.awt.Color(61, 137, 248));
-        btnAddProducto1.setText("Generar reporte");
-        btnAddProducto1.setBackgroundHover(new java.awt.Color(39, 116, 229));
-        btnAddProducto1.setFocusPainted(false);
-        btnAddProducto1.setFont(new java.awt.Font("Bahnschrift", 0, 16)); // NOI18N
-        btnAddProducto1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        btnAddProducto1.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnAddProducto1.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.FILE_UPLOAD);
-        btnAddProducto1.setOpaque(true);
-        btnAddProducto1.setSizeIcon(22.0F);
-        btnAddProducto1.setVerifyInputWhenFocusTarget(false);
-        btnAddProducto1.addActionListener(new java.awt.event.ActionListener() {
+        btnGenerarRep.setBackground(new java.awt.Color(61, 137, 248));
+        btnGenerarRep.setText("Generar reporte");
+        btnGenerarRep.setBackgroundHover(new java.awt.Color(39, 116, 229));
+        btnGenerarRep.setFocusPainted(false);
+        btnGenerarRep.setFont(new java.awt.Font("Bahnschrift", 0, 16)); // NOI18N
+        btnGenerarRep.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        btnGenerarRep.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnGenerarRep.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.FILE_UPLOAD);
+        btnGenerarRep.setOpaque(true);
+        btnGenerarRep.setSizeIcon(22.0F);
+        btnGenerarRep.setVerifyInputWhenFocusTarget(false);
+        btnGenerarRep.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddProducto1ActionPerformed(evt);
+                btnGenerarRepActionPerformed(evt);
             }
         });
 
@@ -169,7 +171,7 @@ public class ModalModProducto extends javax.swing.JDialog {
                 .addGap(112, 112, 112)
                 .addComponent(btnModProducto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(125, 125, 125)
-                .addComponent(btnAddProducto1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnGenerarRep, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -178,8 +180,8 @@ public class ModalModProducto extends javax.swing.JDialog {
                 .addGap(22, 22, 22)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnModProducto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnAddProducto1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(27, Short.MAX_VALUE))
+                    .addComponent(btnGenerarRep, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
 
         body1.setBackground(new java.awt.Color(255, 255, 255));
@@ -313,9 +315,9 @@ public class ModalModProducto extends javax.swing.JDialog {
 
     }//GEN-LAST:event_btnModProductoActionPerformed
 
-    private void btnAddProducto1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProducto1ActionPerformed
+    private void btnGenerarRepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarRepActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnAddProducto1ActionPerformed
+    }//GEN-LAST:event_btnGenerarRepActionPerformed
 
     
     /**
@@ -361,7 +363,7 @@ public class ModalModProducto extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JPanel body;
     public javax.swing.JPanel body1;
-    public newscomponents.RSButtonIcon_new btnAddProducto1;
+    public newscomponents.RSButtonIcon_new btnGenerarRep;
     public newscomponents.RSButtonIcon_new btnModProducto;
     public javax.swing.JPanel form;
     public javax.swing.JLabel header;

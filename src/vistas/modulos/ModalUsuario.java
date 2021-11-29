@@ -351,7 +351,7 @@ public class ModalUsuario extends javax.swing.JDialog {
         form.add(jtNom, gridBagConstraints);
 
         iconTel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        iconTel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/resume_22px.png"))); // NOI18N
+        iconTel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/phone_22px.png"))); // NOI18N
         iconTel.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(204, 204, 204), 1, true));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;

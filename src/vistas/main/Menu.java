@@ -399,8 +399,12 @@ public class Menu extends javax.swing.JFrame {
     public void resetMenu(){
         this.btnDash.setBackground(new Color(42,53,66));
         this.btnVenta.setBackground(new Color(42,53,66));
-        this.btnHab.setBackground(new Color(42,53,66));
-        this.btnTipoHab.setBackground(new Color(42,53,66));
+        
+        /* Desplegables */
+        this.btnHab.setBackground(new Color(51,65,80));
+        this.btnListRegistro.setBackground(new Color(51,65,80));
+        this.btnTipoHab.setBackground(new Color(51,65,80));
+        
         this.btnRecepcion.setBackground(new Color(42,53,66));
         this.btnUsuario.setBackground(new Color(42,53,66));
     }
@@ -446,7 +450,8 @@ public class Menu extends javax.swing.JFrame {
     }//GEN-LAST:event_btnUsuarioActionPerformed
 
     private void btnListRegistroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListRegistroActionPerformed
-        // TODO add your handling code here:
+        resetMenu();
+        this.btnListRegistro.setBackground(new Color(241,123,55));
     }//GEN-LAST:event_btnListRegistroActionPerformed
 
     private void btnConfigActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfigActionPerformed
