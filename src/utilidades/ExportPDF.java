@@ -102,7 +102,7 @@ public class ExportPDF {
         Paragraph saltoDeLinea = new Paragraph(""); 
         //Cuerpo de Primera Tabla  
         
-        Table huespedDetalles = new Table(4).useAllAvailableWidth();
+        Table huespedDetalles = new Table(3).useAllAvailableWidth();
         huespedDetalles.setHorizontalAlignment(HorizontalAlignment.CENTER);
         huespedDetalles.addCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).add(new Paragraph(String.valueOf("DUI: " + ListaRegistro.toArray().get(0).getCliente().getDui())).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
         huespedDetalles.addCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).add(new Paragraph(String.valueOf("Huésped: " + ListaRegistro.toArray().get(0).getCliente().getNombre() + " " + ListaRegistro.toArray().get(0).getCliente().getApellido())).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
@@ -421,7 +421,7 @@ public class ExportPDF {
         productos.addHeaderCell(new Cell().setBorder(Border.NO_BORDER).setFont(font2).setBackgroundColor(new DeviceRgb(221,221,221)).add(new Paragraph("Precio").setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
        
         for (Producto x : ListaProducto.toArray()) {
-             productos.addCell(new Cell().setFont(font2).add(new Paragraph(String.valueOf("00" + x.getCodigo())).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
+             productos.addCell(new Cell().setFont(font2).add(new Paragraph(String.valueOf(x.getCodigo())).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
              productos.addCell(new Cell().setFont(font2).add(new Paragraph(String.valueOf(x.getDescripcion())).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
              productos.addCell(new Cell().setFont(font2).add(new Paragraph(String.valueOf("$" + formatoDecimal(x.getPrecio()))).setFontSize(11f).setTextAlignment(TextAlignment.CENTER)).setVerticalAlignment(VerticalAlignment.MIDDLE));
         }

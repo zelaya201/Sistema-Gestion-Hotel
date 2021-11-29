@@ -1848,7 +1848,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                 cantDispo++;
             } else if (x.getDisposicion().equals("OCUPADA")) {
                 cantOcup++;
-            } else if (x.getDisposicion().equals("RESERVADA")) {
+            } else if (x.getDisposicion().equals("RESERVACION")) {
                 cantReserv++;
             }
         }
@@ -2776,9 +2776,9 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
     @Override
     public void itemStateChanged(ItemEvent e) {
 
-        if (registroVista.cbEstado.getSelectedItem().equals("HOSPEDAJE")) {
-            registroVista.fechaEntrada.setEnabled(false);
-        }
+//        if (registroVista.cbEstado.getSelectedItem().equals("HOSPEDAJE")) {
+//            registroVista.fechaEntrada.setEnabled(false);
+//        }
     }
     
 }
