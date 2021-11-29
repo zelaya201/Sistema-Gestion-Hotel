@@ -1173,8 +1173,9 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
         }
         if (principalOn.equals("mFinal") && btn.getActionCommand().equals("btnCulminar")) {
             double mora;
-            
+            Registro estado = null;
             recepcionSelected.setDisposicion("DISPONIBLE");
+            estado = daoRegistro.selectId(recepcionSelected.getNumHabitacion()).toArray().get(0);
 //            recepcionSelected.setEstado(0);
             
             if (vistaFin.txtMoraFinal.getText().isEmpty()) {
@@ -1196,7 +1197,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
 //                DesktopNotify.showDesktopMessage("Gracias por visitarnos", "Vuelve Pronto", DesktopNotify.SUCCESS, 8000);
                     
             }
-            if (daoRegistro.FinRegistro(registroSelected)) {
+            if (daoRegistro.FinRegistro(estado)) {
 //                System.out.println("FUNCIONA FIN REGISTRO O SEA CAMBIAR EL ESTADO???");
             }
             DesktopNotify.setDefaultTheme(NotifyTheme.Green);

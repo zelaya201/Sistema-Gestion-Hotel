@@ -49,7 +49,7 @@ public class RegistroDao {
     }
     
     public ListaSimple<Registro> selectId(int id) throws SQLException{
-        String sql = "select * from registro where id_registro =" + id;
+        String sql = "select * from registro where fk_num_habitacion =" + id;
         return select(sql);
     }
 
