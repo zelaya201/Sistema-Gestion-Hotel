@@ -1160,6 +1160,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
             }
 
             if (btn.getActionCommand().equals("guardarRegistro") ) {
+                
                 String huespedC = registroVista.cbHuesped.getSelectedItem().toString().substring(0, 10);
                 String tipoRegistro = registroVista.cbEstado.getSelectedItem().toString();
                 Date fechaE = registroVista.fechaEntrada.getDate();
@@ -1168,8 +1169,12 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                 String fechaSalida = f.format(fechaS);
                 double descuento = 0;
                 double adelanto = 0;
-                if (!registroVista.txtDescuento.getText().isEmpty() && !registroVista.txtAdelanto.getText().isEmpty()) {
-                    descuento = Double.parseDouble(registroVista.txtDescuento.getText());
+                
+                if (!registroVista.txtDescuento.getText().isEmpty()) {
+                    descuento = Double.parseDouble(registroVista.txtDescuento.getText()); 
+                }
+                
+                if(!registroVista.txtAdelanto.getText().isEmpty()){
                     adelanto = Double.parseDouble(registroVista.txtAdelanto.getText());
                 }
                 
@@ -1180,6 +1185,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                 
                 Habitacion habitacion = new Habitacion();
                 habitacion.setNumHabitacion(Integer.parseInt(registroVista.lbNumHab.getText()));
+                
                 if (registroVista.cbEstado.getSelectedItem().toString().equals("HOSPEDAJE")) {
                     habitacion.setDisposicion("OCUPADA");
                 }else{
@@ -1190,6 +1196,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                 user.setIdUsuario(usuario.getIdUsuario());
                 
                 Registro registro = new Registro(fechaEntrada, fechaSalida, tipoRegistro, 1, totalPagar, descuento, adelanto, 0, cliente, habitacion, user);
+                
                 if (daoRegistro.insert(registro)) {
                     
                     DesktopNotify.setDefaultTheme(NotifyTheme.Green);
@@ -1198,6 +1205,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                     if (daoHabitacion.updateEstado(habitacion)) {
                         System.out.println("disposicion actualizada");
                     }
+                    
                     mostrarModulos("mRecepcion");
                 }
             }
