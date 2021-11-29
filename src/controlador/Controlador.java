@@ -9,19 +9,13 @@ import com.itextpdf.layout.borders.Border;
 import ds.desktop.notify.DesktopNotify;
 import ds.desktop.notify.NotifyTheme;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
-import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -92,6 +86,7 @@ import vistas.modulos.VistaHabitacion;
 import vistas.modulos.VistaListadoRegistro;
 import vistas.modulos.VistaRecepcion;
 import vistas.modulos.VistaRegistro;
+import vistas.modulos.VistaReservacion;
 import vistas.modulos.VistaTipo;
 import vistas.modulos.VistaUsuario;
 import vistas.modulos.VistaVentas;
@@ -170,11 +165,13 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
     private VistaRecepcion recepVista;
     private Habitacion recepcionSelected = null;
     private VistaFinalizar vistaFin;
+    private VistaReservacion vistaRerserva;
 
     /* CLIENTE */
     private ModalCliente huespedModal;
     private ClienteDao daoCliente = new ClienteDao();
     private Cliente clienteCulminado = null;
+    private Cliente clienteReserva = null;
 
     /* CONFIGURACIÓN */
     private ModalConfig configModal;
@@ -279,6 +276,13 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
             principalOn = "mFinal";
             mostrarInfoFinal();
             new CambiaPanel(menu.body, vistaFin);
+        } else if(mod.equals("mReservacion")){
+            this.vistaRerserva = new VistaReservacion();
+            vistaRerserva.setControlador(this);
+            principalOn = "mReserva";
+            
+            mostrarInfoReserva();
+            new CambiaPanel(menu.body, vistaRerserva);
         }
     }
 
@@ -1238,6 +1242,35 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
             eventosBotones("Factura");
             mostrarModulos("mRecepcion");
 
+        }
+        if (principalOn.equals("mReserva")) {
+            if (btn.getActionCommand().equals("confirmarReserva")) {
+                recepcionSelected.setDisposicion("OCUPADA");
+            
+            try {
+                
+                if (daoHabitacion.updateEstado(recepcionSelected)) {
+                    DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                    DesktopNotify.showDesktopMessage("Asistencia Completa", "El Cliente a confirmado asistencia", DesktopNotify.SUCCESS, 8000);
+                    
+                }
+                
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+            mostrarModulos("mRecepcion");
+            }
+            if (btn.getActionCommand().equals("cancelarReserva")) {
+                recepcionSelected.setDisposicion("DISPONIBLE");
+                if (daoRegistro.delete(registroSelected)) {
+                    if (daoHabitacion.updateEstado(recepcionSelected)) {
+                        DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                        DesktopNotify.showDesktopMessage("Se ha cancelado la reserva", "La habitacion pasa a ser disponible", DesktopNotify.SUCCESS, 8000);
+                        mostrarModulos("mRecepcion");
+                    }
+                }
+            }
+            
         }
     }
     
@@ -2405,6 +2438,18 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
             } catch (IOException | SQLException e) {
             }
         }
+        if (btn.getActionCommand().equals("confirmarReserva")) {
+            try {
+                accionesDeBotones(btn);
+            } catch (Exception e) {
+            }
+        }
+        if (btn.getActionCommand().equals("cancelarReserva")) {
+            try {
+                accionesDeBotones(btn);
+            } catch (Exception e) {
+            }
+        }
     }
 
     @Override
@@ -2586,9 +2631,6 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
             try {
                 ListaSimple<Habitacion> th = daoHabitacion.selectAllTo("num_habitacion", me.getComponent().getName());
                 recepcionSelected = th.toArray().get(0);
-                
-                
-                
                 switch (recepcionSelected.getDisposicion()) {
                     case "DISPONIBLE":
                         mostrarModulos("mRegistro");
@@ -2602,6 +2644,11 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                        
                         break;
                     case "RESERVACION":
+                        registroSelected.setHabitacion(recepcionSelected);
+                        registroSelected = daoRegistro.selectHuesped(registroSelected);
+                        ListaSimple<Cliente> clReserva = daoCliente.selectAllTo("dui_cliente", registroSelected.getCliente().getDui());
+                        clienteReserva = clReserva.toArray().get(0);
+                        mostrarModulos("mReservacion");
                         
                         break;
                     default:
@@ -3087,4 +3134,37 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
         vistaFin.lbTotalConProductos.setText(String.valueOf(daoRegistroP.subTotalCompleto(registroSelected) + Double.parseDouble(vistaFin.lbTotalSinConsumo.getText())));
     }
 
+    private void mostrarInfoReserva() {
+        vistaRerserva.lbNumHabReserva.setText(String.valueOf(recepcionSelected.getNumHabitacion()));
+        vistaRerserva.lbTipoHabReserva.setText(recepcionSelected.getTipoHabitacion().getNombre());
+        vistaRerserva.lbPrecioHabReserva.setText(String.valueOf(recepcionSelected.getPrecio()));
+        
+        vistaRerserva.lbDuiHuespedReserva.setText(clienteReserva.getDui());
+        vistaRerserva.lbNombreHuespedReserva.setText(clienteReserva.getNombre()+ " " + clienteReserva.getApellido());
+        vistaRerserva.lbFechaEntradaReserva.setText(registroSelected.getFechaEntrada());
+        vistaRerserva.lbFechaSalidaReserva.setText(registroSelected.getFechaSalida());
+        vistaRerserva.lbCorreoReserva.setText(clienteReserva.getEmail());
+        
+        vistaRerserva.lbTotalFinalReserva.setText(String.valueOf(obtenerDias(vistaRerserva.lbFechaEntradaReserva.getText(), vistaRerserva.lbFechaSalidaReserva.getText()) * Double.parseDouble(vistaRerserva.lbPrecioHabReserva.getText())));
+        vistaRerserva.lbDescuentoReserva.setText(String.valueOf(registroSelected.getDescuento()));
+        vistaRerserva.lbAdelantoReserva.setText(String.valueOf(registroSelected.getDeposito()));
+//        vistaFin.txtMoraFinal.setText("");
+        vistaRerserva.lbTotalReserva.setText(String.valueOf(Double.parseDouble(vistaRerserva.lbTotalFinalReserva.getText()) - 
+                        Double.parseDouble(vistaRerserva.lbDescuentoReserva.getText()) -
+                        Double.parseDouble(vistaRerserva.lbAdelantoReserva.getText())));
+        
+            try {
+                Date actual = f.parse(fechaActual);
+                String fechaEntrada = vistaRerserva.lbFechaEntradaReserva.getText();
+                Date fechaEntradaCompare = f.parse(fechaEntrada);
+                
+                if (!fechaEntradaCompare.equals(actual)) {
+                    vistaRerserva.btnAsistencia.setEnabled(false);
+                }
+            } catch (ParseException e) {
+                System.out.println(e);
+            }
+        
+    }
+    
 }
