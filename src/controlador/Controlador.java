@@ -3061,7 +3061,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
 
         vistaFin.lbNumHabFinal.setText(String.valueOf(recepcionSelected.getNumHabitacion()));
         vistaFin.lbTipoHabFinal.setText(recepcionSelected.getTipoHabitacion().getNombre());
-        vistaFin.lbPrecioHabFinal.setText(String.valueOf(recepcionSelected.getPrecio()));
+        vistaFin.lbPrecioHabFinal.setText(formatoDecimal(recepcionSelected.getPrecio()));
         
         vistaFin.lbDuiHuespedFinal.setText(clienteCulminado.getDui());
         vistaFin.lbNombreHuespedFinal.setText(clienteCulminado.getNombre()+ " " + clienteCulminado.getApellido());
@@ -3073,9 +3073,11 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
         vistaFin.lbDescuentoFinal.setText(String.valueOf(registroSelected.getDescuento()));
         vistaFin.lbAdelantoFinal.setText(String.valueOf(registroSelected.getDeposito()));
 
-        vistaFin.lbTotalSinConsumo.setText(String.valueOf(Double.parseDouble(vistaFin.lbTotalFinal.getText()) - 
-                        Double.parseDouble(vistaFin.lbDescuentoFinal.getText()) -
-                        Double.parseDouble(vistaFin.lbAdelantoFinal.getText())));
+        vistaFin.lbTotalSinConsumo.setText(String.valueOf(registroSelected.getTotal()));
+//        
+//        vistaFin.lbTotalSinConsumo.setText(String.valueOf(Double.parseDouble(vistaFin.lbTotalFinal.getText()) - 
+//                        Double.parseDouble(vistaFin.lbDescuentoFinal.getText()) -
+//                        Double.parseDouble(vistaFin.lbAdelantoFinal.getText())));
         try {
             mostrarTablaFinal(vistaFin.tblProductosFinal);
         } catch (SQLException ex) {
