@@ -149,7 +149,7 @@ public class RegistroDao {
         return false;
     }
     public Registro selectHuesped(Registro obj) throws SQLException{
-     String sql = "SELECT dui_cliente, email_cliente, fentrada_registro, fsalida_registro, descuento_registro, deposito_registro FROM registro r INNER JOIN cliente c ON r.fk_dui_cliente = c.dui_cliente WHERE fk_num_habitacion = " + obj.getHabitacion().getNumHabitacion();   
+     String sql = "SELECT dui_cliente, email_cliente, fentrada_registro, fsalida_registro, descuento_registro, deposito_registro FROM registro r INNER JOIN cliente c ON r.fk_dui_cliente = c.dui_cliente WHERE fk_num_habitacion = " + obj.getHabitacion().getNumHabitacion() + " && r.estado_registro = 1";   
      Registro re = null;
         try {
             con = Conexion.getConexion();
@@ -157,7 +157,7 @@ public class RegistroDao {
             rs = ps.executeQuery();
             
             while (rs.next()) {
-                 re = new Registro();
+                re = new Registro();
                 Cliente h = new Cliente();
                 
                 h.setDui(rs.getString("dui_cliente"));

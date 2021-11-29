@@ -32,6 +32,10 @@ public class HabitacionDao {
         String sql = "select * from habitacion where " + atributo + "='" + condicion + "'";
         return select(sql);
     }
+//    public ListaSimple<Habitacion> selectAllToActive(String atributo, String condicion) throws SQLException{
+//        String sql = "select * from habitacion where " + atributo + "='" + condicion + "'";
+//        return select(sql);
+//    }
     
     public ListaSimple<Habitacion> buscar(String dato) throws SQLException{
         String sql = "select * from habitacion where num_habitacion like '" + dato + "%' or descripcion_habitacion like '" + dato + "%'";

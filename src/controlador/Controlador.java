@@ -1140,8 +1140,13 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                 String fechaEntrada = f.format(fechaE);                               
                 Date fechaS = registroVista.fechaSalida.getDate();
                 String fechaSalida = f.format(fechaS);
-                double descuento = Double.parseDouble(registroVista.txtDescuento.getText());
-                double adelanto = Double.parseDouble(registroVista.txtAdelanto.getText());
+                double descuento = 0;
+                double adelanto = 0;
+                if (!registroVista.txtDescuento.getText().isEmpty() && !registroVista.txtAdelanto.getText().isEmpty()) {
+                    descuento = Double.parseDouble(registroVista.txtDescuento.getText());
+                    adelanto = Double.parseDouble(registroVista.txtAdelanto.getText());
+                }
+                
                 double totalPagar = Double.parseDouble(registroVista.txtTotalConDescuento.getText());
                 
                 Cliente cliente = new Cliente();
@@ -2406,7 +2411,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                     usuarioSelected = lista.toArray().get(0);
                     mostrarModals("eliminarUsuario");
                 }
-            } catch (Exception ex) {
+            } catch (SQLException ex) {
 
             }
 
@@ -2516,7 +2521,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
             try {
                 ListaSimple<Habitacion> th = daoHabitacion.selectAllTo("num_habitacion", me.getComponent().getName());
                 recepcionSelected = th.toArray().get(0);
-                registroSelected.setHabitacion(recepcionSelected);
+                
                 
                 
                 switch (recepcionSelected.getDisposicion()) {
@@ -2524,6 +2529,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                         mostrarModulos("mRegistro");
                         break;
                     case "OCUPADA":
+                        registroSelected.setHabitacion(recepcionSelected);
                         registroSelected = daoRegistro.selectHuesped(registroSelected);
                         ListaSimple<Cliente> cl = daoCliente.selectAllTo("dui_cliente", registroSelected.getCliente().getDui());
                         clienteCulminado = cl.toArray().get(0);
@@ -2555,7 +2561,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                     Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        } catch(Exception e){
+        } catch(NumberFormatException e){
             System.out.println(e);
         }
 
