@@ -502,7 +502,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
             huespedModal.setControlador(this);
             modalOn = "huespedModal";
             huespedModal.iniciar();
-        }
+        } 
     }
 
     public void mostrarDatos(JTable tabla) throws SQLException {
@@ -1212,54 +1212,71 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
         }
         
         if (principalOn.equals("mFinal") && btn.getActionCommand().equals("btnCulminar")) {
-            
             double mora;
             Registro estado = null;
-            recepcionSelected.setDisposicion("DISPONIBLE");
+            try {
+                Date actual = f.parse(fechaActual);
+                String fechaSalida = registroSelected.getFechaSalida();
+                Date fechaSalidaCompare = f.parse(fechaSalida);
+                
+                if (!fechaSalidaCompare.equals(actual)) {
+                    confirmDialog = new ConfirmDialog(new JFrame(), true);
+                    confirmDialog.setControlador(this);
+                    modalOn = "modalAvisoCulminar";
+                    confirmDialog.header.setText("¡AVISO!");
+
+                    confirmDialog.textDialog.setText("<html><b>¡Restan " + obtenerDias(f.format(actual), fechaSalida) + "!</b>para que finalice su estadia.</html>");
+                    confirmDialog.btnEliminar.setText("¿Continuar?");
+                    confirmDialog.setLocationRelativeTo(null);
+                    confirmDialog.iniciar();
+                } else{
+                                
             
-            estado = daoRegistro.selectAllTo("id_registro", String.valueOf(registroSelected.getIdRegistro())).toArray().get(0);
+                    recepcionSelected.setDisposicion("DISPONIBLE");
+                    estado = daoRegistro.selectAllTo("id_registro", String.valueOf(registroSelected.getIdRegistro())).toArray().get(0);
+                    if (vistaFin.txtMoraFinal.getText().isEmpty()) {
+                        mora = 0;
+                    }else{
+                        mora = Double.parseDouble(vistaFin.txtMoraFinal.getText());
+                    }
             
-            if (vistaFin.txtMoraFinal.getText().isEmpty()) {
-                mora = 0;
-            }else{
-                mora = Double.parseDouble(vistaFin.txtMoraFinal.getText());
-            }
+                    registroSelected.setHabitacion(recepcionSelected);
+                    registroSelected.setMora(mora);
+                    registroSelected.setEstado(0);
             
-            registroSelected.setHabitacion(recepcionSelected);
-            registroSelected.setMora(mora);
-            registroSelected.setEstado(0);
-            
-            if (daoRegistro.cargarMora(registroSelected) && mora != 0) {
-                DesktopNotify.setDefaultTheme(NotifyTheme.Green);
-                DesktopNotify.showDesktopMessage("Se ha aplicado mora", "Has sido acreedor de un saldo de mora", DesktopNotify.WARNING, 8000);
+                    if (daoRegistro.cargarMora(registroSelected) && mora != 0) {
+                        DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                        DesktopNotify.showDesktopMessage("Se ha aplicado mora", "Has sido acreedor de un saldo de mora", DesktopNotify.WARNING, 8000);
                     
-            }
+                    }
             
-            if (daoHabitacion.updateEstado(recepcionSelected)) {
-//                DesktopNotify.setDefaultTheme(NotifyTheme.Green);
-//                DesktopNotify.showDesktopMessage("Gracias por visitarnos", "Vuelve Pronto", DesktopNotify.SUCCESS, 8000);
-                    
-            }
+            if (daoHabitacion.updateEstado(recepcionSelected)) {}
             
-            if (daoRegistro.FinRegistro(estado)) {
-//                System.out.println("FUNCIONA FIN REGISTRO O SEA CAMBIAR EL ESTADO???");
-            }
+            if (daoRegistro.FinRegistro(estado)) {}
             
             DesktopNotify.setDefaultTheme(NotifyTheme.Green);
             DesktopNotify.showDesktopMessage("Ruta de Factura", "Seleccione la ruta donde desea guardar la factura", DesktopNotify.SUCCESS, 12000);
             eventosBotones("Factura");
             mostrarModulos("mRecepcion");
-
+            }
+          } catch (ParseException e) {
+                System.out.println(e);
+          }
         }
+
         if (principalOn.equals("mReserva")) {
             if (btn.getActionCommand().equals("confirmarReserva")) {
                 recepcionSelected.setDisposicion("OCUPADA");
+                registroSelected.setTipo("HOSPEDAJE");
             
             try {
                 
                 if (daoHabitacion.updateEstado(recepcionSelected)) {
                     DesktopNotify.setDefaultTheme(NotifyTheme.Green);
                     DesktopNotify.showDesktopMessage("Asistencia Completa", "El Cliente a confirmado asistencia", DesktopNotify.SUCCESS, 8000);
+                    
+                }
+                if (daoRegistro.updateTipoRegistro(registroSelected)) {
                     
                 }
                 
@@ -2752,6 +2769,9 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
             
             }
         }
+        if (modalOn.equals("modalAvisoCulminar") && me.getSource().equals(confirmDialog.btnEliminar)) {
+            eventoLabel("btnCulminarRegistro");
+        }
     }
     
     public void generarHabitacionesOcupadas() throws SQLException {
@@ -2999,6 +3019,55 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
             }
 
         }
+  if (principalOn.equals("mFinal") && modalOn.equals("modalAvisoCulminar")) {
+      try {
+          double mora;
+            Registro estado = null;
+            try {
+                Date actual = f.parse(fechaActual);
+                String fechaSalida = registroSelected.getFechaSalida();
+                
+                double totalNoCulminado = (obtenerDias(f.format(actual), fechaSalida) * recepcionSelected.getPrecio());
+                registroSelected.setTotal(totalNoCulminado);
+                if (daoRegistro.updateTotal(registroSelected)) {
+                        
+                }
+                
+            } catch (NumberFormatException | ParseException e) {
+                System.out.println(e);
+            }
+                                            
+            
+                    recepcionSelected.setDisposicion("DISPONIBLE");
+                    estado = daoRegistro.selectAllTo("id_registro", String.valueOf(registroSelected.getIdRegistro())).toArray().get(0);
+                    if (vistaFin.txtMoraFinal.getText().isEmpty()) {
+                        mora = 0;
+                    }else{
+                        mora = Double.parseDouble(vistaFin.txtMoraFinal.getText());
+                    }
+            
+                    registroSelected.setHabitacion(recepcionSelected);
+                    registroSelected.setMora(mora);
+                    registroSelected.setEstado(0);
+            
+                    if (daoRegistro.cargarMora(registroSelected) && mora != 0) {
+                        DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                        DesktopNotify.showDesktopMessage("Se ha aplicado mora", "Has sido acreedor de un saldo de mora", DesktopNotify.WARNING, 8000);
+                    
+                    }
+            
+            if (daoHabitacion.updateEstado(recepcionSelected)) {}
+            
+            if (daoRegistro.FinRegistro(estado)) {}
+            confirmDialog.dispose();
+            DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+            DesktopNotify.showDesktopMessage("Ruta de Factura", "Seleccione la ruta donde desea guardar la factura", DesktopNotify.SUCCESS, 12000);
+            eventosBotones("Factura");
+            mostrarModulos("mRecepcion");
+        
+      } catch (Exception e) {
+      }
+  }
     }
 
     @Override
