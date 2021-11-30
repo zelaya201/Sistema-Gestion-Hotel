@@ -402,10 +402,10 @@ public class VistaRegistro extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 10);
         jPanel2.add(jLabel12, gridBagConstraints);
 
-        txtDescuento.setEditable(false);
         txtDescuento.setForeground(new java.awt.Color(0, 0, 0));
         txtDescuento.setBorderColor(new java.awt.Color(204, 204, 204));
         txtDescuento.setColorIcon(new java.awt.Color(153, 153, 153));
+        txtDescuento.setDragEnabled(true);
         txtDescuento.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.MONETIZATION_ON);
         txtDescuento.setPlaceholder("");
         txtDescuento.addKeyListener(new java.awt.event.KeyAdapter() {

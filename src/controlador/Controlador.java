@@ -1197,8 +1197,8 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                 double adelanto = 0;
                 
                 if(!registroVista.txtDescuento.getText().isEmpty() || !registroVista.txtAdelanto.getText().isEmpty()){
-                    descuento = (registroVista.txtDescuento.getText().isEmpty()) ? 0.00 : Double.parseDouble(registroVista.txtDescuento.getText());
-                    adelanto = (registroVista.txtAdelanto.getText().isEmpty()) ? 0.00 : Double.parseDouble(registroVista.txtAdelanto.getText());
+                    descuento = (registroVista.txtDescuento.getText().isEmpty()) ? 0 : Double.parseDouble(registroVista.txtDescuento.getText());
+                    adelanto = (registroVista.txtAdelanto.getText().isEmpty()) ? 0 : Double.parseDouble(registroVista.txtAdelanto.getText());
                     
                     if((descuento + adelanto) > Double.parseDouble(registroVista.txtTotalPagar.getText())){
                         
@@ -1273,8 +1273,6 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                     confirmDialog.setLocationRelativeTo(null);
                     confirmDialog.iniciar();
                 } else{
-                                
-            
                     recepcionSelected.setDisposicion("DISPONIBLE");
                     estado = daoRegistro.selectAllTo("id_registro", String.valueOf(registroSelected.getIdRegistro())).toArray().get(0);
                     if (vistaFin.txtMoraFinal.getText().isEmpty()) {
