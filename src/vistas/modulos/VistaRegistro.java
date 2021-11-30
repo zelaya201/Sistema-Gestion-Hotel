@@ -9,6 +9,7 @@ public class VistaRegistro extends javax.swing.JPanel {
         btnGuardarRegistro.setActionCommand("guardarRegistro");
         btnVerificarRegistro.setActionCommand("verificarRegistro");
         btnAddHuesped.setActionCommand("AgregarHuesped");
+        btnAtras.setActionCommand("btnRegresarRegistro");
         btnGuardarRegistro.setEnabled(false);
     }
 
@@ -17,6 +18,7 @@ public class VistaRegistro extends javax.swing.JPanel {
         this.btnVerificarRegistro.addActionListener(control);
         this.txtDescuento.addKeyListener(control);
         this.btnAddHuesped.addActionListener(control);
+        this.btnAtras.addActionListener(control);
     }
 
     /**
@@ -62,6 +64,7 @@ public class VistaRegistro extends javax.swing.JPanel {
         txtTotalConDescuento = new RSMaterialComponent.RSTextFieldOne();
         btnGuardarRegistro = new newscomponents.RSButtonIcon_new();
         btnVerificarRegistro = new newscomponents.RSButtonIcon_new();
+        btnAtras = new newscomponents.RSButtonIcon_new();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
 
@@ -253,6 +256,11 @@ public class VistaRegistro extends javax.swing.JPanel {
         cbHuesped.setColorSeleccion(new java.awt.Color(61, 137, 248));
         cbHuesped.setColorSeleccionTXT(new java.awt.Color(0, 0, 0));
         cbHuesped.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        cbHuesped.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbHuespedItemStateChanged(evt);
+            }
+        });
         cbHuesped.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbHuespedActionPerformed(evt);
@@ -296,7 +304,7 @@ public class VistaRegistro extends javax.swing.JPanel {
         fechaEntrada.setBgColor(new java.awt.Color(153, 153, 153));
         fechaEntrada.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         fechaEntrada.setFormatDate("dd/MM/yyyy\n");
-        fechaEntrada.setRequestFocusEnabled(false);
+        fechaEntrada.setName(""); // NOI18N
         fechaEntrada.addContainerListener(new java.awt.event.ContainerAdapter() {
             public void componentRemoved(java.awt.event.ContainerEvent evt) {
                 fechaEntradaComponentRemoved(evt);
@@ -316,17 +324,33 @@ public class VistaRegistro extends javax.swing.JPanel {
             public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
             }
         });
+        fechaEntrada.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                fechaEntradaMouseMoved(evt);
+            }
+        });
         fechaEntrada.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 fechaEntradaFocusGained(evt);
+            }
+        });
+        fechaEntrada.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
+            public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
+                fechaEntradaMouseWheelMoved(evt);
             }
         });
         fechaEntrada.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 fechaEntradaMouseClicked(evt);
             }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                fechaEntradaMouseEntered(evt);
+            }
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 fechaEntradaMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                fechaEntradaMouseReleased(evt);
             }
         });
         fechaEntrada.addInputMethodListener(new java.awt.event.InputMethodListener() {
@@ -381,9 +405,13 @@ public class VistaRegistro extends javax.swing.JPanel {
         txtDescuento.setForeground(new java.awt.Color(0, 0, 0));
         txtDescuento.setBorderColor(new java.awt.Color(204, 204, 204));
         txtDescuento.setColorIcon(new java.awt.Color(153, 153, 153));
+        txtDescuento.setEnabled(false);
         txtDescuento.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.MONETIZATION_ON);
         txtDescuento.setPlaceholder("");
         txtDescuento.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtDescuentoKeyReleased(evt);
+            }
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtDescuentoKeyTyped(evt);
             }
@@ -399,6 +427,7 @@ public class VistaRegistro extends javax.swing.JPanel {
         txtAdelanto.setForeground(new java.awt.Color(0, 0, 0));
         txtAdelanto.setBorderColor(new java.awt.Color(204, 204, 204));
         txtAdelanto.setColorIcon(new java.awt.Color(153, 153, 153));
+        txtAdelanto.setEnabled(false);
         txtAdelanto.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.MONETIZATION_ON);
         txtAdelanto.setPlaceholder("");
         txtAdelanto.addActionListener(new java.awt.event.ActionListener() {
@@ -407,6 +436,9 @@ public class VistaRegistro extends javax.swing.JPanel {
             }
         });
         txtAdelanto.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtAdelantoKeyReleased(evt);
+            }
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtAdelantoKeyTyped(evt);
             }
@@ -561,7 +593,10 @@ public class VistaRegistro extends javax.swing.JPanel {
         jPanel2.add(btnGuardarRegistro, gridBagConstraints);
 
         btnVerificarRegistro.setBackground(new java.awt.Color(61, 137, 248));
+        btnVerificarRegistro.setBorder(null);
         btnVerificarRegistro.setText("Verificar Datos");
+        btnVerificarRegistro.setBackgroundHover(new java.awt.Color(61, 137, 222));
+        btnVerificarRegistro.setFocusable(false);
         btnVerificarRegistro.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnVerificarRegistro.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         btnVerificarRegistro.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.CHECK);
@@ -571,13 +606,38 @@ public class VistaRegistro extends javax.swing.JPanel {
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 6;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(20, 28, 100, 4);
         jPanel2.add(btnVerificarRegistro, gridBagConstraints);
+
+        btnAtras.setBackground(new java.awt.Color(255, 255, 255));
+        btnAtras.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51)));
+        btnAtras.setForeground(new java.awt.Color(51, 51, 51));
+        btnAtras.setText("Regresar");
+        btnAtras.setBackgroundHover(new java.awt.Color(204, 204, 204));
+        btnAtras.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnAtras.setForegroundIcon(new java.awt.Color(51, 51, 51));
+        btnAtras.setForegroundText(new java.awt.Color(51, 51, 51));
+        btnAtras.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        btnAtras.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.EXIT_TO_APP);
+        btnAtras.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAtrasActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(20, 28, 100, 4);
+        jPanel2.add(btnAtras, gridBagConstraints);
 
         habPanel.add(jPanel2, java.awt.BorderLayout.CENTER);
 
@@ -622,24 +682,40 @@ public class VistaRegistro extends javax.swing.JPanel {
     }//GEN-LAST:event_txtTotalConDescuentoActionPerformed
 
     private void cbEstadoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbEstadoItemStateChanged
-        // TODO add your handling code here:
+        btnGuardarRegistro.setEnabled(false);
     }//GEN-LAST:event_cbEstadoItemStateChanged
 
     private void fechaEntradaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fechaEntradaMousePressed
-        System.out.println("HOALAASJAS");
+        System.out.println("NO HACE NADAAA");
     }//GEN-LAST:event_fechaEntradaMousePressed
 
     private void txtDescuentoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDescuentoKeyTyped
+       
         char val = evt.getKeyChar();
+        
         if ((val < '0' || val > '9') && (val != '.')) {
             evt.consume();
-        }
+        }else{
+            Double total = (txtTotalPagar.getText().isEmpty()) ? 0 : Double.parseDouble(txtTotalPagar.getText());
+
+            if(Double.parseDouble(this.txtDescuento.getText() + evt.getKeyChar()) > total){
+                evt.consume();
+            }
+        }  
+
     }//GEN-LAST:event_txtDescuentoKeyTyped
 
     private void txtAdelantoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtAdelantoKeyTyped
         char val = evt.getKeyChar();
+        
         if ((val < '0' || val > '9') && (val != '.')) {
             evt.consume();
+        }else{
+            Double total = (txtTotalPagar.getText().isEmpty()) ? 0 : Double.parseDouble(txtTotalPagar.getText());
+
+            if(Double.parseDouble(this.txtDescuento.getText() + this.txtAdelanto.getText() + evt.getKeyChar()) > total){
+                evt.consume();
+            }
         }
     }//GEN-LAST:event_txtAdelantoKeyTyped
 
@@ -648,11 +724,11 @@ public class VistaRegistro extends javax.swing.JPanel {
     }//GEN-LAST:event_btnVerificarRegistroActionPerformed
 
     private void fechaEntradaPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_fechaEntradaPropertyChange
-        
+
     }//GEN-LAST:event_fechaEntradaPropertyChange
 
     private void fechaEntradaVetoableChange(java.beans.PropertyChangeEvent evt)throws java.beans.PropertyVetoException {//GEN-FIRST:event_fechaEntradaVetoableChange
-        
+
     }//GEN-LAST:event_fechaEntradaVetoableChange
 
     private void fechaEntradaHierarchyChanged(java.awt.event.HierarchyEvent evt) {//GEN-FIRST:event_fechaEntradaHierarchyChanged
@@ -664,7 +740,7 @@ public class VistaRegistro extends javax.swing.JPanel {
     }//GEN-LAST:event_fechaEntradaComponentRemoved
 
     private void fechaEntradaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fechaEntradaMouseClicked
-       
+
     }//GEN-LAST:event_fechaEntradaMouseClicked
 
     private void fechaEntradaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_fechaEntradaFocusGained
@@ -680,12 +756,48 @@ public class VistaRegistro extends javax.swing.JPanel {
     }//GEN-LAST:event_fechaEntradaCaretPositionChanged
 
     private void fechaEntradaInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_fechaEntradaInputMethodTextChanged
-        System.out.println("DECIME QUE SI");
+        
     }//GEN-LAST:event_fechaEntradaInputMethodTextChanged
+
+    private void cbHuespedItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbHuespedItemStateChanged
+        btnGuardarRegistro.setEnabled(false);
+    }//GEN-LAST:event_cbHuespedItemStateChanged
+
+    private void txtDescuentoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDescuentoKeyReleased
+        Double total = (txtTotalPagar.getText().isEmpty()) ? 0 : Double.parseDouble(txtTotalPagar.getText());
+        Double descuento = (txtDescuento.getText().isEmpty()) ? 0 : Double.parseDouble(txtDescuento.getText());
+        
+        txtTotalConDescuento.setText(String.valueOf(total - descuento));
+    }//GEN-LAST:event_txtDescuentoKeyReleased
+
+    private void fechaEntradaMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fechaEntradaMouseReleased
+
+    }//GEN-LAST:event_fechaEntradaMouseReleased
+
+    private void fechaEntradaMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_fechaEntradaMouseWheelMoved
+
+    }//GEN-LAST:event_fechaEntradaMouseWheelMoved
+
+    private void fechaEntradaMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fechaEntradaMouseMoved
+
+    }//GEN-LAST:event_fechaEntradaMouseMoved
+
+    private void fechaEntradaMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fechaEntradaMouseEntered
+
+    }//GEN-LAST:event_fechaEntradaMouseEntered
+
+    private void txtAdelantoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtAdelantoKeyReleased
+        
+    }//GEN-LAST:event_txtAdelantoKeyReleased
+
+    private void btnAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtrasActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnAtrasActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private RSMaterialComponent.RSButtonIconOne btnAddHuesped;
+    private newscomponents.RSButtonIcon_new btnAtras;
     public newscomponents.RSButtonIcon_new btnGuardarRegistro;
     private newscomponents.RSButtonIcon_new btnVerificarRegistro;
     public RSMaterialComponent.RSComboBox cbEstado;

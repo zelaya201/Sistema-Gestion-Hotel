@@ -6,6 +6,8 @@
 package controlador;
 
 import com.itextpdf.layout.borders.Border;
+import com.sun.javafx.tk.Toolkit;
+import static com.sun.javafx.tk.Toolkit.getToolkit;
 import ds.desktop.notify.DesktopNotify;
 import ds.desktop.notify.NotifyTheme;
 import java.awt.Color;
@@ -1134,16 +1136,14 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                             }else{
 
                                 registroVista.txtTotalPagar.setText(String.valueOf(obtenerDias(fechaEntrada, fechaSalida) * Double.parseDouble((registroVista.lbPrecio.getText().substring(1)))));
-                                registroVista.txtTotalConDescuento.setText(registroVista.txtTotalPagar.getText());
                                 
                                 if (registroVista.txtDescuento.getText().isEmpty()) {
-                                    
+                                    registroVista.txtTotalConDescuento.setText(registroVista.txtTotalPagar.getText());
                                 }
                                 
-                                registroVista.fechaEntrada.setEnabled(false);
-                                registroVista.enableInputMethods(false);
-                                registroVista.enable(false);
                                 registroVista.btnGuardarRegistro.setEnabled(true);
+                                registroVista.txtDescuento.setEnabled(true);
+                                registroVista.txtAdelanto.setEnabled(true);
                             }
                         }
                     }else{
@@ -2403,6 +2403,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                 Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        
         if (btn.getActionCommand().equals("NuevaHabitacion")) {
             try {
                 mostrarModals("modalNewHabitacion");
@@ -2411,6 +2412,14 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
             }
         }
         
+        if(btn.getActionCommand().equals("btnRegresarRegistro")){
+            try {       
+                mostrarModulos("mRecepcion");
+            } catch (SQLException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+            
         if (btn.getActionCommand().equals("RegistrarHabitacion")) {
             try {
                 accionesDeBotones(btn);
@@ -2420,6 +2429,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                 Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        
         if (btn.getActionCommand().equals("ModificarHabitacion")) {
             try {
                 accionesDeBotones(btn);
@@ -3073,6 +3083,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                     if (cantidad > 0) {
                         addVentaVista.tfPrecio.setText("$ " + String.valueOf(formateador.format(cantidad * precioProducto)));
                     }
+                    
                 }else {
                     addVentaVista.tfPrecio.setText("");
                 }
@@ -3081,23 +3092,35 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
             }
         }
             
-        if (principalOn.equals("mRegistro")) {
-            Date fechaE = registroVista.fechaEntrada.getDate();
-            String fechaEntrada = f.format(fechaE);    
-            Date fechaS = registroVista.fechaSalida.getDate();
-            String fechaSalida = f.format(fechaS);
-            
-            if (ke.getSource().equals(registroVista.txtDescuento)) {
-                if (registroVista.txtDescuento.getText().isEmpty() && !registroVista.txtDescuento.getText().equals(".")) {
-                    
-                    registroVista.txtTotalConDescuento.setText(String.valueOf(obtenerDias(fechaEntrada, fechaSalida) * Double.parseDouble((registroVista.lbPrecio.getText().substring(1)))));
-                }else{
-                    registroVista.txtTotalConDescuento.setText(String.valueOf((obtenerDias(fechaEntrada, fechaSalida) * Double.parseDouble(registroVista.lbPrecio.getText().substring(1))) - Double.parseDouble(registroVista.txtDescuento.getText())));
-                    
-                }
-
-            }
-        }
+//        if (principalOn.equals("mRegistro")) {         
+//            
+//            Date fechaE = registroVista.fechaEntrada.getDate();
+//            String fechaEntrada = f.format(fechaE);    
+//            Date fechaS = registroVista.fechaSalida.getDate();
+//            String fechaSalida = f.format(fechaS);
+//            
+//            Double descuento = (registroVista.txtDescuento.getText().isEmpty()) ? 0 : Double.parseDouble(registroVista.txtDescuento.getText());
+//            Double total = (registroVista.txtTotalPagar.getText().isEmpty()) ? 0 : Double.parseDouble(registroVista.txtTotalPagar.getText());
+//            
+//            char caracter = ke.getKeyChar();
+//            
+//            if (caracter == '6') {
+//                System.out.println(ke.getSource());
+//            }
+//            
+//            if (ke.getSource().equals(registroVista.txtDescuento)) {
+//                if (registroVista.txtDescuento.getText().isEmpty() && !registroVista.txtDescuento.getText().equals(".")) {
+//                    registroVista.txtTotalConDescuento.setText(String.valueOf(obtenerDias(fechaEntrada, fechaSalida) * Double.parseDouble((registroVista.lbPrecio.getText().substring(1)))));
+//                }else{
+//                    if(total >= descuento){
+//                        registroVista.txtTotalConDescuento.setText(String.valueOf((obtenerDias(fechaEntrada, fechaSalida) * Double.parseDouble(registroVista.lbPrecio.getText().substring(1))) - Double.parseDouble(registroVista.txtDescuento.getText())));
+//                    }
+//                    
+//                }
+//
+//            }
+//        }
+        
         if (principalOn.equals("mFinal")) {
             if (ke.getSource().equals(vistaFin.txtMoraFinal)) {
                 if (Double.parseDouble(vistaFin.txtMoraFinal.getText()) > 10000) {
