@@ -1156,10 +1156,6 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                                         registroVista.txtTotalPagar.setText(String.valueOf(obtenerDias(fechaEntrada, fechaSalida) * Double.parseDouble((registroVista.lbPrecio.getText().substring(1)))));
                                         registroVista.txtTotalConDescuento.setText(registroVista.txtTotalPagar.getText());
 
-                                
-                                        registroVista.fechaEntrada.setEnabled(false);
-                                        registroVista.enableInputMethods(false);
-                                        registroVista.enable(false);
                                         registroVista.btnGuardarRegistro.setEnabled(true);
                                     }
    
@@ -1170,11 +1166,9 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
 //                                    if (registroVista.txtDescuento.getText().isEmpty()) {
 //                                    
 //                                    }
-                                
-                                    registroVista.fechaEntrada.setEnabled(false);
-                                    registroVista.enableInputMethods(false);
-                                    registroVista.enable(false);
+
                                     registroVista.btnGuardarRegistro.setEnabled(true);
+
                                 }
                             }
                         }
@@ -1202,44 +1196,62 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                 double descuento = 0;
                 double adelanto = 0;
                 
-                if (!registroVista.txtDescuento.getText().isEmpty()) {
-                    descuento = Double.parseDouble(registroVista.txtDescuento.getText()); 
-                }
                 
-                if(!registroVista.txtAdelanto.getText().isEmpty()){
-                    adelanto = Double.parseDouble(registroVista.txtAdelanto.getText());
-                }
                 
-                double totalPagar = Double.parseDouble(registroVista.txtTotalConDescuento.getText());
-                
-                Cliente cliente = new Cliente();
-                cliente.setDui(huespedC);
-                
-                Habitacion habitacion = new Habitacion();
-                habitacion.setNumHabitacion(Integer.parseInt(registroVista.lbNumHab.getText()));
-                
-                if (registroVista.cbEstado.getSelectedItem().toString().equals("HOSPEDAJE")) {
-                    habitacion.setDisposicion("OCUPADA");
-                }else{
-                    habitacion.setDisposicion(registroVista.cbEstado.getSelectedItem().toString());
-                }
-                
-                Usuario user = new Usuario();
-                user.setIdUsuario(usuario.getIdUsuario());
-                
-                Registro registro = new Registro(fechaEntrada, fechaSalida, tipoRegistro, 1, totalPagar, descuento, adelanto, 0, cliente, habitacion, user);
-                
-                if (daoRegistro.insert(registro)) {
+                if(!registroVista.txtDescuento.getText().isEmpty() || !registroVista.txtAdelanto.getText().isEmpty()){
+                    descuento = (registroVista.txtDescuento.getText().isEmpty()) ? 0.00 : Double.parseDouble(registroVista.txtDescuento.getText());
+                    adelanto = (registroVista.txtAdelanto.getText().isEmpty()) ? 0.00 : Double.parseDouble(registroVista.txtAdelanto.getText());
                     
-                    DesktopNotify.setDefaultTheme(NotifyTheme.Green);
-                    DesktopNotify.showDesktopMessage("Registro Satisfactorio", "Hospedaje o Reserva completados", DesktopNotify.SUCCESS, 8000);
-                    
-                    if (daoHabitacion.updateEstado(habitacion)) {
-                        System.out.println("disposicion actualizada");
+                    if((descuento + adelanto) > Double.parseDouble(registroVista.txtTotalPagar.getText())){
+                        
+                        DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                        DesktopNotify.showDesktopMessage("Error en el saldo total", "La sumatoria del descuento mas el adelanto es mayor al Saldo Total", DesktopNotify.INFORMATION, 8000);
+                        
+                    }else{
+                        
+                        if (!registroVista.txtDescuento.getText().isEmpty()) {
+                            descuento = Double.parseDouble(registroVista.txtDescuento.getText()); 
+                        }
+
+                        if(!registroVista.txtAdelanto.getText().isEmpty()){
+                            adelanto = Double.parseDouble(registroVista.txtAdelanto.getText());
+                        }
+
+                        double totalPagar = Double.parseDouble(registroVista.txtTotalConDescuento.getText());
+
+                        Cliente cliente = new Cliente();
+                        cliente.setDui(huespedC);
+
+                        Habitacion habitacion = new Habitacion();
+                        habitacion.setNumHabitacion(Integer.parseInt(registroVista.lbNumHab.getText()));
+
+                        if (registroVista.cbEstado.getSelectedItem().toString().equals("HOSPEDAJE")) {
+                            habitacion.setDisposicion("OCUPADA");
+                        }else{
+                            habitacion.setDisposicion(registroVista.cbEstado.getSelectedItem().toString());
+                        }
+
+                        Usuario user = new Usuario();
+                        user.setIdUsuario(usuario.getIdUsuario());
+
+                        Registro registro = new Registro(fechaEntrada, fechaSalida, tipoRegistro, 1, totalPagar, descuento, adelanto, 0, cliente, habitacion, user);
+
+                        if (daoRegistro.insert(registro)) {
+
+                            DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                            DesktopNotify.showDesktopMessage("Registro Satisfactorio", "Hospedaje o Reserva completados", DesktopNotify.SUCCESS, 8000);
+
+                            if (daoHabitacion.updateEstado(habitacion)) {
+                                System.out.println("disposicion actualizada");
+                            }
+
+                            mostrarModulos("mRecepcion");
+                        }
                     }
                     
-                    mostrarModulos("mRecepcion");
                 }
+                
+                
             }
         }
         
@@ -3270,7 +3282,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
         vistaFin.lbDescuentoFinal.setText(String.valueOf(registroSelected.getDescuento()));
         vistaFin.lbAdelantoFinal.setText(String.valueOf(registroSelected.getDeposito()));
 
-        vistaFin.lbTotalSinConsumo.setText(String.valueOf(registroSelected.getTotal()));
+        vistaFin.lbTotalSinConsumo.setText(String.valueOf(registroSelected.getTotal() - registroSelected.getDescuento()));
 //        
 //        vistaFin.lbTotalSinConsumo.setText(String.valueOf(Double.parseDouble(vistaFin.lbTotalFinal.getText()) - 
 //                        Double.parseDouble(vistaFin.lbDescuentoFinal.getText()) -

@@ -613,6 +613,14 @@ public class VistaFinalizar extends javax.swing.JPanel {
 
         txtMoraFinal.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         txtMoraFinal.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Mora/Penalidad", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Segoe UI", 1, 14))); // NOI18N
+        txtMoraFinal.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtMoraFinalKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtMoraFinalKeyTyped(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 0;
@@ -709,6 +717,18 @@ public class VistaFinalizar extends javax.swing.JPanel {
     private void btnCulminarRegistroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCulminarRegistroActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnCulminarRegistroActionPerformed
+
+    private void txtMoraFinalKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMoraFinalKeyReleased
+        
+    }//GEN-LAST:event_txtMoraFinalKeyReleased
+
+    private void txtMoraFinalKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMoraFinalKeyTyped
+        char val = evt.getKeyChar();
+        
+        if ((val < '0' || val > '9') && (val != '.')) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtMoraFinalKeyTyped
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

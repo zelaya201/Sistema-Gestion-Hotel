@@ -405,7 +405,6 @@ public class VistaRegistro extends javax.swing.JPanel {
         txtDescuento.setForeground(new java.awt.Color(0, 0, 0));
         txtDescuento.setBorderColor(new java.awt.Color(204, 204, 204));
         txtDescuento.setColorIcon(new java.awt.Color(153, 153, 153));
-        txtDescuento.setEnabled(false);
         txtDescuento.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.MONETIZATION_ON);
         txtDescuento.setPlaceholder("");
         txtDescuento.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -427,7 +426,6 @@ public class VistaRegistro extends javax.swing.JPanel {
         txtAdelanto.setForeground(new java.awt.Color(0, 0, 0));
         txtAdelanto.setBorderColor(new java.awt.Color(204, 204, 204));
         txtAdelanto.setColorIcon(new java.awt.Color(153, 153, 153));
-        txtAdelanto.setEnabled(false);
         txtAdelanto.setIcons(rojeru_san.efectos.ValoresEnum.ICONS.MONETIZATION_ON);
         txtAdelanto.setPlaceholder("");
         txtAdelanto.addActionListener(new java.awt.event.ActionListener() {
@@ -713,7 +711,7 @@ public class VistaRegistro extends javax.swing.JPanel {
         }else{
             Double total = (txtTotalPagar.getText().isEmpty()) ? 0 : Double.parseDouble(txtTotalPagar.getText());
 
-            if(Double.parseDouble(this.txtDescuento.getText() + this.txtAdelanto.getText() + evt.getKeyChar()) > total){
+            if(Double.parseDouble(this.txtAdelanto.getText() + evt.getKeyChar()) > total){
                 evt.consume();
             }
         }
