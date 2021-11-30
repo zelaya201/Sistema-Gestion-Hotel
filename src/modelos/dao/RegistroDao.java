@@ -222,6 +222,27 @@ public class RegistroDao {
         }
         return false;
     }
+        public boolean updateFechaSalida(Registro obj) {
+        String sql = "UPDATE registro SET fsalida_registro = ? WHERE id_registro = '" + obj.getIdRegistro() + "'";
+        try {
+            con = Conexion.getConexion();
+            ps = con.prepareStatement(sql);
+            
+            ps.setString(1, obj.getFechaSalida());
+            
+            ps.execute();
+            return true;
+        } catch (SQLException e) {
+            try {
+                ps.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(HabitacionDao.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }finally {
+            Conexion.closeConexion(con);
+        }
+        return false;
+    }
     public boolean FinRegistro(Registro obj) {
         String sql = "UPDATE registro SET estado_registro = ? WHERE id_registro = '" + obj.getIdRegistro() + "'";
         try {
