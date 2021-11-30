@@ -1996,6 +1996,8 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
         registroVista.lbEstado.setText(habi.getDisposicion());
         registroVista.lbTipoHab.setText(habi.getTipoHabitacion().getNombre());
         registroVista.lbPrecio.setText("$" + String.valueOf(habi.getPrecio()));
+        registroVista.txtDescuento.setText("0");
+        registroVista.txtAdelanto.setText("0");
     }
 
     

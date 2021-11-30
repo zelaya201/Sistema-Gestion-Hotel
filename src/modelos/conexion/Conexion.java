@@ -9,7 +9,7 @@ public class Conexion {
     private static final String driver = "com.mysql.cj.jdbc.Driver";
     private static final String user = "root";
     private static final String password = "";
-    private static final String url = "jdbc:mysql://localhost:3306/bd_hotel";  // ruta de la base
+    private static final String url = "jdbc:mysql://localhost:3306/db_hotel";  // ruta de la base
 
     public static synchronized Connection getConexion() {
         Connection cn = null;
