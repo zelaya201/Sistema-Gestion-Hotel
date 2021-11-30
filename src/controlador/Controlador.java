@@ -1133,17 +1133,34 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                                 
                             }else{
 
-                                registroVista.txtTotalPagar.setText(String.valueOf(obtenerDias(fechaEntrada, fechaSalida) * Double.parseDouble((registroVista.lbPrecio.getText().substring(1)))));
-                                registroVista.txtTotalConDescuento.setText(registroVista.txtTotalPagar.getText());
+                                if (registroVista.cbEstado.getSelectedItem().toString().equals("HOSPEDAJE")) {
+                                    if (!fechaEntradaCompare.equals(actual)) {
+                                        DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                                        DesktopNotify.showDesktopMessage("ERROR CON HOSPEDAJE", "La fecha en hospedaje tiene que ser hoy y solo hoy", DesktopNotify.WARNING, 8000);
+                                    } else{
+                                        registroVista.txtTotalPagar.setText(String.valueOf(obtenerDias(fechaEntrada, fechaSalida) * Double.parseDouble((registroVista.lbPrecio.getText().substring(1)))));
+                                        registroVista.txtTotalConDescuento.setText(registroVista.txtTotalPagar.getText());
+
                                 
-                                if (registroVista.txtDescuento.getText().isEmpty()) {
-                                    
+                                        registroVista.fechaEntrada.setEnabled(false);
+                                        registroVista.enableInputMethods(false);
+                                        registroVista.enable(false);
+                                        registroVista.btnGuardarRegistro.setEnabled(true);
+                                    }
+   
+                                }else{
+                                    registroVista.txtTotalPagar.setText(String.valueOf(obtenerDias(fechaEntrada, fechaSalida) * Double.parseDouble((registroVista.lbPrecio.getText().substring(1)))));
+                                    registroVista.txtTotalConDescuento.setText(registroVista.txtTotalPagar.getText());
+                                
+//                                    if (registroVista.txtDescuento.getText().isEmpty()) {
+//                                    
+//                                    }
+                                
+                                    registroVista.fechaEntrada.setEnabled(false);
+                                    registroVista.enableInputMethods(false);
+                                    registroVista.enable(false);
+                                    registroVista.btnGuardarRegistro.setEnabled(true);
                                 }
-                                
-                                registroVista.fechaEntrada.setEnabled(false);
-                                registroVista.enableInputMethods(false);
-                                registroVista.enable(false);
-                                registroVista.btnGuardarRegistro.setEnabled(true);
                             }
                         }
                     }else{
