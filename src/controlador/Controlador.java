@@ -737,6 +737,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                     String clave = Encriptacion.getStringMessageDigest(login.tfPass.getText(), Encriptacion.SHA256);
 
                     if (clave.equals(usuarios.toArray().get(0).getClave())) {
+                        
                         /* APLICAR ARBOLES DE BUSQUEDA */
                         this.usuario = usuarios.toArray().get(0);
                         this.menu = new Menu();
@@ -745,7 +746,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                         if (usuario.getRol().equals("Administrador")) {
                             String n[] = usuario.getNombre().split(" ");
                             String a[] = usuario.getApellido().split(" ");
-
+                            
                             menu.lbUserName.setText(n[0] + " " + a[0]);
                             menu.header.remove(menu.btnModiUser);
 
@@ -805,6 +806,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                             configModalEdit.dispose();
                             modalConfig = "";
                             mostrarModals("mConfig");
+                            
                         }
                     }
                 } else {
@@ -876,9 +878,9 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
         /* Boton de agregar venta a registro*/
         if (btn.getActionCommand().equals("addRegistroP") && principalOn == "mAddVenta") {
             if(!registrosProductos.isEmpty()){
+                
                 for(RegistroProducto x : registrosProductos.toArray()){
-
-                    this.daoRegistroP.insertar(x);
+                    daoRegistroP.insertar(x);       
                 }
 
                 DesktopNotify.setDefaultTheme(NotifyTheme.Green);

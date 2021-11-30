@@ -498,7 +498,7 @@ public class Menu extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JPanel aside;
     public javax.swing.JPanel body;
-    private newscomponents.RSButtonIcon_new btbHabitacion;
+    public newscomponents.RSButtonIcon_new btbHabitacion;
     public newscomponents.RSButtonIcon_new btnConfig;
     public newscomponents.RSButtonIcon_new btnDash;
     private newscomponents.RSButtonIcon_new btnHab;
