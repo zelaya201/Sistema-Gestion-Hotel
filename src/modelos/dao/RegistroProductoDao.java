@@ -16,6 +16,7 @@ import modelos.entidades.Habitacion;
 import modelos.entidades.Producto;
 import modelos.entidades.Registro;
 import modelos.entidades.RegistroProducto;
+import modelos.entidades.Usuario;
 import utilidades.ListaSimple;
 
 /**
@@ -53,6 +54,11 @@ public class RegistroProductoDao {
     
     public boolean insertar(RegistroProducto obj) throws SQLException{
         String sql = "insert into registro_producto(subtotal_registro_producto, cant_registro_producto, fk_id_registro, fk_cod_producto) values(?,?,?,?)";
+        return alterarRegistro(sql, obj);
+    }
+    
+    public boolean update(RegistroProducto obj) throws SQLException{
+        String sql = "update registro_producto set subtotal_registro_producto=?, cant_registro_producto=?, fk_id_registro=?, fk_cod_producto=? where id_registro_producto=" + obj.getId_registro_producto();
         return alterarRegistro(sql, obj);
     }
     
