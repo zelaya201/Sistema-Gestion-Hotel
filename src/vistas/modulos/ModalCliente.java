@@ -205,6 +205,9 @@ public class ModalCliente extends javax.swing.JDialog {
             }
         });
         tfEmail.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tfEmailKeyReleased(evt);
+            }
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 tfEmailKeyTyped(evt);
             }
@@ -311,7 +314,14 @@ public class ModalCliente extends javax.swing.JDialog {
     }//GEN-LAST:event_tfEmailActionPerformed
 
     private void tfEmailKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfEmailKeyTyped
+        char val = evt.getKeyChar();
+        if((val<'a' || val>'z') && (val < '0' || val > '9') && (val == ' '|| val != '.') && val != '@' && val != '_') {
+            evt.consume();
+        }
         
+        if (val == '@' && tfEmail.getText().contains("@")) {
+            evt.consume();
+        }
     }//GEN-LAST:event_tfEmailKeyTyped
 
     private void tfNomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfNomActionPerformed
@@ -337,6 +347,10 @@ public class ModalCliente extends javax.swing.JDialog {
     private void tfApeKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfApeKeyReleased
         tfApe.setText(tfApe.getText().toUpperCase());
     }//GEN-LAST:event_tfApeKeyReleased
+
+    private void tfEmailKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfEmailKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfEmailKeyReleased
 
     
     /**

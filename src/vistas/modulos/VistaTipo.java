@@ -86,6 +86,14 @@ public class VistaTipo extends javax.swing.JPanel {
 
         tfNombreTipo.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         tfNombreTipo.setPlaceholder("Ej: Doble");
+        tfNombreTipo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tfNombreTipoKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                tfNombreTipoKeyTyped(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -111,6 +119,11 @@ public class VistaTipo extends javax.swing.JPanel {
 
         tfCantidadTipo.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         tfCantidadTipo.setPlaceholder("Ej: 2");
+        tfCantidadTipo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                tfCantidadTipoKeyTyped(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
@@ -250,6 +263,20 @@ public class VistaTipo extends javax.swing.JPanel {
     private void btnGuardarTipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarTipoActionPerformed
 
     }//GEN-LAST:event_btnGuardarTipoActionPerformed
+
+    private void tfNombreTipoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfNombreTipoKeyReleased
+        tfNombreTipo.setText(tfNombreTipo.getText().toUpperCase());
+    }//GEN-LAST:event_tfNombreTipoKeyReleased
+
+    private void tfCantidadTipoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfCantidadTipoKeyTyped
+        char val = evt.getKeyChar();
+        if((val < '0' || val > '9')) evt.consume();
+    }//GEN-LAST:event_tfCantidadTipoKeyTyped
+
+    private void tfNombreTipoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfNombreTipoKeyTyped
+        char val = evt.getKeyChar();
+        if((val<'a' || val>'z')) evt.consume();
+    }//GEN-LAST:event_tfNombreTipoKeyTyped
        
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

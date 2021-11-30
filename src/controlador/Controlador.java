@@ -873,6 +873,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
         if (btn.getActionCommand().equals("addProductoV") && principalOn == "mAddVenta") {
             if (!addVentaVista.tfCantidad.getText().isEmpty() && !addVentaVista.tfPrecio.getText().isEmpty() && !addVentaVista.cbProducto.getSelectedItem().toString().equals("Seleccione")) {
                 if (!addVentaVista.tfCantidad.getText().equals("0")) {
+                    boolean existe = false;
                     Producto newProducto = daoProducto.selectAllTo("descripcion_producto", addVentaVista.cbProducto.getSelectedItem().toString()).toArray().get(0);
                     
                     String precio[] = addVentaVista.tfPrecio.getText().split(" ");
@@ -881,9 +882,21 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                             Integer.parseInt(addVentaVista.tfCantidad.getText()), registroSelected,
                             newProducto);
                     
+                    for (RegistroProducto x: registrosProductos.toArray()) {
+                        if (x.getProducto().getDescripcion().equals(obj.getProducto().getDescripcion())) {
+                            x.setCantidad(x.getCantidad() + obj.getCantidad());
+                            x.setSubtotal(x.getSubtotal() + obj.getSubtotal());
+                            existe = true;
+                        }
+                    }
+                    
+                    if (!existe) {
+                        registrosProductos.insertar(obj);
+                    }
+                    
                     //System.out.println(obj.getProducto().getDescripcion());
                     
-                    registrosProductos.insertar(obj);
+                    
                     addVentaVista.cbProducto.setSelectedIndex(0);
                     addVentaVista.tfCantidad.setText("");
                     addVentaVista.tfPrecio.setText("");
@@ -1314,9 +1327,9 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                 try {
                     ImageIcon img_edit = new ImageIcon(getClass().getResource("/img/editarTipo.png"));
                     JLabel lbImg_edit = new JLabel(new ImageIcon(img_edit.getImage()));
-                    
-                    ImageIcon img_delete = new ImageIcon(getClass().getResource("/img/delete.png"));
-                    JLabel lbImg_delete = new JLabel(new ImageIcon(img_delete.getImage()));
+//                    
+//                    ImageIcon img_delete = new ImageIcon(getClass().getResource("/img/delete.png"));
+//                    JLabel lbImg_delete = new JLabel(new ImageIcon(img_delete.getImage()));
                     
                     ImageIcon img_report = new ImageIcon(getClass().getResource("/img/file.png"));
                     JLabel lbImg_report = new JLabel(new ImageIcon(img_report.getImage()));
@@ -1327,8 +1340,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                     "$" + hab.getPrecio(),
                     hab.getTipoHabitacion().getNombre(),
                     hab.getDisposicion(),
-                    lbImg_edit,
-                    lbImg_delete, 
+                    lbImg_edit, 
                     lbImg_report });
                     tabla.setRowHeight(40);
                 } catch (Exception ex) {
@@ -1709,35 +1721,46 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
                     String tel = huespedModal.tfTel.getText().trim();
                     String email = huespedModal.tfEmail.getText().trim();
                     
-                    if (validarNombre(nom) && validarNombre(ape)) {
-                        if (validarEmail(email)) {
-                            ListaSimple<Cliente> existeHuesped = daoCliente.selectAllTo("dui_cliente", dui);
+                    if (dui.length() == 10) {
+                        if (validarNombre(nom) && validarNombre(ape)) {
+                            if (tel.length() == 9) {
+                                if (validarEmail(email)) {
+                                    ListaSimple<Cliente> existeHuesped = daoCliente.selectAllTo("dui_cliente", dui);
 
-                            if(existeHuesped.isEmpty()){
-                                Cliente cliente = new Cliente(dui,nom, ape, tel, email);
+                                    if(existeHuesped.isEmpty()){
+                                        Cliente cliente = new Cliente(dui,nom, ape, tel, email);
 
-                                if(daoCliente.insert(cliente)){
-                                    //Mensaje de guardado
-                                    DesktopNotify.setDefaultTheme(NotifyTheme.Green);
-                                    DesktopNotify.showDesktopMessage("Huesped guardado", "El huesped ha sido alamcenado exitosamente.", DesktopNotify.SUCCESS, 8000);
+                                        if(daoCliente.insert(cliente)){
+                                            //Mensaje de guardado
+                                            DesktopNotify.setDefaultTheme(NotifyTheme.Green);
+                                            DesktopNotify.showDesktopMessage("Huesped guardado", "El huesped ha sido alamcenado exitosamente.", DesktopNotify.SUCCESS, 8000);
+                                        }
+
+                                        modalOn = "";
+                                        huespedModal.dispose();
+                                    }else {
+                                        String n[] = nom.split(" ");
+                                        String a[] = ape.split(" ");
+                                        DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                                        DesktopNotify.showDesktopMessage("Huesped " + n[0] + " " + a[0] +  " ya existe", "El huesped que intenta ingresar ya se encuentra registrado.", DesktopNotify.WARNING, 10000); 
+                                    }
+                                }else {
+                                    DesktopNotify.setDefaultTheme(NotifyTheme.Red);
+                                    DesktopNotify.showDesktopMessage("Email inválido", "El email ingresado no cumple con el formato requerido.", DesktopNotify.WARNING, 8000); //8 seg
                                 }
-
-                                modalOn = "";
-                                huespedModal.dispose();
                             }else {
-                                String n[] = nom.split(" ");
-                                String a[] = ape.split(" ");
                                 DesktopNotify.setDefaultTheme(NotifyTheme.Red);
-                                DesktopNotify.showDesktopMessage("Huesped " + n[0] + " " + a[0] +  " ya existe", "El huesped que intenta ingresar ya se encuentra registrado.", DesktopNotify.WARNING, 10000); 
+                                DesktopNotify.showDesktopMessage("Teléfono inválido", "El número de teléfono ingresado es menor a 8 digitos.", DesktopNotify.WARNING, 8000); //8 seg
                             }
                         }else {
                             DesktopNotify.setDefaultTheme(NotifyTheme.Red);
-                            DesktopNotify.showDesktopMessage("Email inválido", "El email ingresado no cumple con el formato requerido.", DesktopNotify.WARNING, 8000); //8 seg
-                        }
+                            DesktopNotify.showDesktopMessage("Nombre o Apellido Inválido", "El nombre o apellido ingresado es inválido.", DesktopNotify.WARNING, 8000); //8 seg
+                        }  
                     }else {
                         DesktopNotify.setDefaultTheme(NotifyTheme.Red);
-                        DesktopNotify.showDesktopMessage("Nombre o Apellido Inválido", "El nombre o apellido ingresado es inválido.", DesktopNotify.WARNING, 8000); //8 seg
+                        DesktopNotify.showDesktopMessage("DUI Inválido", "El número de DUI ingresado es menor a 9 digitos.", DesktopNotify.WARNING, 8000); //8 seg
                     }
+                    
                 }else {
                     DesktopNotify.setDefaultTheme(NotifyTheme.Red);
                     DesktopNotify.showDesktopMessage("Campos vacíos", "Por favor rellene todos los campos.", DesktopNotify.WARNING, 8000);
@@ -1849,15 +1872,21 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
     public void mostrarInfoHab2() throws SQLException {
 //        Registro regis = daoRegistro.selectRegisHab();
         ListaSimple<Registro> regis = daoRegistro.selectAllTo("fk_num_habitacion", String.valueOf(registroSelected.getHabitacion().getNumHabitacion()));
-        registroSelected = regis.toArray().get(0);
-        addVentaVista.lbCliente.setText(regis.toArray().get(0).getCliente().getDui());
+        
+        for (Registro x: regis.toArray()) {
+            if (x.getEstado() == 1) {
+                registroSelected = x;
+            }
+        }
+        
+        addVentaVista.lbCliente.setText(registroSelected.getCliente().getDui() + " | " + registroSelected.getCliente().getNombre() + " " + registroSelected.getCliente().getApellido());
 
-        addVentaVista.lbNumHab.setText(String.valueOf(regis.toArray().get(0).getHabitacion().getNumHabitacion()));
-        addVentaVista.lbTipoHab.setText(regis.toArray().get(0).getHabitacion().getTipoHabitacion().getNombre());
+        addVentaVista.lbNumHab.setText(String.valueOf(registroSelected.getHabitacion().getNumHabitacion()));
+        addVentaVista.lbTipoHab.setText(registroSelected.getHabitacion().getTipoHabitacion().getNombre());
 
-        addVentaVista.lbPrecio.setText("$" + String.valueOf(formatoDecimal(regis.toArray().get(0).getHabitacion().getPrecio())));
-        addVentaVista.lbFechaIn.setText(regis.toArray().get(0).getFechaEntrada());
-        addVentaVista.lbFechaOut.setText(regis.toArray().get(0).getFechaSalida());
+        addVentaVista.lbPrecio.setText("$" + String.valueOf(formatoDecimal(registroSelected.getHabitacion().getPrecio())));
+        addVentaVista.lbFechaIn.setText(registroSelected.getFechaEntrada());
+        addVentaVista.lbFechaOut.setText(registroSelected.getFechaSalida());
 
     }
 
@@ -1953,10 +1982,12 @@ public class Controlador implements ActionListener, MouseListener, KeyListener, 
     }
     
     public boolean validarEmail(String txt) {
-        String regx = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$"; 
-        Pattern pattern = Pattern.compile(regx,Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(txt);
-        return matcher.find();
+//        String regx = "^[_A-Za-z0-9-\\\\+]+(\\\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\\\.[A-Za-z0-9]+)*(\\\\.[A-Za-z]{2,})$"; 
+//        Pattern pattern = Pattern.compile(regx,Pattern.CASE_INSENSITIVE);
+//        Matcher matcher = pattern.matcher(txt);
+        Pattern pattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+        Matcher mather = pattern.matcher(txt);
+        return mather.find();
     }
 
     public void cargarDashboard() throws SQLException {

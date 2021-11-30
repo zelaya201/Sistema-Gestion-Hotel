@@ -54,11 +54,11 @@ public class VistaHabitacion extends javax.swing.JPanel {
 
             },
             new String [] {
-                "N° Habitación", "Descripción", "Precio", "Tipo Habitación", "Estado", "Editar", "Eliminar", "Reporte"
+                "N° Habitación", "Descripción", "Precio", "Tipo Habitación", "Estado", "Editar", "Reporte"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -90,7 +90,6 @@ public class VistaHabitacion extends javax.swing.JPanel {
             tablaHabitaciones.getColumnModel().getColumn(0).setPreferredWidth(20);
             tablaHabitaciones.getColumnModel().getColumn(5).setPreferredWidth(10);
             tablaHabitaciones.getColumnModel().getColumn(6).setPreferredWidth(10);
-            tablaHabitaciones.getColumnModel().getColumn(7).setPreferredWidth(10);
         }
 
         habPanel.add(jScrollPane2, java.awt.BorderLayout.CENTER);
