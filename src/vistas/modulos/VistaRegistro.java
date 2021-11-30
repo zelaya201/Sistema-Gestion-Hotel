@@ -402,6 +402,7 @@ public class VistaRegistro extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 10);
         jPanel2.add(jLabel12, gridBagConstraints);
 
+        txtDescuento.setEditable(false);
         txtDescuento.setForeground(new java.awt.Color(0, 0, 0));
         txtDescuento.setBorderColor(new java.awt.Color(204, 204, 204));
         txtDescuento.setColorIcon(new java.awt.Color(153, 153, 153));
@@ -684,7 +685,7 @@ public class VistaRegistro extends javax.swing.JPanel {
     }//GEN-LAST:event_cbEstadoItemStateChanged
 
     private void fechaEntradaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fechaEntradaMousePressed
-        System.out.println("NO HACE NADAAA");
+      
     }//GEN-LAST:event_fechaEntradaMousePressed
 
     private void txtDescuentoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDescuentoKeyTyped

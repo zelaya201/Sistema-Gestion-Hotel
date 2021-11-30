@@ -185,11 +185,11 @@ public class VistaTipo extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Código", "Nombre", "Cantidad", "Editar", "Eliminar"
+                "Código", "Nombre", "Cantidad", "Editar"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -223,8 +223,6 @@ public class VistaTipo extends javax.swing.JPanel {
             tablaTiposHab.getColumnModel().getColumn(2).setResizable(false);
             tablaTiposHab.getColumnModel().getColumn(3).setResizable(false);
             tablaTiposHab.getColumnModel().getColumn(3).setPreferredWidth(70);
-            tablaTiposHab.getColumnModel().getColumn(4).setResizable(false);
-            tablaTiposHab.getColumnModel().getColumn(4).setPreferredWidth(70);
         }
 
         javax.swing.GroupLayout tablaTiposLayout = new javax.swing.GroupLayout(tablaTipos);
