@@ -354,11 +354,11 @@ public class VistaRegistro extends javax.swing.JPanel {
             }
         });
         fechaEntrada.addInputMethodListener(new java.awt.event.InputMethodListener() {
-            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
-                fechaEntradaInputMethodTextChanged(evt);
-            }
             public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
                 fechaEntradaCaretPositionChanged(evt);
+            }
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
+                fechaEntradaInputMethodTextChanged(evt);
             }
         });
         fechaEntrada.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
@@ -402,6 +402,7 @@ public class VistaRegistro extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 10);
         jPanel2.add(jLabel12, gridBagConstraints);
 
+        txtDescuento.setEditable(false);
         txtDescuento.setForeground(new java.awt.Color(0, 0, 0));
         txtDescuento.setBorderColor(new java.awt.Color(204, 204, 204));
         txtDescuento.setColorIcon(new java.awt.Color(153, 153, 153));

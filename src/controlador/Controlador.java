@@ -1156,10 +1156,6 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                                         registroVista.txtTotalPagar.setText(String.valueOf(obtenerDias(fechaEntrada, fechaSalida) * Double.parseDouble((registroVista.lbPrecio.getText().substring(1)))));
                                         registroVista.txtTotalConDescuento.setText(registroVista.txtTotalPagar.getText());
 
-                                
-                                        registroVista.fechaEntrada.setEnabled(false);
-                                        registroVista.enableInputMethods(false);
-                                        registroVista.enable(false);
                                         registroVista.btnGuardarRegistro.setEnabled(true);
                                     }
    
@@ -1167,13 +1163,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                                     registroVista.txtTotalPagar.setText(String.valueOf(obtenerDias(fechaEntrada, fechaSalida) * Double.parseDouble((registroVista.lbPrecio.getText().substring(1)))));
                                     registroVista.txtTotalConDescuento.setText(registroVista.txtTotalPagar.getText());
                                 
-//                                    if (registroVista.txtDescuento.getText().isEmpty()) {
-//                                    
-//                                    }
                                 
-                                    registroVista.fechaEntrada.setEnabled(false);
-                                    registroVista.enableInputMethods(false);
-                                    registroVista.enable(false);
                                     registroVista.btnGuardarRegistro.setEnabled(true);
                                 }
                             }
@@ -1250,6 +1240,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                 Date actual = f.parse(fechaActual);
                 String fechaSalida = registroSelected.getFechaSalida();
                 Date fechaSalidaCompare = f.parse(fechaSalida);
+                String fechaEntrada = registroSelected.getFechaEntrada();
                 
                 if (!fechaSalidaCompare.equals(actual)) {
                     confirmDialog = new ConfirmDialog(new JFrame(), true);
@@ -1402,16 +1393,13 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
                 try {
                     ImageIcon img_edit = new ImageIcon(getClass().getResource("/img/editarTipo.png"));
                     JLabel lbImg_edit = new JLabel(new ImageIcon(img_edit.getImage()));
-                    
-                    ImageIcon img_delete = new ImageIcon(getClass().getResource("/img/delete.png"));
-                    JLabel lbImg_delete = new JLabel(new ImageIcon(img_delete.getImage()));
+                   
                     
                     md.addRow(new Object[]{
                     tipos.getIdTipo(),
                     tipos.getNombre(),
                     tipos.getCantidad(),
-                    lbImg_edit,
-                    lbImg_delete});
+                    lbImg_edit});
                     tabla.setRowHeight(40);
                 } catch (Exception ex) {
                     Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
@@ -2616,14 +2604,7 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
 
                 int col = tipoVista.tablaTiposHab.getSelectedColumn();
                 try {
-                    if (col == 4) {
-                        int fila = tipoVista.tablaTiposHab.getSelectedRow();
-                        int id = (int) tipoVista.tablaTiposHab.getValueAt(fila, 0);
-
-                        ArrayList<TipoHabitacion> th = tipoHabDao.selectAllTo("id_tipo", String.valueOf(id));
-                        selectedTipo = th.get(0);
-                        mostrarModals("eliminarTipos");
-                    } else if(col == 3){
+                    if(col == 3){
                         int fila = tipoVista.tablaTiposHab.getSelectedRow();
                         int id = (int) tipoVista.tablaTiposHab.getValueAt(fila, 0);
 
@@ -2818,10 +2799,6 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
             }
         } catch (Exception e) {
 
-
-            if(modalOn.equals("mEliminarTipo") && me.getSource().equals(modalEliminar.btnEliminar)){
-               eventoLabel("btnEliminarTipo");
-            }
 
             if(modalOn.equals("modalEliminarHab") && me.getSource().equals(modalEliminar.btnEliminar)){
               
@@ -3037,29 +3014,6 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
     }
 
     public void eventoLabel(String btn){
-        if (principalOn.equals("mTipo")) {
-            if (modalOn.equals("mEliminarTipo")) {
-                if (btn.equals("btnEliminarTipo")) {
-                    try {
-                        if (selectedTipo != null) {
-                            if (tipoHabDao.eliminar(selectedTipo)) {
-                                DesktopNotify.setDefaultTheme(NotifyTheme.Red);
-                                DesktopNotify.showDesktopMessage("Tipo eliminado", "El tipo habitación se ha eliminado exitosamente.", DesktopNotify.INFORMATION, 8000);
-                                mostrarModulos("mTipo");
-                                modalEliminar.dispose();
-                                }
-                        }else{
-                                modalEliminar.dispose();
-                                DesktopNotify.setDefaultTheme(NotifyTheme.Red);
-                                DesktopNotify.showDesktopMessage("Problema con eliminar el tipo", "No es posible realizar esta acción.", DesktopNotify.INFORMATION, 8000);
-                                mostrarModulos("mTipo");
-                        }
-                        } catch (SQLException e) {
-                    
-                    }
-                }
-            }
-        }
         
         if (principalOn.equals("mHabitacion")) {
             if (modalOn.equals("modalEliminarHab")) {
@@ -3085,19 +3039,22 @@ public class Controlador implements ActionListener, MouseListener, KeyListener{
             Registro estado = null;
             try {
                 Date actual = f.parse(fechaActual);
-                String fechaSalida = registroSelected.getFechaSalida();
+                String fechaEntrada = registroSelected.getFechaEntrada();
                 
-                double totalNoCulminado = (obtenerDias(f.format(actual), fechaSalida) * recepcionSelected.getPrecio());
+                double totalNoCulminado = (obtenerDias(fechaEntrada, f.format(actual)) * recepcionSelected.getPrecio());
+                registroSelected.setFechaSalida(f.format(actual));
+                if (daoRegistro.updateFechaSalida(registroSelected)) {
+                    
+                }
                 registroSelected.setTotal(totalNoCulminado);
                 if (daoRegistro.updateTotal(registroSelected)) {
-                        
+
                 }
                 
             } catch (NumberFormatException | ParseException e) {
                 System.out.println(e);
             }
                                             
-            
                     recepcionSelected.setDisposicion("DISPONIBLE");
                     estado = daoRegistro.selectAllTo("id_registro", String.valueOf(registroSelected.getIdRegistro())).toArray().get(0);
                     if (vistaFin.txtMoraFinal.getText().isEmpty()) {
