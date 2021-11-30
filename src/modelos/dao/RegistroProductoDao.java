@@ -115,8 +115,8 @@ public class RegistroProductoDao {
         }
         return false; 
     }
-    public double subTotalCompleto(Habitacion obj){
-        String sql = "SELECT SUM( rp.subtotal_registro_producto ) AS subtotalCompleto FROM registro r INNER JOIN registro_producto rp ON r.id_registro = rp.fk_id_registro WHERE r.fk_num_habitacion = '"+ obj.getNumHabitacion() +"' GROUP BY fk_dui_cliente";
+    public double subTotalCompleto(Registro obj){
+        String sql = "SELECT SUM( rp.subtotal_registro_producto ) AS subtotalCompleto FROM registro r INNER JOIN registro_producto rp ON r.id_registro = rp.fk_id_registro WHERE r.id_registro = '"+ obj.getIdRegistro() +"' GROUP BY fk_dui_cliente";
         double subtotal = 0;
         try {
             con = Conexion.getConexion();

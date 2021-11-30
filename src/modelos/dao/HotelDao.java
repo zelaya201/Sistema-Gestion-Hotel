@@ -27,7 +27,12 @@ public class HotelDao {
     
     public boolean update(Hotel obj) throws SQLException {
         String sql = "update hotel set nom_hotel = ?, dir_hotel =?, tel_hotel = ? where id_hotel = " + obj.getIdHotel();
-        return alterarRegistro(sql, obj);
+        return alterarRegistro1(sql, obj);
+    }
+    
+    public boolean insertar(Hotel obj) throws SQLException {
+        String sql = "INSERT INTO hotel(id_hotel, nom_hotel, dir_hotel, tel_hotel) VALUES (?, ?, ?, ?)";
+        return alterarRegistro2(sql, obj);
     }
     
     private ListaSimple<Hotel> select(String sql) throws SQLException{
@@ -63,14 +68,42 @@ public class HotelDao {
         return lista;
     }
     
-    private boolean alterarRegistro(String sql, Hotel obj) throws SQLException{
+    private boolean alterarRegistro1(String sql, Hotel obj) throws SQLException{
         try {
             con = conectar.getConexion();
             ps = con.prepareStatement(sql);
 
+            
             ps.setString(1, obj.getNombre());
             ps.setString(2, obj.getDireccion());
             ps.setString(3, obj.getTelefono());
+
+            ps.execute();
+            
+            return true;
+        }catch(Exception e) {      
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, e);
+        }finally{
+            try {
+                ps.close();
+            } catch (Exception ex) {
+                
+            }
+            conectar.closeConexion(con);
+        }
+        
+        return false; 
+    }
+    
+    private boolean alterarRegistro2(String sql, Hotel obj) throws SQLException{
+        try {
+            con = conectar.getConexion();
+            ps = con.prepareStatement(sql);
+
+            ps.setInt(1, obj.getIdHotel());
+            ps.setString(2, obj.getNombre());
+            ps.setString(3, obj.getDireccion());
+            ps.setString(4, obj.getTelefono());
 
             ps.execute();
             

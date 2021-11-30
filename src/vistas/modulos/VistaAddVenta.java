@@ -15,7 +15,6 @@ public class VistaAddVenta extends javax.swing.JPanel {
     public void setControlador(Controlador control){
         this.tbRegistroP.addMouseListener(control);
         this.btnAddP.addActionListener(control);
-        this.cbProducto.addItemListener(control);
         this.tfCantidad.addKeyListener(control);
         this.tfPrecio.addKeyListener(control);
         this.btnAddRegistro.addActionListener(control);

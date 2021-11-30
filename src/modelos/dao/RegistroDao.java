@@ -148,8 +148,11 @@ public class RegistroDao {
         }
         return false;
     }
+    
     public Registro selectHuesped(Registro obj) throws SQLException{
-     String sql = "SELECT dui_cliente, email_cliente, fentrada_registro, fsalida_registro, descuento_registro, deposito_registro FROM registro r INNER JOIN cliente c ON r.fk_dui_cliente = c.dui_cliente WHERE fk_num_habitacion = " + obj.getHabitacion().getNumHabitacion() + " && r.estado_registro = 1";   
+
+     String sql = "SELECT * FROM registro r INNER JOIN cliente c ON r.fk_dui_cliente = c.dui_cliente WHERE fk_num_habitacion = " + obj.getHabitacion().getNumHabitacion() + " && r.estado_registro = 1";   
+
      Registro re = null;
         try {
             con = Conexion.getConexion();
@@ -163,10 +166,12 @@ public class RegistroDao {
                 h.setDui(rs.getString("dui_cliente"));
                 h.setEmail(rs.getString("email_cliente"));
                 re.setCliente(h);
+                re.setIdRegistro(rs.getInt("id_registro"));
                 re.setFechaEntrada(rs.getString("fentrada_registro"));
                 re.setFechaSalida(rs.getString("fsalida_registro"));
                 re.setDescuento(rs.getDouble("descuento_registro"));
                 re.setDeposito(rs.getDouble("deposito_registro"));
+                re.setTotal(rs.getDouble("total_registro"));
                 
             }
             Conexion.closeConexion(con);
@@ -196,6 +201,27 @@ public class RegistroDao {
         }
         return false;
     }
+    public boolean updateTotal(Registro obj) {
+        String sql = "UPDATE registro SET total_registro = ? WHERE id_registro = '" + obj.getIdRegistro() + "'";
+        try {
+            con = Conexion.getConexion();
+            ps = con.prepareStatement(sql);
+            
+            ps.setDouble(1, obj.getTotal());
+            
+            ps.execute();
+            return true;
+        } catch (SQLException e) {
+            try {
+                ps.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(HabitacionDao.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }finally {
+            Conexion.closeConexion(con);
+        }
+        return false;
+    }
     public boolean FinRegistro(Registro obj) {
         String sql = "UPDATE registro SET estado_registro = ? WHERE id_registro = '" + obj.getIdRegistro() + "'";
         try {
@@ -203,6 +229,27 @@ public class RegistroDao {
             ps = con.prepareStatement(sql);
             
             ps.setDouble(1, 0);
+            
+            ps.execute();
+            return true;
+        } catch (SQLException e) {
+            try {
+                ps.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(HabitacionDao.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }finally {
+            Conexion.closeConexion(con);
+        }
+        return false;
+    }
+        public boolean updateTipoRegistro(Registro obj) {
+        String sql = "UPDATE registro SET tipo_registro = ? WHERE id_registro = '" + obj.getIdRegistro() + "'";
+        try {
+            con = Conexion.getConexion();
+            ps = con.prepareStatement(sql);
+            
+            ps.setString(1, obj.getTipo());
             
             ps.execute();
             return true;
