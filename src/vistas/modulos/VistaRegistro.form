@@ -361,6 +361,7 @@
                 </Property>
               </Properties>
               <Events>
+                <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="cbHuespedItemStateChanged"/>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cbHuespedActionPerformed"/>
               </Events>
               <AuxValues>
@@ -410,15 +411,19 @@
                   <Font name="Segoe UI" size="14" style="1"/>
                 </Property>
                 <Property name="formatDate" type="java.lang.String" value="dd/MM/yyyy&#xa;"/>
-                <Property name="requestFocusEnabled" type="boolean" value="false"/>
+                <Property name="name" type="java.lang.String" value="" noResource="true"/>
               </Properties>
               <Events>
                 <EventHandler event="componentRemoved" listener="java.awt.event.ContainerListener" parameters="java.awt.event.ContainerEvent" handler="fechaEntradaComponentRemoved"/>
                 <EventHandler event="hierarchyChanged" listener="java.awt.event.HierarchyListener" parameters="java.awt.event.HierarchyEvent" handler="fechaEntradaHierarchyChanged"/>
                 <EventHandler event="ancestorAdded" listener="javax.swing.event.AncestorListener" parameters="javax.swing.event.AncestorEvent" handler="fechaEntradaAncestorAdded"/>
+                <EventHandler event="mouseMoved" listener="java.awt.event.MouseMotionListener" parameters="java.awt.event.MouseEvent" handler="fechaEntradaMouseMoved"/>
                 <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="fechaEntradaFocusGained"/>
+                <EventHandler event="mouseWheelMoved" listener="java.awt.event.MouseWheelListener" parameters="java.awt.event.MouseWheelEvent" handler="fechaEntradaMouseWheelMoved"/>
                 <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="fechaEntradaMouseClicked"/>
+                <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="fechaEntradaMouseEntered"/>
                 <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="fechaEntradaMousePressed"/>
+                <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="fechaEntradaMouseReleased"/>
                 <EventHandler event="inputMethodTextChanged" listener="java.awt.event.InputMethodListener" parameters="java.awt.event.InputMethodEvent" handler="fechaEntradaInputMethodTextChanged"/>
                 <EventHandler event="caretPositionChanged" listener="java.awt.event.InputMethodListener" parameters="java.awt.event.InputMethodEvent" handler="fechaEntradaCaretPositionChanged"/>
                 <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="fechaEntradaPropertyChange"/>
@@ -470,12 +475,14 @@
                 <Property name="colorIcon" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="99" green="99" red="99" type="rgb"/>
                 </Property>
+                <Property name="enabled" type="boolean" value="false"/>
                 <Property name="icons" type="rojeru_san.efectos.ValoresEnum$ICONS" editor="org.netbeans.modules.form.editors.EnumEditor">
                   <Value id="MONETIZATION_ON"/>
                 </Property>
                 <Property name="placeholder" type="java.lang.String" value=""/>
               </Properties>
               <Events>
+                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtDescuentoKeyReleased"/>
                 <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtDescuentoKeyTyped"/>
               </Events>
               <AuxValues>
@@ -498,6 +505,7 @@
                 <Property name="colorIcon" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="99" green="99" red="99" type="rgb"/>
                 </Property>
+                <Property name="enabled" type="boolean" value="false"/>
                 <Property name="icons" type="rojeru_san.efectos.ValoresEnum$ICONS" editor="org.netbeans.modules.form.editors.EnumEditor">
                   <Value id="MONETIZATION_ON"/>
                 </Property>
@@ -505,6 +513,7 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtAdelantoActionPerformed"/>
+                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtAdelantoKeyReleased"/>
                 <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtAdelantoKeyTyped"/>
               </Events>
               <AuxValues>
@@ -723,7 +732,14 @@
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="f8" green="89" red="3d" type="rgb"/>
                 </Property>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="null"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Verificar Datos"/>
+                <Property name="backgroundHover" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="de" green="89" red="3d" type="rgb"/>
+                </Property>
+                <Property name="focusable" type="boolean" value="false"/>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Segoe UI" size="14" style="1"/>
                 </Property>
@@ -737,7 +753,49 @@
               </Events>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                  <GridBagConstraints gridX="3" gridY="6" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="5" insetsTop="20" insetsLeft="28" insetsBottom="100" insetsRight="4" anchor="10" weightX="1.0" weightY="0.0"/>
+                  <GridBagConstraints gridX="1" gridY="6" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="5" insetsTop="20" insetsLeft="28" insetsBottom="100" insetsRight="4" anchor="10" weightX="1.0" weightY="0.0"/>
+                </Constraint>
+              </Constraints>
+            </Component>
+            <Component class="newscomponents.RSButtonIcon_new" name="btnAtras">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="ff" green="ff" red="ff" type="rgb"/>
+                </Property>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                    <LineBorder>
+                      <Color PropertyName="color" blue="33" green="33" red="33" type="rgb"/>
+                    </LineBorder>
+                  </Border>
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="33" green="33" red="33" type="rgb"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Regresar"/>
+                <Property name="backgroundHover" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="cc" green="cc" red="cc" type="rgb"/>
+                </Property>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI" size="14" style="1"/>
+                </Property>
+                <Property name="foregroundIcon" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="33" green="33" red="33" type="rgb"/>
+                </Property>
+                <Property name="foregroundText" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="33" green="33" red="33" type="rgb"/>
+                </Property>
+                <Property name="horizontalAlignment" type="int" value="0"/>
+                <Property name="icons" type="rojeru_san.efectos.ValoresEnum$ICONS" editor="org.netbeans.modules.form.editors.EnumEditor">
+                  <Value id="EXIT_TO_APP"/>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAtrasActionPerformed"/>
+              </Events>
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+                  <GridBagConstraints gridX="3" gridY="6" gridWidth="2" gridHeight="1" fill="3" ipadX="0" ipadY="5" insetsTop="20" insetsLeft="28" insetsBottom="100" insetsRight="4" anchor="10" weightX="1.0" weightY="0.0"/>
                 </Constraint>
               </Constraints>
             </Component>
